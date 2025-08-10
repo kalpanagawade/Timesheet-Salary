@@ -64,26 +64,34 @@
 
 
     <div style="max-height: 300px; overflow-y: auto; margin-top: 10px;">
-        <asp:GridView ID="gvEmployees" runat="server" AutoGenerateColumns="false"
-            CssClass="table table-bordered table-striped" Width="100%">
-            <Columns>
-                <asp:TemplateField HeaderText="Select">
-                    <ItemTemplate>
-                        <asp:CheckBox ID="chkSelect" runat="server" />
-                    </ItemTemplate>
-                </asp:TemplateField>
-                <asp:BoundField DataField="ID" HeaderText="Employee ID" />
-                <asp:BoundField DataField="Name" HeaderText="Employee Name" />
-            </Columns>
-        </asp:GridView>
+       <asp:HiddenField ID="hfSelectedEmployees" runat="server" />
+
+<asp:GridView ID="gvEmployees" runat="server" AutoGenerateColumns="false"
+    CssClass="table table-bordered table-striped" Width="100%">
+    <Columns>
+        <asp:TemplateField HeaderText="Select">
+            <ItemTemplate>
+                <input type="checkbox" class="emp-checkbox" value='<%# Eval("ID") %>' 
+                       onclick="updateSelectedEmployees()" />
+            </ItemTemplate>
+        </asp:TemplateField>
+        <asp:BoundField DataField="ID" HeaderText="Employee ID" />
+        <asp:BoundField DataField="Name" HeaderText="Employee Name" />
+    </Columns>
+</asp:GridView>
     </div>
 </div>
 
 
                 <!-- Modal Footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="assignEmployees()">Assign</button>
+                    <%--<button type="button" class="btn btn-primary" onclick="assignEmployees()">Assign</button>--%>
+                    <asp:Button ID="btnassign" runat="server" CssClass="btn btn-primary"  Text="Assign"
+                        OnClick="btnassign_Click"
+    OnClientClick="return assignEmployees();"   />
+                    <%--<asp:HiddenField ID="hfSelectedEmployees" runat="server" />--%>
                     <button type="button" class="btn btn-secondary" onclick="window.close()">Close</button>
+                    
                 </div>
 
             </div>
@@ -105,20 +113,20 @@
                 row.style.display = (id.includes(input) || name.includes(input)) ? "" : "none";
             });
         }
+        //Comment by Hrutik 10082025
+        //function assignEmployees() {
+        //    var selected = [];
+        //    document.querySelectorAll(".emp-checkbox:checked").forEach(function (cb) {
+        //        selected.push(cb.value);
+        //    });
 
-        function assignEmployees() {
-            var selected = [];
-            document.querySelectorAll(".emp-checkbox:checked").forEach(function (cb) {
-                selected.push(cb.value);
-            });
-
-            if (selected.length > 0) {
-                alert("Assigned to: " + selected.join(", "));
-                window.close(); // or redirect back if needed
-            } else {
-                alert("Please select at least one employee.");
-            }
-        }
+        //    if (selected.length > 0) {
+        //        alert("Assigned to: " + selected.join(", "));
+        //        window.close(); // or redirect back if needed
+        //    } else {
+        //        alert("Please select at least one employee.");
+        //    }
+        //}
     </script>
 
     <script>
@@ -162,20 +170,45 @@
                 row.style.display = id.includes(input) || name.includes(input) ? "" : "none";
             });
         }
+        //Comment by Hrutik 10082025
+        //function assignEmployees() {
+        //    var selected = [];
+        //    var checkboxes = document.querySelectorAll(".emp-checkbox:checked");
+
+        //    checkboxes.forEach(cb => selected.push(cb.value));
+
+        //    if (selected.length > 0) {
+        //        alert("Assigned to: " + selected.join(", "));
+        //        window.close();
+        //    } else {
+        //        alert("Please select at least one employee.");
+        //    }
+        //}
 
         function assignEmployees() {
             var selected = [];
             var checkboxes = document.querySelectorAll(".emp-checkbox:checked");
 
-            checkboxes.forEach(cb => selected.push(cb.value));
+            checkboxes.forEach(function (cb) {
+                selected.push(cb.value);
+            });
 
-            if (selected.length > 0) {
-                alert("Assigned to: " + selected.join(", "));
-                window.close();
-            } else {
-                alert("Please select at least one employee.");
-            }
+            document.getElementById('<%= hfSelectedEmployees.ClientID %>').value = selected.join(',');
+           return true; // Always allow postback
+       }
+        function updateSelectedEmployees() {
+            var selected = [];
+            var checkboxes = document.querySelectorAll(".emp-checkbox:checked");
+
+            checkboxes.forEach(function (cb) {
+                selected.push(cb.value);
+            });
+
+            document.getElementById('<%= hfSelectedEmployees.ClientID %>').value = selected.join(',');
         }
+
+
+
     </script>
 </body>
 </html>

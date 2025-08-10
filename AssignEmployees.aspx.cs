@@ -23,6 +23,67 @@ namespace EmployeeTimesheet_Salary
             }
 
         }
+        //Added by Hrutik 10082025
+
+        protected void btnassign_Click(object sender, EventArgs e)
+        {
+            // Get selected employee IDs from the hidden field
+            string selectedEmpIds = hfSelectedEmployees.Value?.Trim();
+            string managerUserId = Request.QueryString["UserId"];
+
+            if (!string.IsNullOrEmpty(selectedEmpIds) && !string.IsNullOrEmpty(managerUserId))
+            {
+                string[] empIds = selectedEmpIds
+                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(id => id.Trim())
+                    .Where(id => !string.IsNullOrWhiteSpace(id))
+                    .ToArray();
+
+                foreach (string empId in empIds)
+                {
+                    // Your method to assign employee to the manager
+                    UpdateEmployeeManager(empId, managerUserId);
+                }
+            }
+
+            // Close popup after assignment
+            ClientScript.RegisterStartupScript(
+                this.GetType(),
+                "CloseWindow",
+                "window.close();",
+                true
+            );
+        }
+
+        //Added by Hrutik 10082025
+        private void UpdateEmployeeManager(string employeeId, string managerUserId)
+        {
+            // Basic safety check
+            if (string.IsNullOrEmpty(employeeId) || string.IsNullOrEmpty(managerUserId))
+                return;
+
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                string query = @"
+            UPDATE iuser
+ SET ManagerId = @ManagerId
+ WHERE UserId = @EmployeeId";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@ManagerId", managerUserId);
+                    cmd.Parameters.AddWithValue("@EmployeeId", employeeId);
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+        }
+
+
 
         //private void BindEmployees()
         //{

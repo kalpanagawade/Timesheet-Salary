@@ -735,16 +735,24 @@
                 return true; // allow form submission
             }
             //Added bY hrutik
-            function onRoleChange() {
+            <%--function onRoleChange() {
                 var ddl = document.getElementById('<%= ddlRole.ClientID %>');
                 var selectedText = ddl.options[ddl.selectedIndex].text;
 
                 if (selectedText.toLowerCase().includes('manager')) {
                     window.open('AssignEmployees.aspx', '_blank', 'width=900,height=600'); // opens new popup
                 }
-            }
+            }--%>
 
+            function onRoleChange() {
+                var ddl = document.getElementById('<%= ddlRole.ClientID %>');
+        var selectedText = ddl.options[ddl.selectedIndex].text;
 
+        if (selectedText.toLowerCase().includes('manager')) {
+                     var userId = document.getElementById('<%= txtUserid.ClientID %>').value;
+                     window.open('AssignEmployees.aspx?UserId=' + encodeURIComponent(userId), '_blank', 'width=900,height=600');
+                 }
+             }
            
 
 
