@@ -33,6 +33,15 @@ namespace EmployeeTimesheet_Salary
         protected global::System.Web.UI.WebControls.TextBox txtSearchEmp;
 
         /// <summary>
+        /// hfSelectedEmployees control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfSelectedEmployees;
+
+        /// <summary>
         /// gvEmployees control.
         /// </summary>
         /// <remarks>
@@ -40,5 +49,14 @@ namespace EmployeeTimesheet_Salary
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvEmployees;
+
+        /// <summary>
+        /// btnassign control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnassign;
     }
 }
