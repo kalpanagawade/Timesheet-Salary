@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Web.Services;
+using System.Data;
 
 
 namespace EmployeeTimesheet_Salary
@@ -65,21 +66,14 @@ namespace EmployeeTimesheet_Salary
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
 
             using (SqlConnection con = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand("dbo.UpdateEmployeeManager", con))
             {
-                string query = @"
-            UPDATE iuser
- SET ManagerId = @ManagerId
- WHERE UserId = @EmployeeId";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@EmployeeId", employeeId);
+                cmd.Parameters.AddWithValue("@ManagerId", managerUserId);
 
-                using (SqlCommand cmd = new SqlCommand(query, con))
-                {
-                    cmd.Parameters.AddWithValue("@ManagerId", managerUserId);
-                    cmd.Parameters.AddWithValue("@EmployeeId", employeeId);
-
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    con.Close();
-                }
+                con.Open();
+                cmd.ExecuteNonQuery();
             }
         }
 

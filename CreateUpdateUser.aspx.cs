@@ -253,7 +253,7 @@ namespace EmployeeTimesheet_Salary
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
 
-                            cmd.Parameters.AddWithValue("@UserId", Lblid.Text);
+                            cmd.Parameters.AddWithValue("@UserId", Label6.Text);
                             cmd.Parameters.AddWithValue("@CrecatedBy", txtCreatedBy.Text);
                             cmd.Parameters.AddWithValue("@Module_Id", moduleId); // Single module at a time
 
