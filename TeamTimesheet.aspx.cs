@@ -24,19 +24,39 @@ namespace EmployeeTimesheet_Salary
 
         }
 
+        //private void LoadTeamMembers()
+        //{
+        //    using (SqlConnection con = new SqlConnection(connStr))
+        //    {
+        //        SqlDataAdapter da = new SqlDataAdapter(
+        //            "SELECT UserId, UserLoginName FROM kalpana..iuser WHERE ManagerId='100042'", con);
+        //        DataTable dt = new DataTable();
+        //        da.Fill(dt);
+        //        gvTeamMembers.DataSource = dt;
+        //        gvTeamMembers.DataBind();
+        //    }
+        //}
+
         private void LoadTeamMembers()
         {
             using (SqlConnection con = new SqlConnection(connStr))
             {
+                string userId = Request.QueryString["UserID"];
+
+                if (string.IsNullOrEmpty(userId))
+                    return; // safety check
+
                 SqlDataAdapter da = new SqlDataAdapter(
-                    "SELECT UserId, UserLoginName FROM kalpana..iuser WHERE ManagerId='100041'", con);
+                    "SELECT UserId, UserLoginName FROM kalpana..iuser WHERE ManagerId = @ManagerId", con);
+
+                da.SelectCommand.Parameters.AddWithValue("@ManagerId", userId);
+
                 DataTable dt = new DataTable();
                 da.Fill(dt);
                 gvTeamMembers.DataSource = dt;
                 gvTeamMembers.DataBind();
             }
         }
-
         protected void gvTeamMembers_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "SelectMember")

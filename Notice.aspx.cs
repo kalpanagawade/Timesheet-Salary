@@ -62,6 +62,15 @@ namespace EmployeeTimesheet_Salary
                                     btnEmpTimSht.Click += new EventHandler(btnEmpTimSht_Click);
                                     phDynamicButtons.Controls.Add(btnEmpTimSht);
                                 }
+                                else if (pageName.Equals("TeamTimesheet.aspx", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    Button btnTeamTimSht = new Button();
+                                    btnTeamTimSht.ID = "btnTeamTimSht";
+                                    btnTeamTimSht.Text = "Team Timesheet";
+                                    btnTeamTimSht.CssClass = "home-active";
+                                    btnTeamTimSht.Click += new EventHandler(btnTeamTimSht_Click);
+                                    phDynamicButtons.Controls.Add(btnTeamTimSht);
+                                }
 
                                 // Add more cases if you have more page names
                             }
@@ -88,6 +97,41 @@ namespace EmployeeTimesheet_Salary
             }
         }
 
+        protected void btnTeamTimSht_Click(object sender, EventArgs e)
+        {
+            string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+            try
+            {
+                // Retrieve UserID from query string
+                string userId = Request.QueryString["UserID"];
+
+                // Optional: Validate userId (null/empty)
+                if (string.IsNullOrEmpty(userId))
+                    throw new Exception("UserID is missing in query string.");
+
+                // Redirect to CreateUpdateUser.aspx
+                Response.Redirect("TeamTimesheet.aspx?UserID=" + Server.UrlEncode(userId) +
+                                  "&Username=" + Server.UrlEncode(txtCreatedBy.Text.Trim()), false);
+            }
+            catch (Exception ex)
+            {
+                // Log the error using a SqlConnection
+                using (SqlConnection conn = new SqlConnection(connString))
+                {
+                    using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
+                    {
+                        logCmd.CommandType = CommandType.StoredProcedure;
+                        logCmd.Parameters.AddWithValue("@MethodName", "btnTeamTimSht_Click");
+                        logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
+                        logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
+
+                        conn.Open();
+                        logCmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
 
         protected void btnEmpDts_Click(object sender, EventArgs e)
         {
