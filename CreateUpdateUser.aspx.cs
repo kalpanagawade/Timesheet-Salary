@@ -34,7 +34,7 @@ namespace EmployeeTimesheet_Salary
                 //LoadUserDetails();
                 BindDesignationDropdown();
                 BuildModuleTree();
-
+                rowno6.Visible = false;
             }
 
 
@@ -175,6 +175,54 @@ namespace EmployeeTimesheet_Salary
                 }
             }
         }
+        protected void btnSaveRole_Click(object sender, EventArgs e)
+        {
+            string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                try
+                {
+                    conn.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("Ins_Map_designation_UserID_Data", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@UserId", txtUserid.Text);
+                        cmd.Parameters.AddWithValue("@Des_Name", ddlRole.SelectedValue);
+                       
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // JavaScript to enable the service sanctioning button
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "enableBtn", $@"
+                alert('Successfully Saved!');
+                document.getElementById('{btnsersac.ClientID}').removeAttribute('disabled');
+            ", true);
+                    //btnSave.Attributes["disabled"] = "true";
+                }
+                catch (Exception ex)
+                {
+
+
+                    using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
+                    {
+                        logCmd.CommandType = CommandType.StoredProcedure;
+                        logCmd.Parameters.AddWithValue("@MethodName", "btnSaveRole_Click");
+                        logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
+                        logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
+
+
+                        logCmd.ExecuteNonQuery();
+                    }
+
+
+
+                }
+            }
+
+        }
         protected void btnSave_Click(object sender, EventArgs e)
         {
             string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
@@ -197,7 +245,14 @@ namespace EmployeeTimesheet_Salary
                         cmd.Parameters.AddWithValue("@DOB", Convert.ToDateTime(txtDOB.Text));
                         cmd.Parameters.AddWithValue("@CreatedBy", txtCreatedBy.Text);
                         cmd.Parameters.AddWithValue("@Des_Name", ddlRole.SelectedValue);
-
+                        if (RDOIUsrTyp.Checked)
+                        {
+                            cmd.Parameters.AddWithValue("@User_type", "I");
+                        }
+                        else if (RDOEUsrTyp.Checked)
+                        {
+                            cmd.Parameters.AddWithValue("@User_type", "E");
+                        }
                         cmd.ExecuteNonQuery();
                     }
 
@@ -206,6 +261,8 @@ namespace EmployeeTimesheet_Salary
                 alert('Successfully Saved!');
                 document.getElementById('{btnsersac.ClientID}').removeAttribute('disabled');
             ", true);
+                    btnSave.Attributes["disabled"] = "true";
+                    rowno6.Visible = true;
                 }
                 catch (Exception ex)
                 {
@@ -252,8 +309,25 @@ namespace EmployeeTimesheet_Salary
                         using (SqlCommand cmd = new SqlCommand("PRC_INS_iUserGrpAcs", conn))
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
+                            Button clickedButton = sender as Button;
+                            if (clickedButton != null)
+                            {
+                                if (clickedButton.ID == "BtnSen")
+                                {
+                                    cmd.Parameters.AddWithValue("@UserId", Lblid.Text);
+                                }
+                                else if (clickedButton.ID == "BtnSenE")
+                                {
+                                    cmd.Parameters.AddWithValue("@UserId", Label6.Text);
+                                }
 
-                            cmd.Parameters.AddWithValue("@UserId", Label6.Text);
+                                // Execute the command or your logic here
+                                // Example:
+                                // cmd.ExecuteNonQuery();
+                            }
+
+
+                            //cmd.Parameters.AddWithValue("@UserId", Label6.Text);
                             cmd.Parameters.AddWithValue("@CrecatedBy", txtCreatedBy.Text);
                             cmd.Parameters.AddWithValue("@Module_Id", moduleId); // Single module at a time
 
@@ -405,12 +479,15 @@ namespace EmployeeTimesheet_Salary
             Bigbox1.Attributes["style"] = "display:block;";
             Smallbox.Attributes["style"] = "display:block;";
             Smallboxcr.Attributes["style"] = "display:none;";
-            lbEd.Text=" > Edit";
+            lbEd.Text = " > Edit";
+
             if (e.CommandName == "CustomClick")
             {
-                string userId = e.CommandArgument.ToString();                
-                // Do something with the userId
+                string userId = e.CommandArgument.ToString();
+
+                // Debug alert (optional)
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", $"alert('UserID clicked: {userId}');", true);
+
                 string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
 
                 using (SqlConnection conn = new SqlConnection(connString))
@@ -419,10 +496,12 @@ namespace EmployeeTimesheet_Salary
                     {
                         conn.Open();
 
-                        string query = "SELECT UserId,UserLoginName,DOB,UserEmailId,UserMobileNo1 FROM iUser where UserId="+userId;
+                        string query = "SELECT UserId, UserLoginName, DOB, UserEmailId, UserMobileNo1 FROM iUser WHERE UserId = @UserId";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
+                            cmd.Parameters.AddWithValue("@UserId", userId);
+
                             SqlDataAdapter da = new SqlDataAdapter(cmd);
                             DataTable dt = new DataTable();
                             da.Fill(dt);
@@ -430,43 +509,118 @@ namespace EmployeeTimesheet_Salary
                             if (dt.Rows.Count > 0)
                             {
                                 txtUseridED.Text = dt.Rows[0]["UserId"].ToString();
-                             Label6.Text = dt.Rows[0]["UserId"].ToString();
+                                Label6.Text = dt.Rows[0]["UserId"].ToString();
                                 txtUserLoginNameED.Text = dt.Rows[0]["UserLoginName"].ToString();
+
                                 DateTime dob;
                                 if (DateTime.TryParse(dt.Rows[0]["DOB"].ToString(), out dob))
                                 {
-                                    txtDOBED.Text = dob.ToString("d MMM yyyy").ToUpper(); // Output: 1 JAN 1900
+                                    txtDOBED.Text = dob.ToString("d MMM yyyy").ToUpper();
                                 }
-                                txtemED.Text=dt.Rows[0]["UserEmailId"].ToString();// display login name
-                                txtumnED.Text=dt.Rows[0]["UserMobileNo1"].ToString();// display login name
-                                BindDesignationDropdownEdit(userId);
 
+                                txtemED.Text = dt.Rows[0]["UserEmailId"].ToString();
+                                txtumnED.Text = dt.Rows[0]["UserMobileNo1"].ToString();
+
+                                // Populate dropdowns, radio buttons, and checkboxes
+                                BindDesignationDropdownEdit(userId);
+                                BindStatusDropdownEdit(userId);
+                                BindUserTypeRadioBtn(userId);
+                                BindServicesCheckbox(userId);   // ✅ THIS binds checkboxes as needed
                             }
                             else
                             {
                                 txtUseridED.Text = "User not found";
-                                //txtUserLoginNameED.Text = "";
                             }
                         }
                     }
                     catch (Exception ex)
                     {
-                        
-                            using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
+                        using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
                         {
                             logCmd.CommandType = CommandType.StoredProcedure;
                             logCmd.Parameters.AddWithValue("@MethodName", "GridView1_RowCommand");
                             logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
                             logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
 
-
                             logCmd.ExecuteNonQuery();
                         }
-                       
                     }
                 }
             }
         }
+
+
+        //protected void GridView1_RowCommand(object sender, GridViewCommandEventArgs e)
+        //{
+        //    Bigbox.Attributes["style"] = "display:none;";
+        //    Bigbox1.Attributes["style"] = "display:block;";
+        //    Smallbox.Attributes["style"] = "display:block;";
+        //    Smallboxcr.Attributes["style"] = "display:none;";
+        //    lbEd.Text=" > Edit";
+        //    if (e.CommandName == "CustomClick")
+        //    {
+        //        string userId = e.CommandArgument.ToString();                
+        //        // Do something with the userId
+        //        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", $"alert('UserID clicked: {userId}');", true);
+        //        string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+        //        using (SqlConnection conn = new SqlConnection(connString))
+        //        {
+        //            try
+        //            {
+        //                conn.Open();
+
+        //                string query = "SELECT UserId,UserLoginName,DOB,UserEmailId,UserMobileNo1 FROM iUser where UserId="+userId;
+
+        //                using (SqlCommand cmd = new SqlCommand(query, conn))
+        //                {
+        //                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+        //                    DataTable dt = new DataTable();
+        //                    da.Fill(dt);
+
+        //                    if (dt.Rows.Count > 0)
+        //                    {
+        //                        txtUseridED.Text = dt.Rows[0]["UserId"].ToString();
+        //                     Label6.Text = dt.Rows[0]["UserId"].ToString();
+        //                        txtUserLoginNameED.Text = dt.Rows[0]["UserLoginName"].ToString();
+        //                        DateTime dob;
+        //                        if (DateTime.TryParse(dt.Rows[0]["DOB"].ToString(), out dob))
+        //                        {
+        //                            txtDOBED.Text = dob.ToString("d MMM yyyy").ToUpper(); // Output: 1 JAN 1900
+        //                        }
+        //                        txtemED.Text=dt.Rows[0]["UserEmailId"].ToString();// display login name
+        //                        txtumnED.Text=dt.Rows[0]["UserMobileNo1"].ToString();// display login name
+        //                        BindDesignationDropdownEdit(userId);
+        //                        BindStatusDropdownEdit(userId);
+        //                        BindUserTypeRadioBtn(userId);
+        //                        BindServicesCheckbox(userId);
+
+        //                    }
+        //                    else
+        //                    {
+        //                        txtUseridED.Text = "User not found";
+        //                        //txtUserLoginNameED.Text = "";
+        //                    }
+        //                }
+        //            }
+        //            catch (Exception ex)
+        //            {
+
+        //                    using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
+        //                {
+        //                    logCmd.CommandType = CommandType.StoredProcedure;
+        //                    logCmd.Parameters.AddWithValue("@MethodName", "GridView1_RowCommand");
+        //                    logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
+        //                    logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
+
+
+        //                    logCmd.ExecuteNonQuery();
+        //                }
+
+        //            }
+        //        }
+        //    }
+        //}
         protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
         {
             Bigbox.Attributes["style"] = "display:none;";
@@ -529,6 +683,15 @@ namespace EmployeeTimesheet_Salary
             string DOB = txtDOBED.Text.Trim();
             string EmID = txtemED.Text.Trim();
             string MobNo = txtumnED.Text.Trim();
+            string UserType = string.Empty;
+            if (RadioButton1.Checked)
+            {
+                UserType = RadioButton1.Text.Trim();  // "Internal User Type"
+            }
+            else if (RadioButton2.Checked)
+            {
+                UserType = RadioButton2.Text.Trim();  // "External User Type"
+            }
 
             string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
 
@@ -539,7 +702,7 @@ namespace EmployeeTimesheet_Salary
                     conn.Open();
 
                     // 1. Get current values
-                    string selectQuery = @"SELECT UserLoginName, DOB, UserEmailId, UserMobileNo1 
+                    string selectQuery = @"SELECT UserLoginName, DOB, UserEmailId, UserMobileNo1,UserType 
                                    FROM iUser 
                                    WHERE UserId = @UserId";
 
@@ -554,6 +717,7 @@ namespace EmployeeTimesheet_Salary
                             string currentDOB = Convert.ToDateTime(reader["DOB"]).ToString("M/d/yyyy h:mm:ss tt");
                             string currentEmail = reader["UserEmailId"].ToString().Trim();
                             string currentMobile = reader["UserMobileNo1"].ToString().Trim();
+                            string currentUserType = reader["UserType"].ToString().Trim();
 
                             reader.Close();
 
@@ -561,7 +725,8 @@ namespace EmployeeTimesheet_Salary
                             if (currentName == UserLoginName &&
                                 currentDOB == DOB &&
                                 currentEmail == EmID &&
-                                currentMobile == MobNo)
+                                currentMobile == MobNo &&
+                                currentUserType == UserType)
                             {
                                 ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('No changes were made.');", true);
                                 return;
@@ -572,7 +737,8 @@ namespace EmployeeTimesheet_Salary
                                            SET UserLoginName = @UserLoginName, 
                                                DOB = @DOB, 
                                                UserEmailId = @UserEmailId, 
-                                               UserMobileNo1 = @UserMobileNo1 
+                                               UserMobileNo1 = @UserMobileNo1, 
+                                               UserType=@UserType
                                            WHERE UserId = @UserId";
 
                             using (SqlCommand updateCmd = new SqlCommand(updateQuery, conn))
@@ -582,6 +748,14 @@ namespace EmployeeTimesheet_Salary
                                 updateCmd.Parameters.AddWithValue("@UserEmailId", EmID);
                                 updateCmd.Parameters.AddWithValue("@UserMobileNo1", MobNo);
                                 updateCmd.Parameters.AddWithValue("@UserId", userId);
+                                if (RadioButton1.Checked)
+                                {
+                                    updateCmd.Parameters.AddWithValue("@UserType", "I");
+                                }
+                                else if (RadioButton2.Checked)
+                                {
+                                    updateCmd.Parameters.AddWithValue("@UserType", "E");
+                                }
 
                                 int rowsAffected = updateCmd.ExecuteNonQuery();
 
@@ -769,6 +943,197 @@ namespace EmployeeTimesheet_Salary
 
             } 
         }
+
+        private void BindStatusDropdownEdit(string userId)
+        {
+            string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                try
+                {
+                    conn.Open();
+
+                    string statusQuery = @"
+                SELECT 
+                    CASE 
+                        WHEN LogonFailureCount < 3
+                         AND LastPINChangeDate >= DATEADD(MONTH, -1, CAST(GETDATE() AS DATE))
+                         AND LastAccessDate >= DATEADD(MONTH, -1, CAST(GETDATE() AS DATE))
+                         AND (IneffectiveDate IS NULL OR IneffectiveDate > CAST(GETDATE() AS DATE)) 
+                        THEN 'Active'
+                        ELSE 'Inactive'
+                    END AS Status
+                FROM iUser
+                WHERE UserId = @UserId";
+
+                    string userStatus = "Unknown";
+
+                    using (SqlCommand statusCmd = new SqlCommand(statusQuery, conn))
+                    {
+                        statusCmd.Parameters.AddWithValue("@UserId", userId);
+                        object statusResult = statusCmd.ExecuteScalar();
+                        if (statusResult != null)
+                        {
+                            userStatus = statusResult.ToString();
+                        }
+                    }
+
+                    // Bind Status to DropDownList3
+                    DropDownList3.Items.Clear();
+                    DropDownList3.Items.Add(new ListItem("Active", "Active"));
+                    DropDownList3.Items.Add(new ListItem("Inactive", "Inactive"));
+
+                    // Set selected status
+                    ListItem selectedItem = DropDownList3.Items.FindByValue(userStatus);
+                    if (selectedItem != null)
+                        selectedItem.Selected = true;
+                }
+                catch (Exception ex)
+                {
+                    using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
+                    {
+                        logCmd.CommandType = CommandType.StoredProcedure;
+                        logCmd.Parameters.AddWithValue("@MethodName", "BindStatusDropdownEdit");
+                        logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
+                        logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
+
+                        logCmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
+        private void BindUserTypeRadioBtn(string userId)
+        {
+            string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                try
+                {
+                    conn.Open();
+
+                    string query = "SELECT UserType FROM iUser WHERE UserId = @UserId";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@UserId", userId);
+
+                        object result = cmd.ExecuteScalar();
+
+                        if (result != null)
+                        {
+                            string userType = result.ToString().Trim();
+
+                            if (userType == "I")
+                            {
+                                RadioButton1.Checked = true;
+                                RadioButton2.Checked = false;
+                            }
+                            else if (userType == "E")
+                            {
+                                RadioButton1.Checked = false;
+                                RadioButton2.Checked = true;
+                            }
+                            else
+                            {
+                                // If neither, uncheck both (optional)
+                                RadioButton1.Checked = false;
+                                RadioButton2.Checked = false;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
+                    {
+                        logCmd.CommandType = CommandType.StoredProcedure;
+                        logCmd.Parameters.AddWithValue("@MethodName", "BindUserTypeRadioBtn");
+                        logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
+                        logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
+
+                        logCmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
+
+        private void BindServicesCheckbox(string userId)
+        {
+            string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connString))
+                {
+                    conn.Open();
+
+                    // Step 1: Get selected modules for the user
+                    string userModulesQuery = "SELECT Module_Id FROM iUserGrpAcs WHERE UserId = @UserId";
+                    List<string> selectedModuleIds = new List<string>();
+
+                    using (SqlCommand cmd = new SqlCommand(userModulesQuery, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@UserId", userId);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                selectedModuleIds.Add(reader["Module_Id"].ToString());
+                            }
+                        }
+                    }
+
+                    // Step 2: Get all available modules from iModule
+                    string allModulesQuery = "SELECT ModuleId, ModuleName FROM iModule ORDER BY ModuleId";
+
+                    using (SqlCommand cmdAll = new SqlCommand(allModulesQuery, conn))
+                    using (SqlDataReader readerAll = cmdAll.ExecuteReader())
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        while (readerAll.Read())
+                        {
+                            string moduleId = readerAll["ModuleId"].ToString();
+                            string moduleName = readerAll["ModuleName"].ToString();
+                            bool isChecked = selectedModuleIds.Contains(moduleId);
+
+                            sb.AppendFormat("<input type='checkbox' id='chkModule{0}' name='chkModules' value='{0}' {1} /> {2}<br/>",
+                                moduleId,
+                                isChecked ? "checked='checked'" : "",
+                                moduleName);
+                        }
+
+                        litModuleTree.Text = sb.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error into your error log table
+                string connStringLog = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+                using (SqlConnection logConn = new SqlConnection(connStringLog))
+                {
+                    logConn.Open();
+
+                    using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", logConn))
+                    {
+                        logCmd.CommandType = CommandType.StoredProcedure;
+                        logCmd.Parameters.AddWithValue("@MethodName", "BindServicesCheckbox");
+                        logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
+                        logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
+
+                        logCmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
 
 
 

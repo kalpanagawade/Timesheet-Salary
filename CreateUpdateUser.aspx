@@ -340,7 +340,7 @@
 
                         </div>
                         <div class="row" id="rowno2">
-                            <asp:TextBox ID="txtUserName" runat="server" CssClass="col" placeholder=" Employee Name" Text=" Employee Name"></asp:TextBox>
+                            <asp:TextBox ID="txtUserName" runat="server" CssClass="col" placeholder=" Employee Name" ></asp:TextBox>
 
                             <asp:Label ID="lblUserid" runat="server" CssClass="col" Text=" Employee ID :-"></asp:Label>
                             <asp:TextBox ID="txtUserid" runat="server" CssClass="col" Text=" Employee Id" Enabled="false"></asp:TextBox>
@@ -373,7 +373,18 @@
                             <%--<asp:Label ID="lblmobno" runat="server" CssClass="col" Text="Mobile Number :-"></asp:Label>--%>
                             <asp:TextBox runat="server" CssClass="col" ID="txtMobile" placeholder="Mobile Number"></asp:TextBox>
                             <%--comment & added by Hrutik--%>
-                            <asp:Label ID="lblDesi" runat="server" CssClass="col" Text="Designation :-"></asp:Label>
+                            
+                        </div>
+                        <div class="row" id="rowno5">
+                            <div class="col" style="width:100%; text-align: center;" >
+                            <asp:Button ID="btnSave" runat="server" CssClass="BtnCls" Text="Save" OnClientClick="return validateEmail();" OnClick="btnSave_Click" />
+                            <asp:Button ID="btnCanl" runat="server" CssClass="BtnCls" Text="Cancel" />
+                                </div>
+
+                        </div>
+
+                        <div class="row" id="rowno6"  runat="server">
+                           <asp:Label ID="lblDesi" runat="server" CssClass="col" Text="Designation :-"></asp:Label>
                             <asp:DropDownList ID="ddlRole" runat="server" CssClass="col" AutoPostBack="false" onchange="onRoleChange()" />
                             
                             
@@ -385,12 +396,7 @@
                                 <asp:ListItem>Developer</asp:ListItem>
                                 <asp:ListItem>Support</asp:ListItem>
                                 <asp:ListItem>Tester</asp:ListItem>--%>
-                        </div>
-                        <div class="row" id="rowno5">
-                            <div class="col" style="width: 39%;"></div>
-                            <asp:Button ID="btnSave" runat="server" CssClass="BtnCls" Text="Save" OnClientClick="return validateEmail();" OnClick="btnSave_Click" />
-                            <asp:Button ID="btnCanl" runat="server" CssClass="BtnCls" Text="Cancel" />
-
+                            <asp:Button ID="BtnDesAssign" runat="server" CssClass="BtnCls" Text="SaveRole" OnClientClick="return validateDesgition();" OnClick="btnSaveRole_Click" />
                         </div>
 
                         <%--Added by hrutik--%>
@@ -495,9 +501,10 @@
 
                             </div>
                             <div class="row" id="Udetail1">
-                                <div class="col" style="width: 168px;"></div>
+                                <div class="col" style="width:100%; text-align: center;">
 
-                                <asp:Button ID="btnSearch" runat="server" Text="Search" OnClick="btnSearch_Click" />
+                                <asp:Button ID="btnSearch" runat="server" Text="Search" OnClick="btnSearch_Click" class="BtnCls" />
+                                </div>
 
                                 <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false" AllowPaging="true"
                                     OnRowCommand="GridView1_RowCommand"
@@ -570,10 +577,10 @@
                                 <asp:TextBox runat="server" CssClass="col" ID="txtumnED" placeholder="Mobile Number"></asp:TextBox>
                                 <asp:Label ID="Label3" runat="server" CssClass="col" Text="Designation :-"></asp:Label>
                                 <asp:DropDownList ID="DropDownList4" runat="server" CssClass="col">
-                                    <asp:ListItem Value="">-- Select Role --</asp:ListItem>
+                                    <%--<asp:ListItem Value="">-- Select Role --</asp:ListItem>
                                     <asp:ListItem>Developer</asp:ListItem>
                                     <asp:ListItem>Support</asp:ListItem>
-                                    <asp:ListItem>Tester</asp:ListItem>
+                                    <asp:ListItem>Tester</asp:ListItem>--%>
 
                                 </asp:DropDownList>
 
@@ -607,13 +614,22 @@
 
 
         <script type="text/javascript">
+            function validateDesgition() {
+                var ddlRole = document.getElementById('<%= ddlRole.ClientID %>').value;
+                if (ddlRole === "") {
+                    alert("Please select a role.");
+                    return false;
+                }
+
+                return true;
+            }
             function validateEmail() {
                 var email = document.getElementById('<%= txtEmail.ClientID %>').value;
                 var userName = document.getElementById('<%= txtUserName.ClientID %>').value;
                 var password = document.getElementById('<%= txtPassword.ClientID %>').value;
                 var confirmPassword = document.getElementById('<%= txtConfirmPassword.ClientID %>').value;
                 var ddlStatus = document.getElementById('<%= ddlStatus.ClientID %>').value;
-                var ddlRole = document.getElementById('<%= ddlRole.ClientID %>').value;
+                <%--var ddlRole = document.getElementById('<%= ddlRole.ClientID %>').value;--%>
 
                 var radioInternal = document.getElementById('<%= RDOIUsrTyp.ClientID %>');
                 var radioExternal = document.getElementById('<%= RDOEUsrTyp.ClientID %>');
@@ -648,10 +664,10 @@
                     alert("Please select a status.");
                     return false;
                 }
-                if (ddlRole === "") {
-                    alert("Please select a role.");
-                    return false;
-                }
+                //if (ddlRole === "") {
+                //    alert("Please select a role.");
+                //    return false;
+                //}
 
                 return true; // ✅ Allow server-side method to run
             }
