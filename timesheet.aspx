@@ -250,7 +250,116 @@
     </style>
 
     <script type="text/javascript">
-        function openTaskModal(dateStr) {
+
+        //function updateClock() {
+        //    const now = new Date();
+        //    const timeStr = now.toTimeString().split(' ')[0];
+
+        //    const inTimeDiv = document.getElementById('lblInTime');
+        //    const outTimeDiv = document.getElementById('lblOutTime');
+
+        //    if (inTimeDiv && inTimeDiv.innerText.trim() === "") {
+        //        inTimeDiv.innerText = timeStr;
+        //    }
+
+        //    if (outTimeDiv && outTimeDiv.innerText.trim() === "") {
+        //        outTimeDiv.innerText = timeStr;
+        //    }
+        //}
+
+        //window.onload = function () {
+        //    setInterval(updateClock, 1000);
+        //};
+
+
+        function validateTime(input) {
+            var regex = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/;
+            if (!regex.test(input.value)) {
+                input.setCustomValidity("Enter valid time in HH:mm format (00–23:00–59)");
+            } else {
+                input.setCustomValidity("");
+            }
+        }
+
+        function openTaskModal(dateStr, inTime, outTime) {
+            // Format date for display
+            const parts = dateStr.split('-'); // ['2025','09','21']
+            const formatted = `${parts[2]}-${parts[1]}-${parts[0]}`; // '21-09-2025'
+
+            // Set modal date
+            document.getElementById('<%= txtModalDate.ClientID %>').value = formatted;
+    document.getElementById('modalDateText').innerText = formatted;
+
+    // ✅ Set In/Out times safely
+    document.getElementById('inTimeText').innerText = inTime && inTime !== "null" ? inTime : "--:--:--";
+    document.getElementById('outTimeText').innerText = outTime && outTime !== "null" ? outTime : "--:--:--";
+
+    // Determine day of week
+    const jsDate = new Date(dateStr);
+    const day = jsDate.getDay(); // 0 = Sunday, 6 = Saturday
+
+    // Show modal
+    $('#taskModal').modal('show');
+
+    // Show/hide buttons depending on day
+    setTimeout(function () {
+        const btnHoliday = document.getElementById('Btn_IsHoli');
+        const btnLeave = document.getElementById('Btn_IsLev');
+        const btnComp = document.getElementById('Btn_IsComp');
+
+        if (day === 0 || day === 6) {
+            if (btnHoliday) btnHoliday.style.display = 'none';
+            if (btnLeave) btnLeave.style.display = 'none';
+            if (btnComp) btnComp.style.display = 'none';
+        } else {
+            if (btnHoliday) btnHoliday.style.display = 'inline-block';
+            if (btnLeave) btnLeave.style.display = 'inline-block';
+            if (btnComp) btnComp.style.display = 'inline-block';
+        }
+    }, 100);
+
+    // Trigger postback
+            __doPostBack('<%= btnTriggerBindGrid.UniqueID %>', '');
+        }
+
+
+        <%--function openTaskModal(dateStr, inTime, outTime) {
+            const parts = dateStr.split('-'); // ['2025', '07', '06']
+            const formatted = `${parts[2]}-${parts[1]}-${parts[0]}`; // '06-07-2025'
+
+            document.getElementById('<%= txtModalDate.ClientID %>').value = formatted;
+    document.getElementById('modalDateText').innerText = formatted;
+
+    // **Set In/Out times in modal**
+    document.getElementById('inTimeText').innerText = inTime || "--:--:--";
+    document.getElementById('outTimeText').innerText = outTime || "--:--:--";
+
+    const jsDate = new Date(dateStr);
+    const day = jsDate.getDay(); // 0 = Sunday, 6 = Saturday
+
+    $('#taskModal').modal('show');
+
+    setTimeout(function () {
+        const btnHoliday = document.getElementById('Btn_IsHoli');
+        const btnLeave = document.getElementById('Btn_IsLev');
+        const btncomp = document.getElementById('Btn_IsComp');
+        if (day === 0 || day === 6) {
+            if (btnHoliday) btnHoliday.style.display = 'none';
+            if (btnLeave) btnLeave.style.display = 'none';
+            if (btncomp) btncomp.style.display = 'none';
+        } else {
+            if (btnHoliday) btnHoliday.style.display = 'inline-block';
+            if (btnLeave) btnLeave.style.display = 'inline-block';
+            if (btncomp) btncomp.style.display = 'inline-block';
+        }
+    }, 100);
+
+            __doPostBack('<%= btnTriggerBindGrid.UniqueID %>', '');
+        }--%>
+
+
+
+        <%--function openTaskModal(dateStr) {
             const parts = dateStr.split('-'); // ['2025', '07', '06']
             const formatted = `${parts[2]}-${parts[1]}-${parts[0]}`; // '06-07-2025'
 
@@ -282,7 +391,7 @@
 
             // Optional: server-side callback
             __doPostBack('<%= btnTriggerBindGrid.UniqueID %>', '');
-        }
+        }--%>
 
 
 
@@ -339,6 +448,12 @@
             }
             if (!description) {
                 alert("Please enter Description.");
+                return false;
+            }
+            var timeSpent = document.getElementById("<%= txtTimeSpent.ClientID %>").value;
+
+            if (timeSpent === "" || timeSpent === "00:00") {
+                alert("Please select Time Spent.");
                 return false;
             }
             <%--document.getElementById('<%= hfDayType.ClientID %>').value = "";--%>
@@ -454,56 +569,83 @@
         let inTimeTimer;
         let outTimeTimer;
 
+        //Comment by Hrutik
+        //function updateInTime() {
+        //    const now = new Date();
+        //    const timeStr = now.toTimeString().split(' ')[0]; // HH:mm:ss
+        //    const inTimeBox = document.getElementById('txtInTime');
+        //    if (inTimeBox) inTimeBox.value = timeStr;
+        //}
+
+        //Comment by Hrutik
+        //function updateOutTime() {
+        //    const now = new Date();
+        //    const timeStr = now.toTimeString().split(' ')[0];
+        //    const outTimeBox = document.getElementById('txtOutTime');
+        //    if (outTimeBox) outTimeBox.value = timeStr;
+        //}
+
         function updateInTime() {
-            const now = new Date();
-            const timeStr = now.toTimeString().split(' ')[0]; // HH:mm:ss
             const inTimeBox = document.getElementById('txtInTime');
-            if (inTimeBox) inTimeBox.value = timeStr;
+            if (inTimeBox && !inTimeBox.value) {  // only if DB did not fill it
+                const now = new Date();
+                inTimeBox.value = now.toTimeString().split(' ')[0];
+            }
         }
 
         function updateOutTime() {
-            const now = new Date();
-            const timeStr = now.toTimeString().split(' ')[0];
             const outTimeBox = document.getElementById('txtOutTime');
-            if (outTimeBox) outTimeBox.value = timeStr;
-        }
-
-        function startClocks() {
-            updateInTime();
-            updateOutTime();
-            inTimeTimer = setInterval(updateInTime, 1000);
-            outTimeTimer = setInterval(updateOutTime, 1000);
-        }
-
-        function stopInTimeClock() {
-            clearInterval(inTimeTimer);
-        }
-
-        function stopOutTimeClock() {
-            clearInterval(outTimeTimer);
-        }
-
-        function handleLoginLogout() {
-            const btn = document.getElementById('btnLoginLogout');
-            const now = new Date().toTimeString().split(' ')[0];
-
-            if (!isLoggedIn) {
-                // Login
-                stopInTimeClock();
-                document.getElementById('txtInTime').value = now;
-                btn.value = 'Logout';  // 👈 This line sets the text
-                console.log("Logged in: Button text set to Logout");
-                isLoggedIn = true;
-            } else {
-                // Logout
-                stopOutTimeClock();
-                document.getElementById('txtOutTime').value = now;
-                btn.disabled = true;
-                console.log("Logged out: Button disabled");
+            if (outTimeBox && !outTimeBox.value) {  // only if DB did not fill it
+                const now = new Date();
+                outTimeBox.value = now.toTimeString().split(' ')[0];
             }
-
-            return false; // 👈 This prevents postback!
         }
+
+        function startClock() {
+            setInterval(function () {
+                updateInTime();
+                updateOutTime();
+            }, 1000); // refresh every second
+        }
+
+        /*window.onload = startClock;*/
+
+        //function startClocks() {
+        //    updateInTime();
+        //    updateOutTime();
+        //    inTimeTimer = setInterval(updateInTime, 1000);
+        //    outTimeTimer = setInterval(updateOutTime, 1000);
+        //}
+
+        //function stopInTimeClock() {
+        //    clearInterval(inTimeTimer);
+        //}
+
+        //function stopOutTimeClock() {
+        //    clearInterval(outTimeTimer);
+        //}
+
+        //function handleLoginLogout() {
+        //    const btn = document.getElementById('btnLoginLogout');
+        //    const now = new Date().toTimeString().split(' ')[0];
+
+        //    if (!isLoggedIn) {
+        //        // Login
+        //        stopInTimeClock();
+        //        document.getElementById('txtInTime').value = now;
+        //        btn.value = 'Logout';  // 👈 This line sets the text
+        //        console.log("Logged in: Button text set to Logout");
+        //        isLoggedIn = true;
+        //    } else {
+        //        // Logout
+        //        stopOutTimeClock();
+        //        document.getElementById('txtOutTime').value = now;
+        //        btn.disabled = true;
+        //        console.log("Logged out: Button disabled");
+        //    }
+
+        //    return false; // 👈 This prevents postback!
+        //}
 
 
         function displayCurrentDayDate() {
@@ -516,7 +658,8 @@
         }
 
         window.onload = function () {
-            startClocks();
+            /*startClocks();*/
+            startClock()
             displayCurrentDayDate();
         }
 
@@ -574,8 +717,10 @@
                 </div>
 
                 <div class="header-group">
+                    <%--<asp:Button ID="btnLoginLogout" runat="server" Text="Login" CssClass="logout-btn"
+                        OnClientClick="return handleLoginLogout();" UseSubmitBehavior="false" ClientIDMode="Static" />--%>
                     <asp:Button ID="btnLoginLogout" runat="server" Text="Login" CssClass="logout-btn"
-                        OnClientClick="return handleLoginLogout();" UseSubmitBehavior="false" ClientIDMode="Static" />
+    OnClick="btnLoginLogout_Click"  UseSubmitBehavior="false" ClientIDMode="Static" />
                 </div>
 
             </div>
@@ -684,18 +829,28 @@
                                         Style="display: none;" OnClick="btnTriggerBindGrid_Click" />
 
                                     <!-- First Row: In Time / Out Time -->
-                                    <div class="form-row mb-3">
+<%--                                    <div class="form-row mb-3">
                                         <div class="col-md-2 font-weight-bold">In Time *</div>
                                         <div class="col-md-2">11:01:44</div>
                                         <div class="col-md-2 font-weight-bold">Out Time *</div>
                                         <div class="col-md-2">20:05:00</div>
-                                    </div>
+                                    </div>--%>
+
+                                    <div class="form-row mb-3">
+    <div class="col-md-2 font-weight-bold">In Time *</div>
+    <div class="col-md-2" id="inTimeText">--:--:--</div>
+    <div class="col-md-2 font-weight-bold">Out Time *</div>
+    <div class="col-md-2" id="outTimeText">--:--:--</div>
+</div>
+
+
+
 
                                     <!-- Second Row -->
                                     <div class="form-row mb-3">
                                         <div class="col-md-2 font-weight-bold">Date *</div>
                                         <div class="col-md-4">
-                                            <asp:TextBox ID="txtModalDate" runat="server" CssClass="form-control" Text="21-03-2004" />
+                                            <asp:TextBox ID="txtModalDate" runat="server" CssClass="form-control" Text="21-03-2004"   Enabled="false" />
                                         </div>
 
                                         <div class="col-md-2 font-weight-bold">Type *</div>
@@ -764,7 +919,7 @@
                                         </div>
                                         <div class="col-md-2 font-weight-bold">Approx. Time Spent (Hrs) *</div>
                                         <div class="col-md-4">
-                                            <asp:TextBox ID="txtTimeSpent" runat="server" CssClass="form-control" />
+                                            <asp:TextBox ID="txtTimeSpent" runat="server" CssClass="form-control" oninput="validateTime(this)"/>
                                         </div>
 
                                         <label for="txtDescription" class="form-label">Description</label>
@@ -823,7 +978,8 @@
                                     OnRowCancelingEdit="gvTasks_RowCancelingEdit"
                                     OnRowDeleting="gvTasks_RowDeleting"
                                     OnRowCommand="gvTasks_RowCommand"
-                                    OnDataBound="gvTasks_DataBound">
+                                    OnDataBound="gvTasks_DataBound"
+                                    OnRowDataBound="gvTasks_RowDataBound">
 
                                     <EmptyDataTemplate>
                                         <div style="padding: 10px; text-align: center; color: red;">
