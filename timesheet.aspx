@@ -7,6 +7,8 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
@@ -247,9 +249,12 @@
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
+
+      
     </style>
 
     <script type="text/javascript">
+
 
         //function updateClock() {
         //    const now = new Date();
@@ -282,131 +287,90 @@
         }
 
         function openTaskModal(dateStr, inTime, outTime) {
-            // Format date for display
-            const parts = dateStr.split('-'); // ['2025','09','21']
-            const formatted = `${parts[2]}-${parts[1]}-${parts[0]}`; // '21-09-2025'
+            console.clear();
+            console.log("openTaskModal called:", { dateStr, inTime, outTime });
 
-            // Set modal date
-            document.getElementById('<%= txtModalDate.ClientID %>').value = formatted;
-    document.getElementById('modalDateText').innerText = formatted;
-
-    // ✅ Set In/Out times safely
-    document.getElementById('inTimeText').innerText = inTime && inTime !== "null" ? inTime : "--:--:--";
-    document.getElementById('outTimeText').innerText = outTime && outTime !== "null" ? outTime : "--:--:--";
-
-    // Determine day of week
-    const jsDate = new Date(dateStr);
-    const day = jsDate.getDay(); // 0 = Sunday, 6 = Saturday
-
-    // Show modal
-    $('#taskModal').modal('show');
-
-    // Show/hide buttons depending on day
-    setTimeout(function () {
-        const btnHoliday = document.getElementById('Btn_IsHoli');
-        const btnLeave = document.getElementById('Btn_IsLev');
-        const btnComp = document.getElementById('Btn_IsComp');
-
-        if (day === 0 || day === 6) {
-            if (btnHoliday) btnHoliday.style.display = 'none';
-            if (btnLeave) btnLeave.style.display = 'none';
-            if (btnComp) btnComp.style.display = 'none';
-        } else {
-            if (btnHoliday) btnHoliday.style.display = 'inline-block';
-            if (btnLeave) btnLeave.style.display = 'inline-block';
-            if (btnComp) btnComp.style.display = 'inline-block';
-        }
-    }, 100);
-
-    // Trigger postback
-            __doPostBack('<%= btnTriggerBindGrid.UniqueID %>', '');
-        }
-
-
-        <%--function openTaskModal(dateStr, inTime, outTime) {
-            const parts = dateStr.split('-'); // ['2025', '07', '06']
-            const formatted = `${parts[2]}-${parts[1]}-${parts[0]}`; // '06-07-2025'
-
-            document.getElementById('<%= txtModalDate.ClientID %>').value = formatted;
-    document.getElementById('modalDateText').innerText = formatted;
-
-    // **Set In/Out times in modal**
-    document.getElementById('inTimeText').innerText = inTime || "--:--:--";
-    document.getElementById('outTimeText').innerText = outTime || "--:--:--";
-
-    const jsDate = new Date(dateStr);
-    const day = jsDate.getDay(); // 0 = Sunday, 6 = Saturday
-
-    $('#taskModal').modal('show');
-
-    setTimeout(function () {
-        const btnHoliday = document.getElementById('Btn_IsHoli');
-        const btnLeave = document.getElementById('Btn_IsLev');
-        const btncomp = document.getElementById('Btn_IsComp');
-        if (day === 0 || day === 6) {
-            if (btnHoliday) btnHoliday.style.display = 'none';
-            if (btnLeave) btnLeave.style.display = 'none';
-            if (btncomp) btncomp.style.display = 'none';
-        } else {
-            if (btnHoliday) btnHoliday.style.display = 'inline-block';
-            if (btnLeave) btnLeave.style.display = 'inline-block';
-            if (btncomp) btncomp.style.display = 'inline-block';
-        }
-    }, 100);
-
-            __doPostBack('<%= btnTriggerBindGrid.UniqueID %>', '');
-        }--%>
-
-
-
-        <%--function openTaskModal(dateStr) {
-            const parts = dateStr.split('-'); // ['2025', '07', '06']
-            const formatted = `${parts[2]}-${parts[1]}-${parts[0]}`; // '06-07-2025'
-
-            document.getElementById('<%= txtModalDate.ClientID %>').value = formatted;
-            document.getElementById('modalDateText').innerText = formatted;
-
-            // Parse to JS Date to get day of week
-            const jsDate = new Date(dateStr);
-            const day = jsDate.getDay(); // 0 = Sunday, 6 = Saturday
-
-            // Show modal first
-            $('#taskModal').modal('show');
-
-            // Delay execution to make sure modal content is rendered
-            setTimeout(function () {
-                const btnHoliday = document.getElementById('Btn_IsHoli');
-                const btnLeave = document.getElementById('Btn_IsLev');
-                const btncomp = document.getElementById('Btn_IsComp');
-                if (day === 0 || day === 6) {
-                    if (btnHoliday) btnHoliday.style.display = 'none';
-                    if (btnLeave) btnLeave.style.display = 'none';
-                    if (btncomp) btncomp.style.display = 'none';
-                } else {
-                    if (btnHoliday) btnHoliday.style.display = 'inline-block';
-                    if (btnLeave) btnLeave.style.display = 'inline-block';
-                    if (btncomp) btncomp.style.display = 'inline-block';
-                }
-            }, 100); // Delay 100ms
-
-            // Optional: server-side callback
-            __doPostBack('<%= btnTriggerBindGrid.UniqueID %>', '');
-        }--%>
-
-
-
-              <%--  function openTaskModal(dateStr) {
-            const parts = dateStr.split('-');
+            // Format date (keep your existing code if you need it)
+            const parts = dateStr.split('-'); // e.g. ['2025','09','21']
             const formatted = `${parts[2]}-${parts[1]}-${parts[0]}`;
-            document.getElementById('<%= txtModalDate.ClientID %>').value = formatted;
-            document.getElementById('modalDateText').innerText = formatted;
+            const modalDateEl = document.getElementById('<%= txtModalDate.ClientID %>');
+            if (modalDateEl) modalDateEl.value = formatted;
+            const modalText = document.getElementById('modalDateText');
+            if (modalText) modalText.innerText = formatted;
 
-            // Show modal
+            // --- get elements (ClientIDMode="Static" required) ---
+            const inTimeBox = document.getElementById("inTimeText");
+            const outTimeBox = document.getElementById("outTimeText");
+
+            if (!inTimeBox || !outTimeBox) {
+                console.error("Textboxes not found. Check ClientIDMode and element IDs (or typos).",
+                    { inTimeBox, outTimeBox });
+                return;
+            }
+
+            // helper: is real time value?
+            function hasRealTime(val) {
+                if (val === null || val === undefined) return false;
+                const s = String(val).trim();
+                if (s === "" || s.toLowerCase() === "null" || s === "00:00:00") return false;
+                return true;
+            }
+
+            // Apply style class name you must define in CSS
+            // .text-disabled { background-color:#f0f0f0 !important; color:#888 !important; cursor:not-allowed !important; }
+
+            // In Time
+            if (hasRealTime(inTime)) {
+                inTimeBox.value = inTime;
+                inTimeBox.setAttribute("disabled", "disabled");   // ensures attribute in DOM
+                console.log("inTime locked:", inTime);
+            } else {
+                inTimeBox.value = "00:00:00";
+                inTimeBox.removeAttribute("disabled");
+                console.log("inTime editable");
+            }
+
+            // Out Time
+            if (hasRealTime(outTime)) {
+                outTimeBox.value = outTime;
+                outTimeBox.setAttribute("disabled", "disabled");
+                console.log("outTime locked:", outTime);
+            } else {
+                outTimeBox.value = "00:00:00";
+                outTimeBox.removeAttribute("disabled");
+                console.log("outTime editable");
+            }
+
+            // show modal AFTER setting fields
             $('#taskModal').modal('show');
 
-            // Trigger server-side BindGrid via hidden button
-            __doPostBack('<%= btnTriggerBindGrid.UniqueID %>', '');
-        }--%>
+            // IMPORTANT: DO NOT CALL __doPostBack HERE if you expect client changes to persist.
+            // If you must call __doPostBack, move it to server-side and re-open the modal after postback.
+        }
+
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // In Time
+            flatpickr("#inTimeText", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i:S", // 24-hour format (e.g., 13:45)
+                time_24hr: true,
+                 enableSeconds: true
+            });
+
+            // Out Time
+            flatpickr("#outTimeText", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i:S",
+                time_24hr: true,
+                 enableSeconds: true
+            });
+        });
+
+
     </script>
 
 
@@ -454,6 +418,19 @@
 
             if (timeSpent === "" || timeSpent === "00:00") {
                 alert("Please select Time Spent.");
+                return false;
+            }
+
+            var intime = document.getElementById("<%= inTimeText.ClientID %>").value;
+
+            if (intime === "" || intime === "00:00:00") {
+                alert("Please select intime.");
+                return false;
+            }
+            var outtime = document.getElementById("<%= outTimeText.ClientID %>").value;
+
+            if (outtime === "" || outtime === "00:00:00") {
+                alert("Please select  outtime.");
                 return false;
             }
             <%--document.getElementById('<%= hfDayType.ClientID %>').value = "";--%>
@@ -838,9 +815,13 @@
 
                                     <div class="form-row mb-3">
     <div class="col-md-2 font-weight-bold">In Time *</div>
-    <div class="col-md-2" id="inTimeText">--:--:--</div>
+    <div class="col-md-4">
+        <asp:TextBox ID="inTimeText" runat="server" CssClass="form-control" ClientIDMode="Static"  TextMode="SingleLine"/>
+    </div>
     <div class="col-md-2 font-weight-bold">Out Time *</div>
-    <div class="col-md-2" id="outTimeText">--:--:--</div>
+    <div class="col-md-4">
+        <asp:TextBox ID="outTimeText" runat="server" CssClass="form-control" ClientIDMode="Static"  TextMode="SingleLine"/>
+    </div>
 </div>
 
 

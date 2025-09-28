@@ -9,6 +9,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Threading.Tasks;
 using System.Globalization;
+using Antlr.Runtime.Misc;
 
 namespace EmployeeTimesheet_Salary
 {
@@ -186,8 +187,8 @@ namespace EmployeeTimesheet_Salary
                             // ✅ Dictionary key = Date only (remove time)
                             DateTime logDate = Convert.ToDateTime(dr["LogDate"]).Date;
 
-                            string inTime = dr["In_Time"] != DBNull.Value ? Convert.ToDateTime(dr["In_Time"]).ToString("HH:mm:ss") : "--:--:--";
-                            string outTime = dr["Out_Time"] != DBNull.Value ? Convert.ToDateTime(dr["Out_Time"]).ToString("HH:mm:ss") : "--:--:--";
+                            string inTime = dr["In_Time"] != DBNull.Value ? Convert.ToDateTime(dr["In_Time"]).ToString("HH:mm:ss") : "00:00:00";
+                            string outTime = dr["Out_Time"] != DBNull.Value ? Convert.ToDateTime(dr["Out_Time"]).ToString("HH:mm:ss") : "00:00:00";
 
                             result[logDate] = (inTime, outTime);
                         }
@@ -259,8 +260,8 @@ namespace EmployeeTimesheet_Salary
                             if (cellDate <= DateTime.Today)
                             {
                                 // ✅ lookup using dictionary
-                                string inTime = attendanceData.ContainsKey(cellDate) ? attendanceData[cellDate].InTime : "--:--:--";
-                                string outTime = attendanceData.ContainsKey(cellDate) ? attendanceData[cellDate].OutTime : "--:--:--";
+                                string inTime = attendanceData.ContainsKey(cellDate) ? attendanceData[cellDate].InTime : "00:00:00";
+                                string outTime = attendanceData.ContainsKey(cellDate) ? attendanceData[cellDate].OutTime : "00:00:00";
 
                                 html += $"<td class='{cssClass}' onclick=\"openTaskModal('{cellDate:yyyy-MM-dd}', '{inTime}', '{outTime}')\">" +
                                         $"<strong>{day}</strong><br />{content}</td>";
@@ -501,7 +502,7 @@ namespace EmployeeTimesheet_Salary
                         // 🔹 Load disabled dates from TaskEntries
                         disabledDates = new HashSet<DateTime>();
                         using (SqlCommand cmd2 = new SqlCommand(
-                            "SELECT TaskDate FROM TaskEntries WHERE Description != 'In your bucket' AND UserId = @UserId", conn))
+                            "SELECT TaskDate FROM TaskEntries where TaskDate Not in (SELECT TaskDate FROM TaskEntries WHERE UserId = @UserId  and IsInYourBucket ='Y'  AND IsPending != 'Y' and IsHoliday != 'Y' and IsLeave != 'Y' and IsWeeklyOff != 'Y' and IsCompOff != 'Y' and IsSendForApproval != 'Y') order by TaskDate asc", conn))
                         {
                             cmd2.Parameters.AddWithValue("@UserId", userId);
 
@@ -862,6 +863,65 @@ namespace EmployeeTimesheet_Salary
                             conn.Open();
                             cmd.ExecuteNonQuery();
                             BindGrid();
+
+                            //Hrutik 28092025
+                            using (SqlConnection conn1 = new SqlConnection(ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString))
+                            
+                            using (SqlCommand cmd1 = new SqlCommand("PRC_InsertLoginLogout", conn1))
+                            {
+                                cmd1.CommandType = CommandType.StoredProcedure;
+                                cmd1.Parameters.AddWithValue("@UserId", userId);
+                                cmd1.Parameters.AddWithValue("@Action", "Both");
+
+                                // Parse the date from textbox (only the date part)
+                                DateTime logDate = DateTime.ParseExact(
+                                    txtModalDate.Text,
+                                    "dd-MM-yyyy",
+                                    CultureInfo.InvariantCulture
+                                );
+
+                                // Combine date + time safely
+                                DateTime inDateTime;
+                                DateTime outDateTime;
+                                bool hasInTime = !string.IsNullOrWhiteSpace(inTimeText.Text) && inTimeText.Text != "00:00:00";
+                                bool hasOutTime = !string.IsNullOrWhiteSpace(outTimeText.Text) && outTimeText.Text != "00:00:00";
+
+                                if (hasInTime)
+                                {
+                                    inDateTime = DateTime.ParseExact(
+                                        txtModalDate.Text + " " + inTimeText.Text,
+                                        "dd-MM-yyyy HH:mm:ss",
+                                        CultureInfo.InvariantCulture
+                                    );
+                                    cmd1.Parameters.AddWithValue("@In_Time", inDateTime);
+                                }
+                                else
+                                {
+                                    cmd1.Parameters.AddWithValue("@In_Time", DBNull.Value);
+                                }
+
+                                if (hasOutTime)
+                                {
+                                    outDateTime = DateTime.ParseExact(
+                                        txtModalDate.Text + " " + outTimeText.Text,
+                                        "dd-MM-yyyy HH:mm:ss",
+                                        CultureInfo.InvariantCulture
+                                    );
+                                    cmd1.Parameters.AddWithValue("@Out_Time", outDateTime);
+                                }
+                                else
+                                {
+                                    cmd1.Parameters.AddWithValue("@Out_Time", DBNull.Value);
+                                }
+
+                                // Always add LogDate
+                                cmd1.Parameters.AddWithValue("@LogDate", logDate);
+
+                                conn1.Open();
+                                cmd1.ExecuteNonQuery();
+                            }
+
+
                         }
 
                 }
