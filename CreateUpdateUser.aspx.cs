@@ -17,7 +17,7 @@ namespace EmployeeTimesheet_Salary
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            txtCreatedBy.Text = Request.QueryString["Username"];
+            //txtCreatedBy.Text = Request.QueryString["Username"];
             if (!IsPostBack) // Ensure it runs only on the first page load
             {
                 Bigbox.Attributes["style"] = "display:block;";
@@ -243,7 +243,7 @@ namespace EmployeeTimesheet_Salary
                         cmd.Parameters.AddWithValue("@UserEmailId", txtEmail.Text);
                         cmd.Parameters.AddWithValue("@UserMobileNo1", txtMobile.Text);
                         cmd.Parameters.AddWithValue("@DOB", Convert.ToDateTime(txtDOB.Text));
-                        cmd.Parameters.AddWithValue("@CreatedBy", txtCreatedBy.Text);
+                        cmd.Parameters.AddWithValue("@CreatedBy", Request.QueryString["Username"]);
                         cmd.Parameters.AddWithValue("@Des_Name", ddlRole.SelectedValue);
                         if (RDOIUsrTyp.Checked)
                         {
@@ -328,7 +328,7 @@ namespace EmployeeTimesheet_Salary
 
 
                             //cmd.Parameters.AddWithValue("@UserId", Label6.Text);
-                            cmd.Parameters.AddWithValue("@CrecatedBy", txtCreatedBy.Text);
+                            cmd.Parameters.AddWithValue("@CrecatedBy", Request.QueryString["Username"]);
                             cmd.Parameters.AddWithValue("@Module_Id", moduleId); // Single module at a time
 
                             cmd.ExecuteNonQuery();
@@ -794,7 +794,7 @@ namespace EmployeeTimesheet_Salary
         {
             string userId = Request.QueryString["UserID"];
             
-            Response.Redirect("Notice.aspx?UserID=" + Server.UrlEncode(userId) + "&Username=" + Server.UrlEncode(txtCreatedBy.Text.Trim()));
+            Response.Redirect("Notice.aspx?UserID=" + Server.UrlEncode(userId) + "&Username=" + Server.UrlEncode(Request.QueryString["Username"]));
         }
 
         //added By Hrutik

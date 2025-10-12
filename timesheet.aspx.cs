@@ -18,7 +18,7 @@ namespace EmployeeTimesheet_Salary
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            txtCreatedBy.Text = Request.QueryString["Username"];
+            //txtCreatedBy.Text = Request.QueryString["Username"];
            
             if (!IsPostBack)
             {
@@ -401,12 +401,12 @@ namespace EmployeeTimesheet_Salary
         //}
 
 
-        protected void btnEmpTimSht_Click(object sender, EventArgs e)
-        {
-            // Redirect to timesheet.aspx
-            string userId = Request.QueryString["UserID"];
-            Response.Redirect("Notice.aspx?UserID=" + Server.UrlEncode(userId) + "&Username=" + Server.UrlEncode(txtCreatedBy.Text.Trim()));
-        }
+        //protected void btnEmpTimSht_Click(object sender, EventArgs e)
+        //{
+        //    // Redirect to timesheet.aspx
+        //    string userId = Request.QueryString["UserID"];
+        //    Response.Redirect("Notice.aspx?UserID=" + Server.UrlEncode(userId) + "&Username=" + Server.UrlEncode(txtCreatedBy.Text.Trim()));
+        //}
 
        //Start Grid button
 

@@ -1,9 +1,12 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="timesheet.aspx.cs" Inherits="EmployeeTimesheet_Salary.timesheet" %>
+﻿<%@ Page Title="Employee Timesheet Calendar" Language="C#" MasterPageFile="~/Site1.master" AutoEventWireup="true"
+    CodeBehind="timesheet.aspx.cs" Inherits="EmployeeTimesheet_Salary.timesheet" %>
 
-<!DOCTYPE html>
+<%--<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Employee Timesheet Calendar</title>
+    <title>Employee Timesheet Calendar</title>--%>
+
+    <asp:Content ID="ContentHead" ContentPlaceHolderID="HeadContent" runat="server">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
@@ -15,7 +18,7 @@
 
 
     <style type="text/css">
-        header {
+        /*header {
             border-radius: 1rem;
             position: fixed;
             width: 97%;
@@ -31,7 +34,7 @@
             box-shadow: 0 8px 11px rgb(14 55 54 / 15%);
             padding: 11px 11px;
             transition: 0.5s;
-        }
+        }*/
 
         .navbar .home-active {
             border-radius: 0.5rem;
@@ -357,7 +360,7 @@
                 noCalendar: true,
                 dateFormat: "H:i:S", // 24-hour format (e.g., 13:45)
                 time_24hr: true,
-                 enableSeconds: true
+                enableSeconds: true
             });
 
             // Out Time
@@ -366,7 +369,7 @@
                 noCalendar: true,
                 dateFormat: "H:i:S",
                 time_24hr: true,
-                 enableSeconds: true
+                enableSeconds: true
             });
         });
 
@@ -641,20 +644,24 @@
         }
 
     </script>
-</head>
+
+</asp:Content>
+
+<%--</head>
 <body>
-    <form id="form1" runat="server">
+    <form id="form1" runat="server">--%>
+
+     <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+
         <asp:ScriptManager ID="ScriptManager1" runat="server" />
-        <header>
+       <%-- <header>
             <img src="../img/logo.png" alt="Logo" style="width: 50px; height: 50px; margin: 0px 0px 0px 8px;" />
             <div class="navbar">
                 <asp:Button runat="server" ID="btnEmpTimSht" class="home-active" Text="Employee Timesheet" Style="padding: 18px;" OnClick="btnEmpTimSht_Click" />
             </div>
-            <!-- Nav List -->
+            
             <div class="navbar">
-                <%--                <asp:Button runat="server" ID="btncre" class="home-active" Text="Create Employee"
-                    OnClientClick="document.getElementById('Bigbox1').style.display='none';
-          document.getElementById('Bigbox').style.display='block'; return false;" />--%>
+               
             </div>
 
             <div class="profile-container">
@@ -669,9 +676,9 @@
 
 
 
-        </header>
+        </header>--%>
 
-        <div style="height: 116px;"></div>
+        <div style="height: 1rem;"></div>
         <!-- for spacing -->
         <div class="header-section">
             <div class="header-row">
@@ -1057,8 +1064,8 @@
             </div>
         </div>
 
+     </asp:Content>
 
-
-    </form>
+    <%--</form>
 </body>
-</html>
+</html>--%>

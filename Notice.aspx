@@ -1,6 +1,7 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Notice.aspx.cs" Inherits="EmployeeTimesheet_Salary.Notice" %>
+﻿<%@ Page Title="Notice" Language="C#" MasterPageFile="~/Site1.master"
+    AutoEventWireup="true" CodeBehind="Notice.aspx.cs" Inherits="EmployeeTimesheet_Salary.Notice" %>
 
-<!DOCTYPE html>
+<%--<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
@@ -144,23 +145,13 @@
     <title></title>
 </head>
 <body>
-    <form id="form1" runat="server">
-        <div>
+    <form id="form1" runat="server">--%>
+        <%--<div>
             <header>
                 <img src="../img/logo.png" alt="Logo" style="width: 50px; height: 50px; margin: 0px 0px 0px 8px;" />
-                <!-- Nav List -->
-                <div class="navbar">
-                   <%-- <asp:Button runat="server" ID="btnEmpDts" class="home-active" Text="Employee Details" OnClick="btnEmpDts_Click" />
-
-                    <asp:Button runat="server" ID="btnEmpTimSht" class="home-active" Text="Employee Timesheet" OnClick="btnEmpTimSht_Click" />--%>
-
+                 <div class="navbar">
                     <asp:PlaceHolder ID="phDynamicButtons" runat="server"></asp:PlaceHolder>
                 </div>
-                <%--                <ul class="navbar">
-         <li><a href="#home" class="home-active">create user</a></li>
-          <li><a href="#home" class="home-active">serach user</a></li>
-     </ul>--%>
-                <!-- profile -->
                 <div class="profile-container">
                     <div class="profile-icon" onclick="toggleLogoutDropdown()">
                         <asp:Label ID="txtCreatedBy" runat="server"> </asp:Label>
@@ -170,9 +161,6 @@
                         Logout
                     </div>
                 </div>
-
-
-
             </header>
         </div>
         <script type="text/javascript">
@@ -188,8 +176,12 @@
                 var dropdown = document.getElementById("logoutDropdown");
                 dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
             }
-        </script>
+        </script>--%>
 
-    </form>
+        <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <h2 style="margin: 20px;">Tomorrow Is Holiday</h2>
+</asp:Content>
+
+<%--    </form>
 </body>
-</html>
+</html>--%>
