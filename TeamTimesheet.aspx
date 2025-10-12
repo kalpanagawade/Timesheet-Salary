@@ -1,11 +1,13 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="TeamTimesheet.aspx.cs" Inherits="EmployeeTimesheet_Salary.TeamTimesheet" %>
+﻿<%@ Page Title="Team Timesheet" Language="C#" MasterPageFile="~/Site1.master" AutoEventWireup="true" 
+    CodeBehind="TeamTimesheet.aspx.cs" Inherits="EmployeeTimesheet_Salary.TeamTimesheet" %>
 
-<!DOCTYPE html>
+<%--<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Team Timesheet</title>
+    <title>Team Timesheet</title>--%>
 
+<asp:Content ID="ContentHead" ContentPlaceHolderID="HeadContent" runat="server">
      <style>
         body {
             font-family: Arial, sans-serif;
@@ -66,9 +68,11 @@
         }
     </style>
 
-</head>
+</asp:Content>
+<%--</head>
 <body>
-    <form id="form1" runat="server">
+    <form id="form1" runat="server">--%>
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
         <div class="grid-container">
             <h2>Team Members</h2>
@@ -126,7 +130,7 @@
 
         </div>
         
-
-    </form>
+</asp:Content>
+   <%-- </form>
 </body>
-</html>
+</html>--%>

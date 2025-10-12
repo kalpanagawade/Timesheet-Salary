@@ -11,70 +11,61 @@ namespace EmployeeTimesheet_Salary
 {
 
 
-    public partial class TeamTimesheet
+    public partial class Site1
     {
 
         /// <summary>
-        /// gvTeamMembers control.
+        /// HeadContent control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvTeamMembers;
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder HeadContent;
 
         /// <summary>
-        /// btnBack control.
+        /// imgLogo control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnBack;
+        protected global::System.Web.UI.WebControls.Image imgLogo;
 
         /// <summary>
-        /// timesheetSection control.
+        /// navContainer control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl timesheetSection;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl navContainer;
 
         /// <summary>
-        /// btnPrevMonth control.
+        /// lblUsername control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPrevMonth;
+        protected global::System.Web.UI.WebControls.Label lblUsername;
 
         /// <summary>
-        /// lblMonth control.
+        /// btnLogout control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl lblMonth;
+        protected global::System.Web.UI.WebControls.Button btnLogout;
 
         /// <summary>
-        /// btnNextMonth control.
+        /// MainContent control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnNextMonth;
-
-        /// <summary>
-        /// gvTimesheet control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvTimesheet;
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder MainContent;
     }
 }

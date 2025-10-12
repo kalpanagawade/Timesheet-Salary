@@ -1,6 +1,7 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="CreateUpdateUser.aspx.cs" Inherits="EmployeeTimesheet_Salary.CreateUpdateUser"  %>
+﻿<%@ Page Title="Employee Details" Language="C#" MasterPageFile="~/Site1.master" AutoEventWireup="true"
+    CodeBehind="CreateUpdateUser.aspx.cs" Inherits="EmployeeTimesheet_Salary.CreateUpdateUser"  %>
 
-<!DOCTYPE html>
+<%--<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
@@ -14,10 +15,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>--%>
 
 
+<asp:Content ID="ContentHead" ContentPlaceHolderID="HeadContent" runat="server">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" />
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <style>
         .styled-grid {
             margin: 20px;
@@ -34,22 +46,22 @@
                 padding: 10px;
             }
 
-        header {
-            border-radius: 1rem;
-            position: fixed;
-            width: 97%;
-            height: 89px;
-            margin: 11px;
-            top: 0;
-            right: 0;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: black;
-            box-shadow: 0 8px 11px rgb(14 55 54 / 15%);
-            padding: 11px 11px;
-            transition: 0.5s;
+        header1 {
+    border-radius: 1rem;
+    /*position: fixed;*/
+    width: 92%;
+    height: 5%;
+    margin: 11px 35px;
+    top: 78px;
+    /* right: 0; */
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: silver;
+    box-shadow: 0 8px 11px rgb(14 55 54 / 15%);
+    padding: 5px 25px;
+    transition: 0.5s;
         }
 
         .navbar .home-active {
@@ -71,11 +83,13 @@
 
                 .navbar a:hover,
                 .navbar .home-active {
+                    padding: 3% 14%;
                     background: var(--green-color);
                     border-radius: 5rem;
                     color: var(--bg-color);
                     transition: background 0.5s;
                 }
+           
 
         .profile {
             display: flex;
@@ -270,37 +284,194 @@
         }
     </style>
 
+            <script type="text/javascript">
+                function validateDesgition() {
+                    var ddlRole = document.getElementById('<%= ddlRole.ClientID %>').value;
+                    if (ddlRole === "") {
+                        alert("Please select a role.");
+                        return false;
+                    }
 
-</head>
+                    return true;
+                }
+                function validateEmail() {
+                    var email = document.getElementById('<%= txtEmail.ClientID %>').value;
+                var userName = document.getElementById('<%= txtUserName.ClientID %>').value;
+                var password = document.getElementById('<%= txtPassword.ClientID %>').value;
+                var confirmPassword = document.getElementById('<%= txtConfirmPassword.ClientID %>').value;
+                var ddlStatus = document.getElementById('<%= ddlStatus.ClientID %>').value;
+                <%--var ddlRole = document.getElementById('<%= ddlRole.ClientID %>').value;--%>
+
+                var radioInternal = document.getElementById('<%= RDOIUsrTyp.ClientID %>');
+                var radioExternal = document.getElementById('<%= RDOEUsrTyp.ClientID %>');
+
+                var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (!radioInternal.checked && !radioExternal.checked) {
+                    alert("Please select a user type.");
+                    return false;
+                }
+                if (userName.trim() === "") {
+                    alert("User Name is required.");
+                    return false;
+                }
+                if (password.trim() === "" || confirmPassword.trim() === "") {
+                    alert("Password and Confirm Password are required.");
+                    return false;
+                }
+                if (password !== confirmPassword) {
+                    alert("Passwords do not match.");
+                    return false;
+                }
+                if (email.trim() === "") {
+                    alert("Email ID is required.");
+                    return false;
+                }
+                if (!emailPattern.test(email)) {
+                    alert("Please enter a valid Email ID.");
+                    return false;
+                }
+                if (ddlStatus === "") {
+                    alert("Please select a status.");
+                    return false;
+                }
+                //if (ddlRole === "") {
+                //    alert("Please select a role.");
+                //    return false;
+                //}
+
+                return true; // ✅ Allow server-side method to run
+            }
+            function toggleDivs(hideDivId, showDivId) {
+                // Hide the div with the ID hideDivId
+                document.getElementById(hideDivId).style.display = 'none';
+
+                // Show the div with the ID showDivId
+                document.getElementById(showDivId).style.display = 'block';
+            }
+            function logoutUser() {
+                // Optional: Clear session or perform logout logic here
+
+                // Redirect to login page
+                window.location.href = 'Login.aspx'; // Use the correct path to your login page
+            }
+            function toggleLogoutDropdown() {
+                var dropdown = document.getElementById("logoutDropdown");
+                dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+            }
+
+            //function logoutUser() {
+            //    // Optional: Clear session or cookies
+            //    window.location.href = 'Login.aspx'; // Adjust path if needed
+            //}
+
+            // Optional: Close dropdown when clicking outside
+            window.addEventListener("click", function (e) {
+                if (!e.target.closest(".profile-container")) {
+                    document.getElementById("logoutDropdown").style.display = "none";
+                }
+            });
+
+            $(function () {
+                $('#<%= txtDOBED.ClientID %>').datepicker({
+                    dateFormat: 'd M yy', // or 'd M yy' for 1 Jan 1900
+                    changeMonth: true,
+                    changeYear: true,
+                    yearRange: '1900:2050'
+                });
+            });
+
+
+
+            function confirmEdit() {
+                return confirm("Are you sure you want to update the iUser table?");
+            }
+
+            $(document).ready(function () {
+                /* debugger*/
+                $('body').on('change', 'input[type="checkbox"]', function () {
+                    var isChecked = $(this).is(':checked');
+
+                    // Select/Deselect all children
+                    $(this).closest('li').find('input[type="checkbox"]').prop('checked', isChecked);
+
+                    // Select all parents if checked
+                    if (isChecked) {
+                        $(this).parents('li').children('input[type="checkbox"]').prop('checked', true);
+                    } else {
+                        // Uncheck parent only if no siblings are checked
+                        $(this).parents('ul').each(function () {
+                            var anyChecked = $(this).find('> li > input[type="checkbox"]:checked').length > 0;
+                            if (!anyChecked) {
+                                $(this).prev('input[type="checkbox"]').prop('checked', false);
+                            }
+                        });
+                    }
+                });
+            });
+
+            function gatherSelectedModules() {
+                var selected = [];
+                document.querySelectorAll("input[type='checkbox'][id^='chk_']:checked").forEach(function (cb) {
+                    var id = cb.id.replace("chk_", ""); // extract ModuleID from checkbox id
+                    selected.push(id);
+                });
+
+                // Set hidden field value as comma-separated IDs
+                document.getElementById('<%= hfSelectedModules.ClientID %>').value = selected.join(',');
+                return true; // allow form submission
+            }
+            //Added bY hrutik
+            <%--function onRoleChange() {
+                var ddl = document.getElementById('<%= ddlRole.ClientID %>');
+                var selectedText = ddl.options[ddl.selectedIndex].text;
+
+                if (selectedText.toLowerCase().includes('manager')) {
+                    window.open('AssignEmployees.aspx', '_blank', 'width=900,height=600'); // opens new popup
+                }
+            }--%>
+
+            function onRoleChange() {
+                var ddl = document.getElementById('<%= ddlRole.ClientID %>');
+        var selectedText = ddl.options[ddl.selectedIndex].text;
+
+        if (selectedText.toLowerCase().includes('manager')) {
+                     var userId = document.getElementById('<%= txtUserid.ClientID %>').value;
+                        window.open('AssignEmployees.aspx?UserId=' + encodeURIComponent(userId), '_blank', 'width=900,height=600');
+                    }
+                }
+
+
+
+            </script>
+</asp:Content>
+
+<%--</head>
 <body>
-    <form id="form1" runat="server">
+    <form id="form1" runat="server">--%>
+        <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
         <div>
-            <header>
-                <img src="../img/logo.png" alt="Logo" style="width: 50px; height: 50px; margin: 0px 0px 0px 8px;" />
+            <header1>
+                <%--<img src="../img/logo.png" alt="Logo" style="width: 50px; height: 50px; margin: 0px 0px 0px 8px;" />
                 <div class="navbar">
                     <asp:Button
                         runat="server"
                         ID="btnEmpDts" class="home-active" Text="Employee Details" Style="padding: 18px;"
                         OnClick="btnEmpDts_Click" />
-                </div>
-                <!-- Nav List -->
+                </div>--%>
+                
                 <div class="navbar">
 
 
                     <asp:Button runat="server" ID="btncre" class="home-active" Text="Create Employee"
-                        OnClientClick="document.getElementById('Bigbox1').style.display='none';
-                     document.getElementById('Bigbox').style.display='block'; return false;" />
+                        OnClientClick="document.getElementById('MainContent_Bigbox1').style.display='none';
+                     document.getElementById('MainContent_Bigbox').style.display='block'; return false;" />
                     <asp:Button runat="server" ID="btnsrh" class="home-active" Text="Search Employee"
-                        OnClientClick="document.getElementById('Bigbox').style.display='none';
-                     document.getElementById('Bigbox1').style.display='block'; return false;" />
+                        OnClientClick="document.getElementById('MainContent_Bigbox').style.display='none';
+                     document.getElementById('MainContent_Bigbox1').style.display='block'; return false;" />
 
                 </div>
-                <%--                <ul class="navbar">
-                    <li><a href="#home" class="home-active">create user</a></li>
-                     <li><a href="#home" class="home-active">serach user</a></li>
-                </ul>--%>
-                <!-- profile -->
-                <div class="profile-container">
+                 <%--              <div class="profile-container">
                     <div class="profile-icon" onclick="toggleLogoutDropdown()">
                         <asp:Label ID="txtCreatedBy" runat="server"> </asp:Label>
                         <i class="bx bx-log-out"></i>
@@ -308,15 +479,15 @@
                     <div class="logout-dropdown" id="logoutDropdown" onclick="logoutUser()">
                         Logout
                     </div>
-                </div>
+                </div>--%>
 
 
 
-            </header>
+            </header1>
 
             <div id="Bigbox" runat="server">
                 <div id="cr" class="CreateUser">
-                    <div id="Cr1" class="CreateUser1" style="padding: 11px -1px 0px 12px; color: white">
+                    <div id="Cr1" class="CreateUser1" style="padding: 11px -1px 0px 12px; color: white;height: 26px;">
                         Create Employee
                     </div>
                     <div id="cr2" class="CreateUser2">
@@ -465,7 +636,7 @@
             <div id="Bigbox1" runat="server">
                 <%--style="display: none"--%>
                 <div id="crb1" class="CreateUser">
-                    <div id="cr1b1" class="CreateUser1" style="padding: 11px -1px 0px 12px; color: white">
+                    <div id="cr1b1" class="CreateUser1" style="padding: 11px -1px 0px 12px; color: white;height: 26px;">
                         <asp:LinkButton runat="server" ID="Label4" Text="Search Employee" OnClick="CancelED_Click" CssClass="no-Link-style"> </asp:LinkButton>
                         <asp:Label runat="server" ID="lbEd" Text=""></asp:Label>
 
@@ -609,171 +780,12 @@
                 </div>
             </div>
         </div>
+        
 
 
 
 
-        <script type="text/javascript">
-            function validateDesgition() {
-                var ddlRole = document.getElementById('<%= ddlRole.ClientID %>').value;
-                if (ddlRole === "") {
-                    alert("Please select a role.");
-                    return false;
-                }
-
-                return true;
-            }
-            function validateEmail() {
-                var email = document.getElementById('<%= txtEmail.ClientID %>').value;
-                var userName = document.getElementById('<%= txtUserName.ClientID %>').value;
-                var password = document.getElementById('<%= txtPassword.ClientID %>').value;
-                var confirmPassword = document.getElementById('<%= txtConfirmPassword.ClientID %>').value;
-                var ddlStatus = document.getElementById('<%= ddlStatus.ClientID %>').value;
-                <%--var ddlRole = document.getElementById('<%= ddlRole.ClientID %>').value;--%>
-
-                var radioInternal = document.getElementById('<%= RDOIUsrTyp.ClientID %>');
-                var radioExternal = document.getElementById('<%= RDOEUsrTyp.ClientID %>');
-
-                var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-                if (!radioInternal.checked && !radioExternal.checked) {
-                    alert("Please select a user type.");
-                    return false;
-                }
-                if (userName.trim() === "") {
-                    alert("User Name is required.");
-                    return false;
-                }
-                if (password.trim() === "" || confirmPassword.trim() === "") {
-                    alert("Password and Confirm Password are required.");
-                    return false;
-                }
-                if (password !== confirmPassword) {
-                    alert("Passwords do not match.");
-                    return false;
-                }
-                if (email.trim() === "") {
-                    alert("Email ID is required.");
-                    return false;
-                }
-                if (!emailPattern.test(email)) {
-                    alert("Please enter a valid Email ID.");
-                    return false;
-                }
-                if (ddlStatus === "") {
-                    alert("Please select a status.");
-                    return false;
-                }
-                //if (ddlRole === "") {
-                //    alert("Please select a role.");
-                //    return false;
-                //}
-
-                return true; // ✅ Allow server-side method to run
-            }
-            function toggleDivs(hideDivId, showDivId) {
-                // Hide the div with the ID hideDivId
-                document.getElementById(hideDivId).style.display = 'none';
-
-                // Show the div with the ID showDivId
-                document.getElementById(showDivId).style.display = 'block';
-            }
-            function logoutUser() {
-                // Optional: Clear session or perform logout logic here
-
-                // Redirect to login page
-                window.location.href = 'Login.aspx'; // Use the correct path to your login page
-            }
-            function toggleLogoutDropdown() {
-                var dropdown = document.getElementById("logoutDropdown");
-                dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
-            }
-
-            //function logoutUser() {
-            //    // Optional: Clear session or cookies
-            //    window.location.href = 'Login.aspx'; // Adjust path if needed
-            //}
-
-            // Optional: Close dropdown when clicking outside
-            window.addEventListener("click", function (e) {
-                if (!e.target.closest(".profile-container")) {
-                    document.getElementById("logoutDropdown").style.display = "none";
-                }
-            });
-
-            $(function () {
-                $('#<%= txtDOBED.ClientID %>').datepicker({
-                    dateFormat: 'd M yy', // or 'd M yy' for 1 Jan 1900
-                    changeMonth: true,
-                    changeYear: true,
-                    yearRange: '1900:2050'
-                });
-            });
-
-
-
-            function confirmEdit() {
-                return confirm("Are you sure you want to update the iUser table?");
-            }
-
-            $(document).ready(function () {
-                /* debugger*/
-                $('body').on('change', 'input[type="checkbox"]', function () {
-                    var isChecked = $(this).is(':checked');
-
-                    // Select/Deselect all children
-                    $(this).closest('li').find('input[type="checkbox"]').prop('checked', isChecked);
-
-                    // Select all parents if checked
-                    if (isChecked) {
-                        $(this).parents('li').children('input[type="checkbox"]').prop('checked', true);
-                    } else {
-                        // Uncheck parent only if no siblings are checked
-                        $(this).parents('ul').each(function () {
-                            var anyChecked = $(this).find('> li > input[type="checkbox"]:checked').length > 0;
-                            if (!anyChecked) {
-                                $(this).prev('input[type="checkbox"]').prop('checked', false);
-                            }
-                        });
-                    }
-                });
-            });
-
-            function gatherSelectedModules() {
-                var selected = [];
-                document.querySelectorAll("input[type='checkbox'][id^='chk_']:checked").forEach(function (cb) {
-                    var id = cb.id.replace("chk_", ""); // extract ModuleID from checkbox id
-                    selected.push(id);
-                });
-
-                // Set hidden field value as comma-separated IDs
-                document.getElementById('<%= hfSelectedModules.ClientID %>').value = selected.join(',');
-                return true; // allow form submission
-            }
-            //Added bY hrutik
-            <%--function onRoleChange() {
-                var ddl = document.getElementById('<%= ddlRole.ClientID %>');
-                var selectedText = ddl.options[ddl.selectedIndex].text;
-
-                if (selectedText.toLowerCase().includes('manager')) {
-                    window.open('AssignEmployees.aspx', '_blank', 'width=900,height=600'); // opens new popup
-                }
-            }--%>
-
-            function onRoleChange() {
-                var ddl = document.getElementById('<%= ddlRole.ClientID %>');
-        var selectedText = ddl.options[ddl.selectedIndex].text;
-
-        if (selectedText.toLowerCase().includes('manager')) {
-                     var userId = document.getElementById('<%= txtUserid.ClientID %>').value;
-                     window.open('AssignEmployees.aspx?UserId=' + encodeURIComponent(userId), '_blank', 'width=900,height=600');
-                 }
-             }
-           
-
-
-        </script>
-
-    </form>
+        </asp:Content>
+   <%-- </form>
 </body>
-</html>
+</html>--%>

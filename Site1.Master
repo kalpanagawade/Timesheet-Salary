@@ -1,0 +1,93 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.master.cs" Inherits="EmployeeTimesheet_Salary.Site1" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <title>Employee Timesheet</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server"></asp:ContentPlaceHolder>
+
+    <style>
+        header {
+            position: fixed;
+            width: 96%;
+            background-color: #111;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+            padding: 0 20px;
+            border-radius: 0.5rem;
+            margin: 11px;
+            top: 0;
+            left: 0.2%;
+            z-index: 1000;
+            box-shadow: 0 8px 11px rgb(14 55 54 / 15%);
+            transition: 0.5s;
+        }
+
+        header img {
+            height: 50px;
+            width: 50px;
+        }
+
+        .navbar {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-button {
+            background-color: transparent;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .nav-button:hover {
+            background-color: #444;
+        }
+
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .username-label {
+            margin-right: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <form runat="server">
+        <header>
+            <asp:Image ID="imgLogo" runat="server" ImageUrl="~/img/logo.png"
+                       Width="50px" Height="50px" Style="margin-left: 8px;" />
+
+            <div class="navbar" id="navContainer" runat="server">
+                <!-- Dynamic buttons will load here -->
+            </div>
+
+            <div style="display:flex;align-items:center;">
+                <asp:Label ID="lblUsername" runat="server" CssClass="username-label" Text="User"></asp:Label>                
+                <asp:Button ID="btnLogout" runat="server" CssClass="logout-btn" Text="Logout" OnClick="btnLogout_Click" />
+            </div>
+        </header>
+
+        <main style="padding-top:4%;">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
+        </main>
+    </form>
+</body>
+</html>
