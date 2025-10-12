@@ -177,6 +177,9 @@
                 dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
             }
         </script>--%>
+ <asp:Content ID="ContentHead" ContentPlaceHolderID="HeadContent" runat="server">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+</asp:Content>
 
         <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <h2 style="margin: 20px;">Tomorrow Is Holiday</h2>

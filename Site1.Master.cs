@@ -123,5 +123,13 @@ namespace EmployeeTimesheet_Salary
             Session.Remove("UserModules");
             Response.Redirect("~/Login.aspx");
         }
+
+        protected void btnHome_Click(object sender, EventArgs e)
+        {
+            string userId = Request.QueryString["UserID"];
+            string username = lblUsername.Text.Trim();
+            Response.Redirect($"~/Notice.aspx?UserID={Server.UrlEncode(userId)}&Username={Server.UrlEncode(username)}");
+
+        }
     }
 }

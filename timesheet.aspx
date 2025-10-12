@@ -18,11 +18,11 @@
 
 
     <style type="text/css">
-        /*header {
-            border-radius: 1rem;
-            position: fixed;
-            width: 97%;
-            height: 89px;
+        header {
+            /*border-radius: 1rem;
+            position fixed;*/
+            width: 98.5% !important;
+            /*height: 89px;
             margin: 11px;
             top: 0;
             right: 0;
@@ -33,8 +33,8 @@
             background: black;
             box-shadow: 0 8px 11px rgb(14 55 54 / 15%);
             padding: 11px 11px;
-            transition: 0.5s;
-        }*/
+            transition: 0.5s;*/
+        }
 
         .navbar .home-active {
             border-radius: 0.5rem;
@@ -678,11 +678,11 @@
 
         </header>--%>
 
-        <div style="height: 1rem;"></div>
+        <div style="height: 2rem;"></div>
         <!-- for spacing -->
         <div class="header-section">
             <div class="header-row">
-                <div class="header-group">
+                <div class="2header-group">
                     <label>Work Place *</label>
                     <asp:DropDownList ID="ddlWorkPlace" runat="server">
                         <asp:ListItem Text="Work From Home" Value="WFH" />

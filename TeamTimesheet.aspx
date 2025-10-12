@@ -8,6 +8,7 @@
     <title>Team Timesheet</title>--%>
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="HeadContent" runat="server">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
      <style>
         body {
             font-family: Arial, sans-serif;

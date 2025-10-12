@@ -66,6 +66,20 @@
             margin-right: 15px;
             font-weight: bold;
         }
+        .home-icon {
+    margin-left: 10px;
+    font-size: 24px;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    }
+.home-icon:hover {
+    color: yellow;
+    border:solid;
+    border-radius:3px;
+    border-color:#444;
+    background-color: #444;
+}
     </style>
 </head>
 
@@ -74,7 +88,10 @@
         <header>
             <asp:Image ID="imgLogo" runat="server" ImageUrl="~/img/logo.png"
                        Width="50px" Height="50px" Style="margin-left: 8px;" />
-
+             <!-- Home Icon Button -->
+    <asp:LinkButton ID="btnHome" runat="server" CssClass="home-icon" OnClick="btnHome_Click" ToolTip="Home">
+        <i class="fa fa-home"></i>
+    </asp:LinkButton>
             <div class="navbar" id="navContainer" runat="server">
                 <!-- Dynamic buttons will load here -->
             </div>
@@ -85,7 +102,7 @@
             </div>
         </header>
 
-        <main style="padding-top:4%;">
+        <main style="padding-top:5%;">
             <asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
         </main>
     </form>
