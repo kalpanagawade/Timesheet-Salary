@@ -912,6 +912,7 @@ namespace EmployeeTimesheet_Salary
                             DropDownList4.DataBind();
                         }
 
+                        DropDownList4.Items.Insert(0, new ListItem("-- Select --", "0"));
                         // 3️⃣ Set selected designation
                         if (selectedDesId != 0)
                         {
@@ -919,6 +920,11 @@ namespace EmployeeTimesheet_Salary
                             if (item != null)
                                 DropDownList4.ClearSelection();
                             item.Selected = true;
+                        }
+                        else
+                        {
+                            // If no mapped designation, select the default "-- Select --"
+                            DropDownList4.SelectedIndex = 0;
                         }
                     }
                 }

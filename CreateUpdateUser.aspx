@@ -47,10 +47,14 @@
                 padding: 10px;
             }
 
+            header{
+                width:98% !important;
+            }
+
         header1 {
     border-radius: 1rem;
     /*position: fixed;*/
-    width: 92%;
+    width: 95.5%;
     height: 5%;
     margin: 11px 35px;
     top: 78px;
@@ -176,6 +180,7 @@
             border-color: black;
             width: 98%;
             height: 70%;
+            margin:1%;
         }
 
         .CreateUser1 {
@@ -344,12 +349,22 @@
 
                 return true; // ✅ Allow server-side method to run
             }
-            function toggleDivs(hideDivId, showDivId) {
+                function toggleDivs(hideDivId, showDivId) {
+                    debugger
                 // Hide the div with the ID hideDivId
-                document.getElementById(hideDivId).style.display = 'none';
+                //document.getElementById(hideDivId).style.display = 'none';
 
-                // Show the div with the ID showDivId
-                document.getElementById(showDivId).style.display = 'block';
+                //// Show the div with the ID showDivId
+                    //document.getElementById(showDivId).style.display = 'block';
+                    var hideDiv = document.getElementById(hideDivId);
+                    var showDiv = document.getElementById(showDivId);
+
+                    if (hideDiv && showDiv) {
+                        hideDiv.style.display = 'none';
+                        showDiv.style.display = 'block';
+                    } else {
+                        console.error("Could not find divs:", hideDivId, showDivId);
+                    }
             }
             function logoutUser() {
                 // Optional: Clear session or perform logout logic here
@@ -443,6 +458,16 @@
                     }
                 }
 
+            function onRoleChangeEdit() {
+                    var ddl = document.getElementById('<%= DropDownList4.ClientID %>');
+                var selectedText = ddl.options[ddl.selectedIndex].text;
+
+                    if (selectedText.toLowerCase().includes('manager')) {
+                        var userId = document.getElementById('<%= txtUseridED.ClientID %>').value;
+                        window.open('AssignEmployees.aspx?UserId=' + encodeURIComponent(userId), '_blank', 'width=900,height=600');
+                    }
+                }
+
 
 
             </script>
@@ -495,10 +520,10 @@
                     <div id="cr2" class="CreateUser2">
                         <!-- Employee Details button (always enabled) -->
                         <asp:Button runat="server" ID="btnem" Text="Employee Details" CssClass="smallbx"
-                            OnClientClick="toggleDivs('cr3B', 'cr3A'); return false;" />
+                            OnClientClick="toggleDivs('MainContent_cr3B', 'MainContent_cr3A'); return false;" />
 
                         <asp:Button runat="server" ID="btnsersac" Text="Service Sanctioning" CssClass="smallbx"
-                            OnClientClick="toggleDivs('cr3A', 'cr3B'); return false;" />
+                            OnClientClick="toggleDivs('MainContent_cr3A', 'MainContent_cr3B'); return false;" />
 
 
 
@@ -557,8 +582,9 @@
                         </div>
 
                         <div class="row" id="rowno6"  runat="server">
-                           <asp:Label ID="lblDesi" runat="server" CssClass="col" Text="Designation :-"></asp:Label>
-                            <asp:DropDownList ID="ddlRole" runat="server" CssClass="col" AutoPostBack="false" onchange="onRoleChange()" />
+                            <div class="col" style="width:100%; text-align: center;" >
+                           <asp:Label ID="lblDesi" runat="server" CssClass="col" style="width: 109px;" Text="Designation :-"></asp:Label>
+                            <asp:DropDownList ID="ddlRole" runat="server" CssClass="col" style="width: 200px;" AutoPostBack="false" onchange="onRoleChange()" />
                             
                             
                             <%--<asp:Button ID="btnOpenEmployeePopup" runat="server" Style="display: none;" OnClientClick="showEmployeePopup(); return false;" />
@@ -570,7 +596,9 @@
                                 <asp:ListItem>Support</asp:ListItem>
                                 <asp:ListItem>Tester</asp:ListItem>--%>
                             <asp:Button ID="BtnDesAssign" runat="server" CssClass="BtnCls" Text="SaveRole" OnClientClick="return validateDesgition();" OnClick="btnSaveRole_Click" />
-                        </div>
+                            </div>
+                            
+                         </div>
 
                         <%--Added by hrutik--%>
                         <!-- Added by Hrutik -->
@@ -650,34 +678,34 @@
 
                     <div id="Smallboxcr" runat="server">
                         <div id="cr2b1" class="CreateUser2" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            <span>Employee Enquiry/Employee Saction</span>
-                            <span>Admin/Employee Enquiry ver 1.0 -</span>
+<div class="row1" id="Udetail">
+    <asp:TextBox runat="server" Class="col" ID="txtuidsrh" placeholder="Employee ID"></asp:TextBox>
+    <asp:TextBox runat="server" Class="col" ID="txtunamsrh" placeholder="Employee Name"></asp:TextBox>
+    <asp:DropDownList ID="DropDownList2" runat="server" CssClass="col">
+        <asp:ListItem Value="">-- All (Status) --</asp:ListItem>
+        <asp:ListItem>A</asp:ListItem>
+        <asp:ListItem>B</asp:ListItem>
+        <asp:ListItem>c</asp:ListItem>
+    </asp:DropDownList>
+    <asp:DropDownList ID="DropDownList1" runat="server" AutoPostBack="true" OnSelectedIndexChanged="DropDownList1_SelectedIndexChanged">
+        <asp:ListItem Text="5" Value="5" />
+        <asp:ListItem Text="10" Value="10" />
+        <asp:ListItem Text="20" Value="20" />
+        <asp:ListItem Text="50" Value="50" />
+    </asp:DropDownList>
+
+
+</div>
+<div class="col" style="width:100%; text-align: center;">
+
+<asp:Button ID="btnSearch" runat="server" Text="Search" OnClick="btnSearch_Click" class="BtnCls" />
+</div>
                         </div>
 
                         <div id="cr3b1" class="CreateUser3">
-                            <div class="row1" id="Udetail">
-                                <asp:TextBox runat="server" Class="col" ID="txtuidsrh" placeholder="Employee ID"></asp:TextBox>
-                                <asp:TextBox runat="server" Class="col" ID="txtunamsrh" placeholder="Employee Name"></asp:TextBox>
-                                <asp:DropDownList ID="DropDownList2" runat="server" CssClass="col">
-                                    <asp:ListItem Value="">-- All (Status) --</asp:ListItem>
-                                    <asp:ListItem>A</asp:ListItem>
-                                    <asp:ListItem>B</asp:ListItem>
-                                    <asp:ListItem>c</asp:ListItem>
-                                </asp:DropDownList>
-                                <asp:DropDownList ID="DropDownList1" runat="server" AutoPostBack="true" OnSelectedIndexChanged="DropDownList1_SelectedIndexChanged">
-                                    <asp:ListItem Text="5" Value="5" />
-                                    <asp:ListItem Text="10" Value="10" />
-                                    <asp:ListItem Text="20" Value="20" />
-                                    <asp:ListItem Text="50" Value="50" />
-                                </asp:DropDownList>
-
-
-                            </div>
+                            
                             <div class="row" id="Udetail1">
-                                <div class="col" style="width:100%; text-align: center;">
-
-                                <asp:Button ID="btnSearch" runat="server" Text="Search" OnClick="btnSearch_Click" class="BtnCls" />
-                                </div>
+                                
 
                                 <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false" AllowPaging="true"
                                     OnRowCommand="GridView1_RowCommand"
@@ -706,17 +734,17 @@
                         <div id="ED2" class="CreateUser2">
 
                             <asp:Button runat="server" Text="User Details" ID="EDuserdetail" CssClass="smallbx"
-                                OnClientClick="toggleDivs('ED3B', 'ED3A'); return false;"></asp:Button>
+                                OnClientClick="toggleDivs('MainContent_ED3B', 'MainContent_ED3A'); return false;"></asp:Button>
 
                             <asp:Button runat="server" Text="Service Sanctioning" ID="EDsersec" CssClass="smallbx"
-                                OnClientClick="toggleDivs('ED3A', 'ED3B'); return false;"></asp:Button>
+                                OnClientClick="toggleDivs('MainContent_ED3A', 'MainContent_ED3B'); return false;"></asp:Button>
 
                             <asp:Label ID="Label5" runat="server" CssClass="text-end d-block" Text="Employee Id :-"
                                 Style="padding-left: 814px;"></asp:Label>
                             <asp:Label ID="Label6" runat="server" CssClass="text-end d-block"></asp:Label>
 
                         </div>
-                        <div id="ED3A" class="CreateUser3" style="display: block;">
+                        <div id="ED3A" runat="server" class="CreateUser3" style="display: block;">
                             <div class="row" id="EDrowno1">
                                 <asp:RadioButton ID="RadioButton1" runat="server" CssClass="col" GroupName="Options" Text="Internal User Type" />
                                 <asp:RadioButton ID="RadioButton2" runat="server" CssClass="col" GroupName="Options" Text="External User Type" />
@@ -749,7 +777,7 @@
                                 <%--<asp:Label ID="lblmobno" runat="server" CssClass="col" Text="Mobile Number :-"></asp:Label>--%>
                                 <asp:TextBox runat="server" CssClass="col" ID="txtumnED" placeholder="Mobile Number"></asp:TextBox>
                                 <asp:Label ID="Label3" runat="server" CssClass="col" Text="Designation :-"></asp:Label>
-                                <asp:DropDownList ID="DropDownList4" runat="server" CssClass="col">
+                                <asp:DropDownList ID="DropDownList4" runat="server" CssClass="col" AutoPostBack="false" onchange="onRoleChangeEdit()" >
                                     <%--<asp:ListItem Value="">-- Select Role --</asp:ListItem>
                                     <asp:ListItem>Developer</asp:ListItem>
                                     <asp:ListItem>Support</asp:ListItem>
