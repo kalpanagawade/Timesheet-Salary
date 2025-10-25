@@ -78,6 +78,10 @@ namespace EmployeeTimesheet_Salary
                 {
                     AddHeaderButton("Team Timesheet", "btnTeamTimSht", BtnTeamTimSht_Click);
                 }
+                else if (pageName.Equals("SalaryModule.aspx", StringComparison.OrdinalIgnoreCase))
+                {
+                    AddHeaderButton("Employee Salary", "btnEmpSlry", btnEmpSlry_Click);
+                }
             }
         }
 
@@ -115,7 +119,12 @@ namespace EmployeeTimesheet_Salary
             string username = lblUsername.Text.Trim();
             Response.Redirect($"~/TeamTimesheet.aspx?UserID={Server.UrlEncode(userId)}&Username={Server.UrlEncode(username)}");
         }
-
+        protected void btnEmpSlry_Click(object sender, EventArgs e)
+        {
+            string userId = Request.QueryString["UserID"];
+            string username = lblUsername.Text.Trim();
+            Response.Redirect($"~/SalaryModule.aspx?UserID={Server.UrlEncode(userId)}&Username={Server.UrlEncode(username)}");
+        }
         protected void btnLogout_Click(object sender, EventArgs e)
         {
             Session.Clear();
