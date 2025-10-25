@@ -75,6 +75,9 @@ namespace EmployeeTimesheet_Salary
         protected void btnTriggerBindGrid_Click(object sender, EventArgs e)
         {
             BindGrid(); // your method to bind data to GridView etc.
+
+            ScriptManager.RegisterStartupScript(this, GetType(), "ReopenModal", "$('#taskModal').modal('show');", true);
+
         }
         //protected void btnLoginLogout_Click(object sender, EventArgs e)
         //{
