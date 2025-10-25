@@ -115,6 +115,7 @@
             border: 1px solid #ccc;
             margin: 0px 5px 5px 5px;
             border-radius: 35px;
+            line-height: 1.0;
         }
 
         .header-row {
@@ -125,13 +126,19 @@
         }
 
         .header-group {
-            margin: 10px;
+            margin: 10px 10px 1px 10px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
+        .header-group2{
+             margin: 1px 10px 10px 10px;
+             display: flex;
+             align-items: center;
+             gap: 10px;
+        }
 
-            .header-group label {
+            .header-group label,.header-group2 label {
                 font-weight: bold;
             }
 
@@ -148,7 +155,7 @@
             font-weight: bold;
             font-size: 16px;
             color: #007bff;
-            margin-top: 15px;
+            margin-top: 2px;
         }
 
         .calendar {
@@ -159,7 +166,7 @@
 
             .calendar th, .calendar td {
                 width: 14.28%; /* 100% / 7 days */
-                height: 100px;
+                height: 10vh;
                 border: 1px solid #ccc;
                 vertical-align: top;
                 padding: 5px;
@@ -252,7 +259,13 @@
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-
+        #btnLogout{
+            font-size: smaller;
+            line-height: revert;
+        }
+        /*.modal {
+            top: -6%
+        }*/
       
     </style>
 
@@ -349,6 +362,7 @@
 
             // IMPORTANT: DO NOT CALL __doPostBack HERE if you expect client changes to persist.
             // If you must call __doPostBack, move it to server-side and re-open the modal after postback.
+            __doPostBack('<%= btnTriggerBindGrid.UniqueID %>', '');
         }
 
 
@@ -682,7 +696,7 @@
         <!-- for spacing -->
         <div class="header-section">
             <div class="header-row">
-                <div class="2header-group">
+                <div class="header-group">
                     <label>Work Place *</label>
                     <asp:DropDownList ID="ddlWorkPlace" runat="server">
                         <asp:ListItem Text="Work From Home" Value="WFH" />
@@ -712,21 +726,21 @@
             <div class="task-label">Daily Task Sheet</div>
 
             <div class="header-row">
-                <div class="header-group">
+                <div class="header-group2">
                     <label>From Date *</label>
                     <asp:TextBox ID="txtFromDate" runat="server" CssClass="date-input" placeholder="dd-mm-yyyy" />
                 </div>
 
-                <div class="header-group">
+                <div class="header-group2">
                     <label>To Date *</label>
                     <asp:TextBox ID="txtToDate" runat="server" CssClass="date-input" placeholder="dd-mm-yyyy" />
                 </div>
 
-                <div class="header-group">
+                <div class="header-group2">
                     <asp:Button ID="btnFetch" runat="server" Text="Fetch Timesheet" Enabled="false" />
                 </div>
 
-                <div class="header-group">
+                <div class="header-group2">
                     <span id="currentDateDisplay"></span>
                     <label>Status</label>
                     <%--<asp:Image ID="imgStatusHelp" runat="server" ImageUrl="~/images/info.png" ToolTip="Status info" />--%>
@@ -752,13 +766,13 @@
             <!-- Calendar Table -->
             <table class="calendar">
                 <tr>
-                    <th>Sun</th>
+                    <th style="background-color: lightpink;">Sun</th>
                     <th>Mon</th>
                     <th>Tue</th>
                     <th>Wed</th>
                     <th>Thu</th>
                     <th>Fri</th>
-                    <th>Sat</th>
+                    <th style="background-color: lightpink;">Sat</th>
                 </tr>
                 <asp:Literal ID="litCalendar" runat="server" />
             </table>
