@@ -2,11 +2,16 @@
     Inherits="EmployeeTimesheet_Salary.SalaryModule" %>
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="HeadContent" runat="server">
-    <style>
-        <!-- Bootstrap (if not already included in master page) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 
     <style>
+        header {
+            width: 98.5% !important;
+        }
+        th {
+            text-align: center !important;
+        }
+
         /* GridView table styling */
         .table thead th {
             background-color: #007BFF;
@@ -67,8 +72,11 @@
 </asp:Content>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-  <h2 class="mb-4">Salary Module</h2>
 
+  <div style="padding:1%">
+
+    <div runat="server" id="SalMdlDiv" style="display:block;">
+    <h2 class="mb-4">Salary Module</h2>
     <!-- Search Section -->
     <div class="search-box mb-3">
         <asp:Label ID="lblEmpId" runat="server" Text="Employee ID:" AssociatedControlID="txtSearchId" CssClass="me-2" />
@@ -108,6 +116,12 @@
         </asp:GridView>
     </div>
 
+    </div>
+
+    <div runat="server" id="DtlSalDiv" style="display:none;padding:1%">
+
+    <asp:Button ID="btnBack" runat="server" Text="← Back to Employee List" CssClass="btn btn-secondary mb-3" OnClick="btnBack_Click" />
+
     <!-- Details Panel -->
     <asp:Panel ID="pnlDetails" runat="server" Visible="false" CssClass="salary-panel">
         <h4><asp:Label ID="lblUser" runat="server" /></h4>
@@ -118,16 +132,29 @@
         </div>
 
         <h5 class="mt-3">Salary Details</h5>
+        <div style="display:flex;">
+        <div style="width: 80%;margin-right: -38%;">
         <table class="table table-bordered w-50">
-            <tr><td>Annual Income:</td><td><asp:TextBox ID="txtAnnual" runat="server" CssClass="form-control" ReadOnly="true" /></td></tr>
-            <tr><td>Basic Salary:</td><td><asp:TextBox ID="txtBasic" runat="server" CssClass="form-control" ReadOnly="true" /></td></tr>
-            <tr><td>HRA:</td><td><asp:TextBox ID="txtHRA" runat="server" CssClass="form-control" ReadOnly="true" /></td></tr>
-            <tr><td>Allowance:</td><td><asp:TextBox ID="txtAllowance" runat="server" CssClass="form-control" ReadOnly="true" /></td></tr>
-            <tr><td>Deductions:</td><td><asp:TextBox ID="txtDeduction" runat="server" CssClass="form-control" ReadOnly="true" /></td></tr>
+            <tr><td>Basic Salary:</td><td><asp:TextBox ID="txtBasic" runat="server" CssClass="form-control" /></td></tr>
+            <tr><td>HRA:</td><td><asp:TextBox ID="txtHRA" runat="server" CssClass="form-control" /></td></tr>
+            <tr><td>Allowance:</td><td><asp:TextBox ID="txtAllowance" runat="server" CssClass="form-control" /></td></tr>
+            <tr><td>Deductions:</td><td><asp:TextBox ID="txtDeduction" runat="server" CssClass="form-control" /></td></tr>
+            <tr><td>Bonus:</td><td><asp:TextBox ID="txtBonus" runat="server" CssClass="form-control"  /></td></tr>
         </table>
-
+        </div>
+        <div style="display:grid;">
+        <asp:Label ID="lblAnnual" runat="server" CssClass="fw-bold h5" />
         <asp:Label ID="lblNetSalary" runat="server" CssClass="fw-bold h5" />
+        <asp:Label ID="lblMonSalary" runat="server" CssClass="fw-bold h5" />
+        <asp:Button ID="btnSaveSalary" runat="server" Text="Save Salary" CssClass="btn btn-success" OnClick="btnSaveSalary_Click" />
+<asp:Label ID="lblMessage" runat="server" CssClass="text-success" />
+        </div>
+        </div>
     </asp:Panel>
 
+
+    </div>
+
+  </div>
 
 </asp:Content>
