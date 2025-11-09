@@ -69,6 +69,68 @@
         }
     </style>
 
+   <script type="text/javascript">
+       function toggleSelectAll(source) {
+           debugger
+           // Get all row checkboxes
+           var grid = document.getElementById('<%= gvTimesheet.ClientID %>');
+           var checkBoxes = grid.querySelectorAll('input[type=checkbox][id*="chkSelect"]');
+
+           // Loop and check/uncheck only enabled checkboxes
+           checkBoxes.forEach(function (cb) {
+               if (!cb.disabled) {
+                   cb.checked = source.checked;
+               }
+           });
+       }
+
+       function updateHeaderState() {
+           var header = document.getElementById('<%= gvTimesheet.ClientID %>').querySelector('input[id*="chkSelectAll"]');
+    var checkBoxes = document.getElementById('<%= gvTimesheet.ClientID %>').querySelectorAll('input[type=checkbox][id*="chkSelect"]');
+
+    var enabledBoxes = Array.from(checkBoxes).filter(cb => !cb.disabled);
+    var checkedCount = enabledBoxes.filter(cb => cb.checked).length;
+
+    if (checkedCount === 0) {
+        header.checked = false;
+        header.indeterminate = false;
+    } else if (checkedCount === enabledBoxes.length) {
+        header.checked = true;
+        header.indeterminate = false;
+    } else {
+        header.checked = false;
+        header.indeterminate = true;
+    }
+}
+
+function attachHandlers() {
+    var grid = document.getElementById('<%= gvTimesheet.ClientID %>');
+           if (!grid) return;
+
+           var header = grid.querySelector('input[id*="chkSelectAll"]');
+           var checkBoxes = grid.querySelectorAll('input[type=checkbox][id*="chkSelect"]');
+
+           if (header) {
+               header.onclick = function () { toggleSelectAll(header); };
+           }
+
+           checkBoxes.forEach(function (cb) {
+               cb.onchange = updateHeaderState;
+           });
+
+           updateHeaderState();
+       }
+
+       // Run when page fully loads
+       document.addEventListener('DOMContentLoaded', attachHandlers);
+
+       // Handle UpdatePanel refresh (if exists)
+       if (window.Sys && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+           Sys.WebForms.PageRequestManager.getInstance().add_endRequest(attachHandlers);
+       }
+   </script>
+
+
 </asp:Content>
 <%--</head>
 <body>
@@ -76,7 +138,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
         <div class="grid-container">
-            <h2>Team Members</h2>
+            <asp:Label runat="server" ID="id_name"><h2>Team Members</h2></asp:Label>
             <asp:GridView ID="gvTeamMembers" runat="server" AutoGenerateColumns="False"
                 DataKeyNames="UserId"
                 OnRowCommand="gvTeamMembers_RowCommand">
@@ -102,32 +164,34 @@
                     OnClick="btnNextMonth_Click" />
             </div>
 
-<asp:GridView ID="gvTimesheet" runat="server" AutoGenerateColumns="False" OnRowCommand="gvTimesheet_RowCommand">
+           <asp:GridView ID="gvTimesheet" runat="server" AutoGenerateColumns="False" OnRowDataBound="gvTimesheet_RowDataBound">
     <Columns>
-        <asp:BoundField DataField="TaskDate" HeaderText="Date" DataFormatString="{0:dd-MMM-yyyy}">
-        <ItemStyle Width="9%" />
-            <HeaderStyle Width="9%" />
-        </asp:BoundField>
-        <asp:BoundField DataField="Description" HeaderText="Description" />
-        <asp:BoundField DataField="TimeSpent" HeaderText="Hours" >
-        <ItemStyle Width="9%" />
-            <HeaderStyle Width="9%" />
-        </asp:BoundField>
-        <asp:BoundField DataField="Type" HeaderText="Type" >
-        <ItemStyle Width="9%" />
-            <HeaderStyle Width="9%" />
-        </asp:BoundField>
-
-
-        <asp:TemplateField HeaderText="Approval">
-            <ItemStyle Width="15%" />
+        <asp:TemplateField HeaderText="Select">
+            <HeaderTemplate>
+                <asp:CheckBox ID="chkSelectAll" runat="server" />
+            </HeaderTemplate>
             <ItemTemplate>
-                <asp:Button ID="btnApprove" runat="server" Text="Approve" CommandName="Approve" CommandArgument='<%# Eval("TaskID") %>' CssClass="btn btn-success btn-sm" Style="background-color:green" />
-                <asp:Button ID="btnNotApprove" runat="server" Text="Not Approve" CommandName="NotApprove" CommandArgument='<%# Eval("TaskID") %>' CssClass="btn btn-danger btn-sm" />
+                <asp:CheckBox ID="chkSelect" runat="server" />
+                <asp:HiddenField ID="hfTaskID" runat="server" Value='<%# Eval("TaskID") %>' />
+                <asp:HiddenField ID="hfDescription" runat="server" Value='<%# Eval("Description") %>' />
             </ItemTemplate>
+            <ItemStyle Width="5%" />
         </asp:TemplateField>
+
+        <asp:BoundField DataField="TaskDate" HeaderText="Date" DataFormatString="{0:dd-MMM-yyyy}" />
+        <asp:BoundField DataField="Description" HeaderText="Description" />
+        <asp:BoundField DataField="TimeSpent" HeaderText="Hours" />
+        <asp:BoundField DataField="Type" HeaderText="Type" />
     </Columns>
 </asp:GridView>
+
+<div style="margin-top:10px;">
+    <asp:Button ID="btnApproveSelected" runat="server" Text="Approve Selected" CssClass="btn btn-success"
+        OnClick="btnApproveSelected_Click" />
+    <asp:Button ID="btnRejectSelected" runat="server" Text="Reject Selected" CssClass="btn btn-danger"
+        OnClick="btnRejectSelected_Click" />
+</div>
+
 
         </div>
         

@@ -35,7 +35,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-ALTER PROCEDURE [dbo].[PRC_SaveSalary]
+Create PROCEDURE [dbo].[PRC_SaveSalary]
 (
     @UserId VARCHAR(20),
     @Bonus DECIMAL(18,2) = NULL,
