@@ -702,7 +702,7 @@ namespace EmployeeTimesheet_Salary
                     conn.Open();
 
                     // 1. Get current values
-                    string selectQuery = @"SELECT UserLoginName, DOB, UserEmailId, UserMobileNo1,UserType 
+                    string selectQuery = @"SELECT UserLoginName, DOB, UserEmailId, UserMobileNo1,User_Type 
                                    FROM iUser 
                                    WHERE UserId = @UserId";
 
@@ -717,7 +717,7 @@ namespace EmployeeTimesheet_Salary
                             string currentDOB = Convert.ToDateTime(reader["DOB"]).ToString("M/d/yyyy h:mm:ss tt");
                             string currentEmail = reader["UserEmailId"].ToString().Trim();
                             string currentMobile = reader["UserMobileNo1"].ToString().Trim();
-                            string currentUserType = reader["UserType"].ToString().Trim();
+                            string currentUserType = reader["User_Type"].ToString().Trim();
 
                             reader.Close();
 
@@ -738,7 +738,7 @@ namespace EmployeeTimesheet_Salary
                                                DOB = @DOB, 
                                                UserEmailId = @UserEmailId, 
                                                UserMobileNo1 = @UserMobileNo1, 
-                                               UserType=@UserType
+                                               User_Type=@UserType
                                            WHERE UserId = @UserId";
 
                             using (SqlCommand updateCmd = new SqlCommand(updateQuery, conn))
@@ -1020,7 +1020,7 @@ namespace EmployeeTimesheet_Salary
                 {
                     conn.Open();
 
-                    string query = "SELECT UserType FROM iUser WHERE UserId = @UserId";
+                    string query = "SELECT User_Type FROM iUser WHERE UserId = @UserId";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {

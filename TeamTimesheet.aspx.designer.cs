@@ -15,6 +15,15 @@ namespace EmployeeTimesheet_Salary
     {
 
         /// <summary>
+        /// id_name control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label id_name;
+
+        /// <summary>
         /// gvTeamMembers control.
         /// </summary>
         /// <remarks>
@@ -76,5 +85,23 @@ namespace EmployeeTimesheet_Salary
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvTimesheet;
+
+        /// <summary>
+        /// btnApproveSelected control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnApproveSelected;
+
+        /// <summary>
+        /// btnRejectSelected control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnRejectSelected;
     }
 }
