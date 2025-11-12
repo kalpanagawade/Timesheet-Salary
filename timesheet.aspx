@@ -195,7 +195,8 @@
         }
 
         .holiday, .leave {
-            background-color: lightcoral;
+            background-color: lightpink;
+            color: white;
         }
 
         .approved {
@@ -203,6 +204,10 @@
             color: white;
         }
         /* Approved = green */
+
+        .NotApproved{
+    background-color: lightcoral;    
+}
 
         .nav-btn {
             margin: 5px;
