@@ -254,6 +254,7 @@ namespace EmployeeTimesheet_Salary
                                 else if (content == "In your bucket") cssClass = "bucket";
                                 else if (content == "Holiday") cssClass = "holiday";
                                 else if (content == "Approved") cssClass = "approved";
+                                else if (content == "NotApproved") cssClass = "NotApproved";
                                 else if (content == "Leave") cssClass = "leave";
                                 else if (content == "CompOff") cssClass = "compoff";
                             }
