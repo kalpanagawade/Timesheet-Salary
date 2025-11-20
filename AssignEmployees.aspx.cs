@@ -111,11 +111,11 @@ namespace EmployeeTimesheet_Salary
 
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                string query = "SELECT UserID, UserLoginName as FullName FROM IUser";
+                string query = "SELECT UserID, UserLoginName as FullName FROM IUser WHERE UserID<>@UserID";
 
                 if (!string.IsNullOrEmpty(filter))
                 {
-                    query += " WHERE UserID LIKE @Filter OR UserLoginName LIKE @Filter";
+                    query += " and UserID LIKE @Filter OR UserLoginName LIKE @Filter";
                 }
 
                 SqlCommand cmd = new SqlCommand(query, conn);
@@ -123,6 +123,7 @@ namespace EmployeeTimesheet_Salary
                 {
                     cmd.Parameters.AddWithValue("@Filter", "%" + filter + "%");
                 }
+                cmd.Parameters.AddWithValue("@UserID", Request.QueryString["UserID"]);
 
                 conn.Open();
                 SqlDataReader reader = cmd.ExecuteReader();

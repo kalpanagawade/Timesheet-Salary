@@ -490,12 +490,12 @@
                 <div class="navbar">
 
 
-                    <asp:Button runat="server" ID="btncre" class="home-active" Text="Create Employee"
-                        OnClientClick="document.getElementById('MainContent_Bigbox1').style.display='none';
-                     document.getElementById('MainContent_Bigbox').style.display='block'; return false;" />
                     <asp:Button runat="server" ID="btnsrh" class="home-active" Text="Search Employee"
                         OnClientClick="document.getElementById('MainContent_Bigbox').style.display='none';
                      document.getElementById('MainContent_Bigbox1').style.display='block'; return false;" />
+                    <asp:Button runat="server" ID="btncre" class="home-active" Text="Create Employee"
+                        OnClientClick="document.getElementById('MainContent_Bigbox1').style.display='none';
+                     document.getElementById('MainContent_Bigbox').style.display='block'; return false;" />
 
                 </div>
                  <%--              <div class="profile-container">

@@ -15,15 +15,6 @@ namespace EmployeeTimesheet_Salary
     {
 
         /// <summary>
-        /// btncre control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btncre;
-
-        /// <summary>
         /// btnsrh control.
         /// </summary>
         /// <remarks>
@@ -31,6 +22,15 @@ namespace EmployeeTimesheet_Salary
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnsrh;
+
+        /// <summary>
+        /// btncre control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btncre;
 
         /// <summary>
         /// Bigbox control.
