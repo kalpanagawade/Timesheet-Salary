@@ -20,8 +20,8 @@ namespace EmployeeTimesheet_Salary
             //txtCreatedBy.Text = Request.QueryString["Username"];
             if (!IsPostBack) // Ensure it runs only on the first page load
             {
-                Bigbox.Attributes["style"] = "display:block;";
-                Bigbox1.Attributes["style"] = "display:none;";
+                Bigbox.Attributes["style"] = "display:none;";
+                Bigbox1.Attributes["style"] = "display:block;";
                 Smallbox.Attributes["style"] = "display:none;";
                 DropDownList1.SelectedValue = "10";
                 GridView1.PageSize = Convert.ToInt32(DropDownList1.SelectedValue);

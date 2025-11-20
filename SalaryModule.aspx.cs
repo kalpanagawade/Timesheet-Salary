@@ -21,6 +21,7 @@ namespace EmployeeTimesheet_Salary
             if (!IsPostBack)
             {
                 BindEmployeeList();
+                
             }
             else
             {
@@ -29,14 +30,49 @@ namespace EmployeeTimesheet_Salary
                 {
                     SalMdlDiv.Style["display"] = "none";
                     DtlSalDiv.Style["display"] = "block";
+
                 }
                 else
                 {
                     SalMdlDiv.Style["display"] = "block";
                     DtlSalDiv.Style["display"] = "none";
+                    LoadMonth();
+                    LoadYear();
+                    gvTasks.RowDataBound += gvTasks_RowDataBound;
                 }
             }
         }
+        private void LoadMonth()
+        {
+            ddlMonth.Items.Clear();
+            ddlMonth.Items.Add(new ListItem("-- Select Month --", ""));
+
+            ddlMonth.Items.Add(new ListItem("January", "1"));
+            ddlMonth.Items.Add(new ListItem("February", "2"));
+            ddlMonth.Items.Add(new ListItem("March", "3"));
+            ddlMonth.Items.Add(new ListItem("April", "4"));
+            ddlMonth.Items.Add(new ListItem("May", "5"));
+            ddlMonth.Items.Add(new ListItem("June", "6"));
+            ddlMonth.Items.Add(new ListItem("July", "7"));
+            ddlMonth.Items.Add(new ListItem("August", "8"));
+            ddlMonth.Items.Add(new ListItem("September", "9"));
+            ddlMonth.Items.Add(new ListItem("October", "10"));
+            ddlMonth.Items.Add(new ListItem("November", "11"));
+            ddlMonth.Items.Add(new ListItem("December", "12"));
+        }
+
+        private void LoadYear()
+        {
+            ddlYear.Items.Clear();
+            ddlYear.Items.Add(new ListItem("-- Select Year --", ""));
+
+            int currentYear = DateTime.Now.Year;
+            for (int yr = 2000; yr <= currentYear + 1; yr++)
+            {
+                ddlYear.Items.Add(new ListItem(yr.ToString(), yr.ToString()));
+            }
+        }
+
 
         // 1️⃣ Bind All Employees Initially or Search Results
         private void BindEmployeeList(string empId = "", string empName = "")
@@ -93,7 +129,7 @@ namespace EmployeeTimesheet_Salary
                 string userId = args[0];
                 string username = args[1];
                 lblUser.Attributes["data-userid"] = userId;
-
+                ViewState["SelectedUserId"] = userId;
                 lblUser.Text = $"Employee: {username} (UserID: {userId})";
                 //pnlDetails.Visible = true;
                 SalMdlDiv.Style["display"] = "none";
@@ -104,33 +140,146 @@ namespace EmployeeTimesheet_Salary
                 pnlDetails.Visible = true;
 
                 ViewState["ShowDetails"] = true;
+                // 🔹🔹 RESET PREVIOUS DATA (IMPORTANT FIX)
+                gvTasks.DataSource = null;
+                gvTasks.DataBind();
 
-                BindTaskDetails(userId);
+                txtDeduction.Text = "";
+                ViewState["LeaveDays"] = null;
+
+                ddlMonth.ClearSelection();
+                ddlYear.ClearSelection();
+                // 🔹🔹 End Reset
+                //BindTaskDetails(userId);
                 BindSalaryDetails(userId);
             }
         }
 
-        // 6️⃣ Approved Task Details
-        private void BindTaskDetails(string userId)
+        //wip nOT wORKING check.gvTasks_RowDataBound
+        protected void gvTasks_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                string status = DataBinder.Eval(e.Row.DataItem, "Status").ToString();
+
+                switch (status)
+                {
+                    case "Holiday":
+                        e.Row.Attributes["style"] = "background-color:#ffcccb !important;"; // Light Red
+                        break;
+
+                    case "Leave":
+                        e.Row.Attributes["style"] = "background-color:#ffff99 !important;"; // Light Yellow
+                        break;
+
+                    case "Weekly Off":
+                        e.Row.Attributes["style"] = "background-color:#add8e6 !important;"; // Light Blue
+                        break;
+
+                    case "Comp Off":
+                        e.Row.Attributes["style"] = "background-color:lightgreen !important;";
+                        break;
+                }
+            }
+        }
+
+
+
+        private void BindTaskDetails(string userId, int month, int year)
         {
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string query = @"SELECT TaskDate, Description, TimeSpent, Type,
-                                        IsHoliday, IsLeave, IsWeeklyOff, IsCompOff, IsApproval
-                                 FROM kalpana..TaskEntries
-                                 WHERE UserId = @UserId AND IsApproval = 'Y'
-                                 ORDER BY TaskDate DESC";
+                SqlCommand cmd = new SqlCommand("GetTaskSummaryWithTotal", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@UserId", userId);
+                cmd.Parameters.AddWithValue("@Month", month);
+                cmd.Parameters.AddWithValue("@Year", year);
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
+
                 gvTasks.DataSource = dt;
                 gvTasks.DataBind();
+                int leaveCount = 0;
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (row["Status"].ToString() == "Leave")
+                    {
+                        int.TryParse(row["Total Days"].ToString(), out leaveCount);
+                        break; // stop loop once found
+                    }
+                }
+
+                ViewState["LeaveDays"] = leaveCount;
+
+                // Call to calculate deduction
+                CalculateDeduction();
             }
         }
+
+        private void CalculateDeduction()
+        {
+            if (ViewState["SelectedUserId"] == null || ViewState["LeaveDays"] == null)
+                return;
+
+            // Salary from screen
+            decimal monthSalary = 0;
+            decimal.TryParse(lblMonSalary.Text.Replace("Month Salary: ₹ ", "").Trim(), out monthSalary);
+
+            // Get month and year from dropdowns
+            int month = Convert.ToInt32(ddlMonth.SelectedValue);
+            int year = Convert.ToInt32(ddlYear.SelectedValue);
+
+            // Count leave days
+            int leaveDays = Convert.ToInt32(ViewState["LeaveDays"]);
+
+            // Get days in month
+            int totalDays = DateTime.DaysInMonth(year, month);
+
+            // Formula
+            decimal deduction = (monthSalary / totalDays) * leaveDays;
+
+            // Show result
+            txtDeduction.Text = deduction.ToString("0.00");
+        }
+
+
+
+        //protected void FilterChanged(object sender, EventArgs e)
+        //{
+        //    if (ViewState["SelectedUserId"] == null)
+        //        return; // prevents crash if no employee selected first
+
+        //    if (!string.IsNullOrEmpty(ddlMonth.SelectedValue) && !string.IsNullOrEmpty(ddlYear.SelectedValue))
+        //    {
+        //        string userId = ViewState["SelectedUserId"].ToString();
+        //        int selectedMonth = Convert.ToInt32(ddlMonth.SelectedValue);
+        //        int selectedYear = Convert.ToInt32(ddlYear.SelectedValue);
+
+        //        BindTaskDetails(userId, selectedMonth, selectedYear);
+        //    }
+        //}
+
+        protected void FilterChanged(object sender, EventArgs e)
+        {
+            if (ViewState["SelectedUserId"] == null)
+                return;
+
+            if (!string.IsNullOrEmpty(ddlMonth.SelectedValue) && !string.IsNullOrEmpty(ddlYear.SelectedValue))
+            {
+                string userId = ViewState["SelectedUserId"].ToString();
+                int selectedMonth = Convert.ToInt32(ddlMonth.SelectedValue);
+                int selectedYear = Convert.ToInt32(ddlYear.SelectedValue);
+
+                BindTaskDetails(userId, selectedMonth, selectedYear);
+
+                // After salary details loaded once, no need to reload every time
+                //Deduction will auto calculate inside BindTaskDetails()
+            }
+        }
+
 
         // 7️⃣ Salary Details
         private void BindSalaryDetails(string userId)

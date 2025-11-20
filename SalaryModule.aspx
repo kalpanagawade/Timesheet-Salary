@@ -127,8 +127,20 @@
         <h4><asp:Label ID="lblUser" runat="server" /></h4>
 
         <h5 class="mt-3">Approved Task Entries</h5>
+    <div style="display: flex;margin:1%">
+<asp:DropDownList ID="ddlMonth" runat="server" Width="200px" AutoPostBack="true" 
+    OnSelectedIndexChanged="FilterChanged" CssClass="form-control" style="width:200px;margin: 0% 1%;">
+</asp:DropDownList>
+
+<asp:DropDownList ID="ddlYear" runat="server" Width="200px" AutoPostBack="true" 
+    OnSelectedIndexChanged="FilterChanged" CssClass="form-control" style="width:200px;margin: 0% 1%;">
+</asp:DropDownList>
+         </div>
+
         <div class="table-responsive">
-            <asp:GridView ID="gvTasks" runat="server" AutoGenerateColumns="true" CssClass="table table-sm table-bordered" />
+          <asp:GridView ID="gvTasks" runat="server" AutoGenerateColumns="true" 
+    OnRowDataBound="gvTasks_RowDataBound" CssClass="table table-sm table-bordered" />
+
         </div>
 
         <h5 class="mt-3">Salary Details</h5>
