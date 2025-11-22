@@ -93,7 +93,7 @@ namespace EmployeeTimesheet_Salary
             using (SqlConnection con = new SqlConnection(connStr))
             {
                 SqlCommand cmd = new SqlCommand(
-                    "SELECT TaskID,TaskDate, Description, TimeSpent, Type, WorkCompletion " +
+                    "SELECT TaskID,TaskDate, Description, TimeSpent, Type, WorkCompletion,IsApproval as Status " +
                     "FROM kalpana..TaskEntries " +
                     "WHERE UserId=@UserId AND MONTH(TaskDate)=@Month AND YEAR(TaskDate)=@Year and IsSendForApproval='Y'", con);
                 cmd.Parameters.AddWithValue("@UserId", userId);
@@ -110,7 +110,7 @@ namespace EmployeeTimesheet_Salary
             dtFullMonth.Columns.Add("Description");
             dtFullMonth.Columns.Add("TimeSpent");
             dtFullMonth.Columns.Add("Type");
-
+            dtFullMonth.Columns.Add("Status");
             // Fill full month data
             DateTime startDate = new DateTime(year, month, 1);
             DateTime endDate = startDate.AddMonths(1).AddDays(-1);
@@ -270,25 +270,63 @@ namespace EmployeeTimesheet_Salary
         }
 
 
+        //protected void gvTimesheet_RowDataBound(object sender, GridViewRowEventArgs e)
+        //{
+        //    if (e.Row.RowType == DataControlRowType.DataRow)
+        //    {
+        //        CheckBox chk = (CheckBox)e.Row.FindControl("chkSelect");
+        //        HiddenField hfDescription = (HiddenField)e.Row.FindControl("hfDescription");
+
+        //        if (hfDescription != null && chk != null)
+        //        {
+        //            //string desc = hfDescription.Value.ToLower();
+        //            //if (desc.Contains("not filled timesheet"))
+        //            if (hfDescription.Value.ToLower().Contains("not filled timesheet"))
+        //            {
+        //                chk.Enabled = false; // disable checkbox
+        //                e.Row.ForeColor = System.Drawing.Color.Gray; // optional: gray out text
+        //            }
+        //        }
+        //    }
+        //}
+
         protected void gvTimesheet_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 CheckBox chk = (CheckBox)e.Row.FindControl("chkSelect");
                 HiddenField hfDescription = (HiddenField)e.Row.FindControl("hfDescription");
+                HiddenField hfStatus = (HiddenField)e.Row.FindControl("hfStatus");
 
                 if (hfDescription != null && chk != null)
                 {
-                    //string desc = hfDescription.Value.ToLower();
-                    //if (desc.Contains("not filled timesheet"))
                     if (hfDescription.Value.ToLower().Contains("not filled timesheet"))
                     {
-                        chk.Enabled = false; // disable checkbox
-                        e.Row.ForeColor = System.Drawing.Color.Gray; // optional: gray out text
+                        chk.Enabled = false;
+                        e.Row.ForeColor = System.Drawing.Color.Gray;
+                    }
+                }
+
+                if (hfStatus != null)
+                {
+                    string status = hfStatus.Value.ToLower();
+
+                    if (status == "y")
+                    {
+                        e.Row.BackColor = System.Drawing.Color.LightGreen;
+                        chk.Enabled = false;
+                    }
+                    else if (status == "n")
+                    {
+                        e.Row.BackColor = System.Drawing.Color.LightCoral;
+                        chk.Enabled = false;
                     }
                 }
             }
         }
+
+
+
     }
 
 }

@@ -40,7 +40,10 @@
         }
 
             .styled-grid th {
-                background-color: coral;
+                background-color: #007bff;
+                color: white;
+/*                padding: 8px;
+                text-align:center;*/
             }
 
             .styled-grid td, .styled-grid th {
@@ -207,7 +210,7 @@
             width: 16%; /* Adjust width to be in a row */
             height: 41px; /* You can adjust this height based on your preference */
             margin: 9px;
-            padding: 19px;
+            /*padding: 19px;*/
             box-sizing: border-box; /* Ensures padding doesn't affect the box's size */
             display: flex; /* Use Flexbox to center text inside the box */
             justify-content: center; /* Center text horizontally */
@@ -215,7 +218,8 @@
         }
 
             .smallbx:hover {
-                background-color: red;
+                background-color:  #198754;
+                color:#fff;
                 transition: 0.2s all linear;
             }
 
@@ -733,7 +737,7 @@
                     <div id="Smallbox" runat="server">
                         <div id="ED2" class="CreateUser2">
 
-                            <asp:Button runat="server" Text="User Details" ID="EDuserdetail" CssClass="smallbx"
+                            <asp:Button runat="server" Text="Employee Details" ID="EDuserdetail" CssClass="smallbx"
                                 OnClientClick="toggleDivs('MainContent_ED3B', 'MainContent_ED3A'); return false;"></asp:Button>
 
                             <asp:Button runat="server" Text="Service Sanctioning" ID="EDsersec" CssClass="smallbx"

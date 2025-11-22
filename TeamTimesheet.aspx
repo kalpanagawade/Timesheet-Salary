@@ -164,7 +164,7 @@ function attachHandlers() {
                     OnClick="btnNextMonth_Click" />
             </div>
 
-           <asp:GridView ID="gvTimesheet" runat="server" AutoGenerateColumns="False" OnRowDataBound="gvTimesheet_RowDataBound">
+          <%-- <asp:GridView ID="gvTimesheet" runat="server" AutoGenerateColumns="False" OnRowDataBound="gvTimesheet_RowDataBound">
     <Columns>
         <asp:TemplateField HeaderText="Select">
             <HeaderTemplate>
@@ -182,12 +182,61 @@ function attachHandlers() {
         <asp:BoundField DataField="Description" HeaderText="Description" />
         <asp:BoundField DataField="TimeSpent" HeaderText="Hours" />
         <asp:BoundField DataField="Type" HeaderText="Type" />
+
     </Columns>
+</asp:GridView>--%>
+
+        <asp:GridView ID="gvTimesheet" runat="server" AutoGenerateColumns="False" OnRowDataBound="gvTimesheet_RowDataBound">
+<Columns>
+    <asp:TemplateField HeaderText="Select">
+        <HeaderTemplate>
+            <asp:CheckBox ID="chkSelectAll" runat="server" />
+        </HeaderTemplate>
+        <ItemTemplate>
+            <asp:CheckBox ID="chkSelect" runat="server" />
+            <asp:HiddenField ID="hfTaskID" runat="server" Value='<%# Eval("TaskID") %>' />
+            <asp:HiddenField ID="hfDescription" runat="server" Value='<%# Eval("Description") %>' />
+            <asp:HiddenField ID="hfStatus" runat="server" Value='<%# Eval("Status") %>' />
+        </ItemTemplate>
+    </asp:TemplateField>
+
+    <asp:TemplateField HeaderText="Date">
+        <ItemTemplate>
+            <%# Eval("TaskDate", "{0:dd-MMM-yyyy}") %>
+        </ItemTemplate>
+    </asp:TemplateField>
+
+    <asp:TemplateField HeaderText="Description">
+        <ItemTemplate>
+            <%# Eval("Description") %>
+        </ItemTemplate>
+    </asp:TemplateField>
+
+    <asp:TemplateField HeaderText="Hours">
+        <ItemTemplate>
+            <%# Eval("TimeSpent") %>
+        </ItemTemplate>
+    </asp:TemplateField>
+
+    <asp:TemplateField HeaderText="Type">
+        <ItemTemplate>
+            <%# Eval("Type") %>
+        </ItemTemplate>
+    </asp:TemplateField>
+
+    <asp:TemplateField HeaderText="Status">
+        <ItemTemplate>
+            <asp:Label ID="lblStatus" runat="server" Text='<%# Eval("Status") %>'></asp:Label>
+        </ItemTemplate>
+    </asp:TemplateField>
+
+</Columns>
 </asp:GridView>
+
 
 <div style="margin-top:10px;">
     <asp:Button ID="btnApproveSelected" runat="server" Text="Approve Selected" CssClass="btn btn-success"
-        OnClick="btnApproveSelected_Click" />
+        OnClick="btnApproveSelected_Click"  style="background-color:green" />
     <asp:Button ID="btnRejectSelected" runat="server" Text="Reject Selected" CssClass="btn btn-danger"
         OnClick="btnRejectSelected_Click" />
 </div>
