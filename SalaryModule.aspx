@@ -10,9 +10,11 @@
         }
         th {
             text-align: center !important;
+            background: #007bff !important;
+            color: white !important;
+            padding: 8px;
         }
-
-        /* GridView table styling */
+                /* GridView table styling */
         .table thead th {
             background-color: #007BFF;
             color: white;
@@ -126,24 +128,14 @@
     <asp:Panel ID="pnlDetails" runat="server" Visible="false" CssClass="salary-panel">
         <h4><asp:Label ID="lblUser" runat="server" /></h4>
 
-        <h5 class="mt-3">Approved Task Entries</h5>
-    <div style="display: flex;margin:1%">
-<asp:DropDownList ID="ddlMonth" runat="server" Width="200px" AutoPostBack="true" 
+
+                <h5 class="mt-3">Salary Details</h5>
+        <div style="display: flex;margin:1%">
+        <asp:DropDownList ID="ddlYear" runat="server" Width="200px" AutoPostBack="true" 
     OnSelectedIndexChanged="FilterChanged" CssClass="form-control" style="width:200px;margin: 0% 1%;">
 </asp:DropDownList>
+            </div>
 
-<asp:DropDownList ID="ddlYear" runat="server" Width="200px" AutoPostBack="true" 
-    OnSelectedIndexChanged="FilterChanged" CssClass="form-control" style="width:200px;margin: 0% 1%;">
-</asp:DropDownList>
-         </div>
-
-        <div class="table-responsive">
-          <asp:GridView ID="gvTasks" runat="server" AutoGenerateColumns="true" 
-    OnRowDataBound="gvTasks_RowDataBound" CssClass="table table-sm table-bordered" />
-
-        </div>
-
-        <h5 class="mt-3">Salary Details</h5>
         <div style="display:flex;">
         <div style="width: 80%;margin-right: -38%;">
         <table class="table table-bordered w-50">
@@ -162,6 +154,22 @@
 <asp:Label ID="lblMessage" runat="server" CssClass="text-success" />
         </div>
         </div>
+
+        <h5 class="mt-3">Approved Task Entries</h5>
+    <div style="display: flex;margin:1%">
+<asp:DropDownList ID="ddlMonth" runat="server" Width="200px" AutoPostBack="true" 
+    OnSelectedIndexChanged="FilterChanged" CssClass="form-control" style="width:200px;margin: 0% 1%;">
+</asp:DropDownList>
+
+    </div>
+
+        <div class="table-responsive">
+          <asp:GridView ID="gvTasks" runat="server" AutoGenerateColumns="true" 
+    OnRowDataBound="gvTasks_RowDataBound" CssClass="table table-sm table-bordered" />
+
+        </div>
+
+       
     </asp:Panel>
 
 

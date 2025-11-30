@@ -1,209 +1,166 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Configuration;
 using System.Xml.Linq;
 
 namespace EmployeeTimesheet_Salary
 {
     public partial class Notice : System.Web.UI.Page
     {
+        string connStr = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+
         protected void Page_Load(object sender, EventArgs e)
         {
             //txtCreatedBy.Text = Request.QueryString["Username"];
             //    Get_moduleName();
             if (!IsPostBack) // Ensure it runs only on the first page load
             {
+                LoadDashboardCounts();
+                LoadNotices();
+                CurrentMonth = DateTime.Now.Month;
+                CurrentYear = DateTime.Now.Year;
+                BindHolidayData();
 
             }
         }
 
-        //private void Get_moduleName()
-        //{
-        //    string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+        private void LoadDashboardCounts()
+        {
+            using (SqlConnection con = new SqlConnection(connStr))
+            {
+                con.Open();
 
-        //    using (SqlConnection conn = new SqlConnection(connString))
-        //    {
-        //        try
-        //        {
-        //            conn.Open();
+                // Total employees
+                SqlCommand cmd1 = new SqlCommand("SELECT COUNT(*) FROM iuser", con);
+                lblTotalEmployees.Text = cmd1.ExecuteScalar().ToString();
 
-        //            using (SqlCommand cmd = new SqlCommand("PRCGET_UserLogin_N_Page_Name", conn))
-        //            {
-        //                cmd.CommandType = CommandType.StoredProcedure;
-        //                cmd.Parameters.AddWithValue("@UserId", Request.QueryString["UserID"]);
+                // Pending timesheets
+                SqlCommand cmd2 = new SqlCommand("SELECT COUNT(*) FROM TaskEntries WHERE IsSendForApproval='Y'", con);
+                lblPendingTimesheets.Text = cmd2.ExecuteScalar().ToString();
 
-        //                using (SqlDataReader reader = cmd.ExecuteReader())
-        //                {
-        //                    while (reader.Read())
-        //                    {
-        //                        string pageName = reader["Page_name"].ToString().Trim();
+                // Approvals
+                SqlCommand cmd3 = new SqlCommand("SELECT COUNT(*) FROM TaskEntries WHERE IsApproval='Y'", con);
+                lblApprovals.Text = cmd3.ExecuteScalar().ToString();
 
-        //                        if (pageName.Equals("CreateUpdateUser.aspx", StringComparison.OrdinalIgnoreCase))
-        //                        {
-        //                            Button btnEmpDts = new Button();
-        //                            btnEmpDts.ID = "btnEmpDts";
-        //                            btnEmpDts.Text = "Employee Details";
-        //                            btnEmpDts.CssClass = "home-active";
-        //                            btnEmpDts.Click += new EventHandler(btnEmpDts_Click);
-        //                            phDynamicButtons.Controls.Add(btnEmpDts);
-        //                        }
-        //                        else if (pageName.Equals("timesheet.aspx", StringComparison.OrdinalIgnoreCase))
-        //                        {
-        //                            Button btnEmpTimSht = new Button();
-        //                            btnEmpTimSht.ID = "btnEmpTimSht";
-        //                            btnEmpTimSht.Text = "Employee Timesheet";
-        //                            btnEmpTimSht.CssClass = "home-active";
-        //                            btnEmpTimSht.Click += new EventHandler(btnEmpTimSht_Click);
-        //                            phDynamicButtons.Controls.Add(btnEmpTimSht);
-        //                        }
-        //                        else if (pageName.Equals("TeamTimesheet.aspx", StringComparison.OrdinalIgnoreCase))
-        //                        {
-        //                            Button btnTeamTimSht = new Button();
-        //                            btnTeamTimSht.ID = "btnTeamTimSht";
-        //                            btnTeamTimSht.Text = "Team Timesheet";
-        //                            btnTeamTimSht.CssClass = "home-active";
-        //                            btnTeamTimSht.Click += new EventHandler(btnTeamTimSht_Click);
-        //                            phDynamicButtons.Controls.Add(btnTeamTimSht);
-        //                        }
+                // Payroll pending
+                SqlCommand cmd4 = new SqlCommand("SELECT COUNT(*) FROM Salary", con);
+                //("SELECT COUNT(*) FROM Payroll WHERE Status='Pending'", con);
+                lblPayrollItems.Text = cmd4.ExecuteScalar().ToString();
 
-        //                        // Add more cases if you have more page names
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
-        //            {
-        //                logCmd.CommandType = CommandType.StoredProcedure;
-        //                logCmd.Parameters.AddWithValue("@MethodName", "Get_moduleName");
-        //                logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
-        //                logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
-
-        //                if (conn.State != ConnectionState.Open)
-        //                    conn.Open();
-
-        //                logCmd.ExecuteNonQuery();
-        //            }
-
-                  
-        //        }
-        //    }
-        //}
-
-        //protected void btnTeamTimSht_Click(object sender, EventArgs e)
-        //{
-        //    string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
-
-        //    try
-        //    {
-        //        // Retrieve UserID from query string
-        //        string userId = Request.QueryString["UserID"];
-
-        //        // Optional: Validate userId (null/empty)
-        //        if (string.IsNullOrEmpty(userId))
-        //            throw new Exception("UserID is missing in query string.");
-
-        //        // Redirect to CreateUpdateUser.aspx
-        //        Response.Redirect("TeamTimesheet.aspx?UserID=" + Server.UrlEncode(userId) +
-        //                          "&Username=" + Server.UrlEncode(txtCreatedBy.Text.Trim()), false);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Log the error using a SqlConnection
-        //        using (SqlConnection conn = new SqlConnection(connString))
-        //        {
-        //            using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
-        //            {
-        //                logCmd.CommandType = CommandType.StoredProcedure;
-        //                logCmd.Parameters.AddWithValue("@MethodName", "btnTeamTimSht_Click");
-        //                logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
-        //                logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
-
-        //                conn.Open();
-        //                logCmd.ExecuteNonQuery();
-        //            }
-        //        }
-        //    }
-        //}
-
-        //protected void btnEmpDts_Click(object sender, EventArgs e)
-        //{
-        //    string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
-
-        //    try
-        //    {
-        //        // Retrieve UserID from query string
-        //        string userId = Request.QueryString["UserID"];
-
-        //        // Optional: Validate userId (null/empty)
-        //        if (string.IsNullOrEmpty(userId))
-        //            throw new Exception("UserID is missing in query string.");
-
-        //        // Redirect to CreateUpdateUser.aspx
-        //        Response.Redirect("CreateUpdateUser.aspx?UserID=" + Server.UrlEncode(userId) +
-        //                          "&Username=" + Server.UrlEncode(txtCreatedBy.Text.Trim()), false);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Log the error using a SqlConnection
-        //        using (SqlConnection conn = new SqlConnection(connString))
-        //        {
-        //            using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
-        //            {
-        //                logCmd.CommandType = CommandType.StoredProcedure;
-        //                logCmd.Parameters.AddWithValue("@MethodName", "btnEmpDts_Click");
-        //                logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
-        //                logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
-
-        //                conn.Open();
-        //                logCmd.ExecuteNonQuery();
-        //            }
-        //        }
-        //    }
-        //}
-
-
-        //protected void btnEmpTimSht_Click(object sender, EventArgs e)
-        //        {
-        //    string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
-
-        //    try
-        //    {
-                
-        //        // Redirect to timesheet.aspx
-        //        string userId = Request.QueryString["UserID"];
-
-        //        if (string.IsNullOrEmpty(userId))
-        //            throw new Exception("UserID is missing in query string.");
-        //        Response.Redirect("timesheet.aspx?UserID=" + Server.UrlEncode(userId) + "&Username=" + Server.UrlEncode(txtCreatedBy.Text.Trim()));
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Log the error using a SqlConnection
-        //        using (SqlConnection conn = new SqlConnection(connString))
-        //        {
-        //            using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
-        //            {
-        //                logCmd.CommandType = CommandType.StoredProcedure;
-        //                logCmd.Parameters.AddWithValue("@MethodName", " btnEmpTimSht_Click");
-        //                logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
-        //                logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
-
-        //                conn.Open();
-        //                logCmd.ExecuteNonQuery();
-        //            }
-        //        }
-        //    }
-
-        //}
-
+                con.Close();
             }
         }
+
+        public int CurrentMonth
+        {
+            get { return (int)(ViewState["CurrentMonth"] ?? DateTime.Now.Month); }
+            set { ViewState["CurrentMonth"] = value; }
+        }
+        public int CurrentYear
+        {
+            get { return (int)(ViewState["CurrentYear"] ?? DateTime.Now.Year); }
+            set { ViewState["CurrentYear"] = value; }
+        }
+
+        private void BindHolidayData()
+        {
+            LblMonth.Text = new DateTime(CurrentYear, CurrentMonth, 1).ToString("MMMM yyyy");
+
+            string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                string query = @"SELECT HolidayDate, HolidayName
+                         FROM EmployeeHolidays
+                         WHERE MONTH(HolidayDate) = @Month AND YEAR(HolidayDate) = @Year
+                         ORDER BY HolidayDate";
+
+                SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                da.SelectCommand.Parameters.AddWithValue("@Month", CurrentMonth);
+                da.SelectCommand.Parameters.AddWithValue("@Year", CurrentYear);
+
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                gvHoliday.DataSource = dt;
+                gvHoliday.DataBind();
+            }
+        }
+
+        protected void btnPrev_Click(object sender, EventArgs e)
+        {
+            CurrentMonth--;
+            if (CurrentMonth < 1)
+            {
+                CurrentMonth = 12;
+                CurrentYear--;
+            }
+            BindHolidayData();
+        }
+
+        protected void btnNext_Click(object sender, EventArgs e)
+        {
+            CurrentMonth++;
+            if (CurrentMonth > 12)
+            {
+                CurrentMonth = 1;
+                CurrentYear++;
+            }
+            BindHolidayData();
+        }
+
+        private void LoadNotices()
+        {
+            string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                string query = @"SELECT TOP 10 NoticeText, CreatedDate 
+                         FROM NoticeBoard 
+                         ORDER BY CreatedDate DESC";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                conn.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                lstNotice.Items.Clear();
+                while (dr.Read())
+                {
+                    lstNotice.Items.Add($"{dr["NoticeText"]}  ({Convert.ToDateTime(dr["CreatedDate"]).ToString("dd-MMM-yyyy")})");
+                }
+                dr.Close();
+            }
+        }
+
+        protected void btnAddNotice_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(txtNotice.Text))
+            {
+                string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+                using (SqlConnection conn = new SqlConnection(connString))
+                {
+                    string query = "INSERT INTO NoticeBoard (NoticeText) VALUES (@Notice)";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@Notice", txtNotice.Text.Trim());
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+
+                txtNotice.Text = "";
+                LoadNotices();
+            }
+        }
+
+
+    }
+}
+
