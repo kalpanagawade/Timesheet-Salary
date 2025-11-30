@@ -151,7 +151,8 @@ namespace EmployeeTimesheet_Salary
                 ddlYear.ClearSelection();
                 // 🔹🔹 End Reset
                 //BindTaskDetails(userId);
-                BindSalaryDetails(userId);
+                int Year = 1901;
+                BindSalaryDetails(userId, Year);
             }
         }
 
@@ -215,7 +216,7 @@ namespace EmployeeTimesheet_Salary
                 ViewState["LeaveDays"] = leaveCount;
 
                 // Call to calculate deduction
-                CalculateDeduction();
+                //CalculateDeduction();
             }
         }
 
@@ -267,28 +268,37 @@ namespace EmployeeTimesheet_Salary
             if (ViewState["SelectedUserId"] == null)
                 return;
 
+            string userId = ViewState["SelectedUserId"].ToString();
+            
+            
             if (!string.IsNullOrEmpty(ddlMonth.SelectedValue) && !string.IsNullOrEmpty(ddlYear.SelectedValue))
             {
-                string userId = ViewState["SelectedUserId"].ToString();
-                int selectedMonth = Convert.ToInt32(ddlMonth.SelectedValue);
                 int selectedYear = Convert.ToInt32(ddlYear.SelectedValue);
-
+                int selectedMonth = Convert.ToInt32(ddlMonth.SelectedValue);
                 BindTaskDetails(userId, selectedMonth, selectedYear);
+                BindSalaryDetails(userId, selectedYear);
 
                 // After salary details loaded once, no need to reload every time
                 //Deduction will auto calculate inside BindTaskDetails()
+            }
+
+            if (!string.IsNullOrEmpty(ddlYear.SelectedValue))
+            {
+                int selectedYear = Convert.ToInt32(ddlYear.SelectedValue);
+                BindSalaryDetails(userId, selectedYear);
             }
         }
 
 
         // 7️⃣ Salary Details
-        private void BindSalaryDetails(string userId)
+        private void BindSalaryDetails(string userId,int Year)
         {
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string query = @"SELECT TOP 1 * FROM kalpana..Salary WHERE UserId = @UserId";
+                string query = @"SELECT TOP 1 * FROM kalpana..Salary WHERE UserId = @UserId and Year=@Year";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@UserId", userId);
+                cmd.Parameters.AddWithValue("@Year", Year);
 
                 conn.Open();
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -311,6 +321,7 @@ namespace EmployeeTimesheet_Salary
                     lblMonSalary.Text = "No Month salary data found.";
                     lblAnnual.Text= "No Annual Income data found.";
                 }
+                CalculateDeduction();
             }
         }
 
@@ -344,13 +355,18 @@ namespace EmployeeTimesheet_Salary
                 cmd.Parameters.AddWithValue("@HRA", txtHRA.Text);
                 cmd.Parameters.AddWithValue("@Allowance", txtAllowance.Text);
                 cmd.Parameters.AddWithValue("@Deductions", txtDeduction.Text);
+                if (!string.IsNullOrEmpty(ddlYear.SelectedValue))
+                {
+                    cmd.Parameters.AddWithValue("@Year", Convert.ToInt32(ddlYear.SelectedValue));                    
+                }
 
                 conn.Open();
                 int rows = cmd.ExecuteNonQuery();
                 conn.Close();
 
                 lblMessage.Text = "✅ Salary saved successfully!";
-                BindSalaryDetails(userId);
+                int selectedYear = Convert.ToInt32(ddlYear.SelectedValue);
+                BindSalaryDetails(userId, selectedYear);
             }
         }
 
