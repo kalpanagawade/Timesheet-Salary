@@ -37,34 +37,6 @@ GO
 ALTER TABLE [dbo].[Payroll] ADD  DEFAULT (getdate()) FOR [CreatedDate]
 GO
 
-USE [kalpana]
-GO
-
-/****** Object:  Table [dbo].[Salary]    Script Date: 29-11-2025 23:21:25 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE TABLE [dbo].[Salary](
-	[SalaryID] [int] IDENTITY(1,1) NOT NULL,
-	[UserId] [varchar](20) NOT NULL,
-	[BasicSalary] [decimal](18, 2) NOT NULL,
-	[HRA] [decimal](18, 2) NULL,
-	[Allowance] [decimal](18, 2) NULL,
-	[Deductions] [decimal](18, 2) NULL,
-	[Bonus] [decimal](18, 2) NULL,
-	[MonthlyNetSalary]  AS ((([BasicSalary]+[HRA])+[Allowance])-[Deductions]),
-	[MonthlySalary]  AS (((([BasicSalary]+[HRA])+[Allowance])-[Deductions])/(12)),
-	[AnnualIncome]  AS (((([BasicSalary]+[HRA])+[Allowance])-[Deductions])*(12)+isnull([Bonus],(0))),
-	[YEAR] [varchar](10) NULL,--  Add Column
-PRIMARY KEY CLUSTERED 
-(
-	[SalaryID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
 
 USE [kalpana]
 GO

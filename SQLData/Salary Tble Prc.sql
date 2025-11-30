@@ -2,27 +2,30 @@
 USE [kalpana]
 GO
 
+/****** Object:  Table [dbo].[Salary]    Script Date: 29-11-2025 23:21:25 ******/
 SET ANSI_NULLS ON
 GO
+
 SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[Salary](
-    [SalaryID]       INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    [UserId]         VARCHAR(20) NOT NULL,
-    
-    -- Monthly components
-    [BasicSalary]    DECIMAL(18,2) NOT NULL,    -- Monthly basic salary
-    [HRA]            DECIMAL(18,2) NULL,       -- Monthly House Rent Allowance
-    [Allowance]      DECIMAL(18,2) NULL,       -- Monthly allowance
-    [Deductions]     DECIMAL(18,2) NULL,       -- Monthly deductions
-    [Bonus]          DECIMAL(18,2) NULL,       -- Yearly bonus (optional)
-
-    -- Computed columns (directly using base columns)
-    [MonthlyNetSalary] AS (([BasicSalary] + [HRA] + [Allowance] - [Deductions])),
+	[SalaryID] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [varchar](20) NOT NULL,
+	[BasicSalary] [decimal](18, 2) NOT NULL,
+	[HRA] [decimal](18, 2) NULL,
+	[Allowance] [decimal](18, 2) NULL,
+	[Deductions] [decimal](18, 2) NULL,
+	[Bonus] [decimal](18, 2) NULL,
+	[MonthlyNetSalary]  AS ((([BasicSalary]+[HRA])+[Allowance])-[Deductions]),
 	[MonthlySalary]  AS (((([BasicSalary]+[HRA])+[Allowance])-[Deductions])/(12)),
-    [AnnualIncome]     AS ((([BasicSalary] + [HRA] + [Allowance] - [Deductions]) * 12) + ISNULL([Bonus],0))
-)
+	[AnnualIncome]  AS (((([BasicSalary]+[HRA])+[Allowance])-[Deductions])*(12)+isnull([Bonus],(0))),
+	[YEAR] [varchar](10) NULL,--  Add Column
+PRIMARY KEY CLUSTERED 
+(
+	[SalaryID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
 GO
 
 
