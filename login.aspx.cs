@@ -5,8 +5,10 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Web.Script.Services;
 
 namespace EmployeeTimesheet_Salary
 {
@@ -79,6 +81,44 @@ namespace EmployeeTimesheet_Salary
                 }
             }
         }
+
+        public static string generatedOTP = "";
+
+        [WebMethod]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public static void SendOTP(string emailOrPhone)
+        {
+            Random rnd = new Random();
+            generatedOTP = rnd.Next(100000, 999999).ToString();
+
+
+
+
+            // Send Email or SMS here
+            // Example email code:
+            // EmailService.Send(emailOrPhone, "Your OTP", "Your OTP is " + generatedOTP);
+        }
+
+        [WebMethod]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public static string VerifyOTP(string otp)
+        {
+            if (otp == generatedOTP)
+                return "OK";
+            else
+                return "FAIL";
+        }
+
+        [WebMethod]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public static void UpdatePassword(string newPassword)
+        {
+            //return "UPDATED";
+            // Update password into SQL database
+            // Example:
+            // UPDATE Users SET Password = @newPassword WHERE Email = @email
+        }
+
 
 
     }
