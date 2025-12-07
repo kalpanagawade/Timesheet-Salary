@@ -81,16 +81,58 @@
     border-color:#444;
     background-color: #444;
 }
+
+.hourglass {
+  width: 70px;
+  height: 70px;
+  border: 10px solid Black;
+  border-color: red transparent yellow transparent;
+  border-radius: 50%;
+  animation: hourglass 1.2s infinite;
+  margin: auto;
+}
+
+@keyframes hourglass {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+        .loader-box {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            padding-top:20%
+        }
     </style>
 </head>
 
 <body>
     <form runat="server">
+        
+        <div id="loader" class="loader-box">
+ <div class="hourglass"></div>
+ <p>Loading...</p>
+         </div>
+
         <header>
             <asp:Image ID="imgLogo" runat="server" ImageUrl="~/img/logo.png"
                        Width="50px" Height="50px" Style="margin-left: 8px;" />
              <!-- Home Icon Button -->
-    <asp:LinkButton ID="btnHome" runat="server" CssClass="home-icon" OnClick="btnHome_Click" ToolTip="Home">
+    <asp:LinkButton ID="btnHome" runat="server" CssClass="home-icon" OnClick="btnHome_Click" ToolTip="Home" OnClientClick="showLoader();" UseSubmitBehavior="false">
         <i class="fa fa-home"></i>
     </asp:LinkButton>
             <div class="navbar" id="navContainer" runat="server">
@@ -99,13 +141,26 @@
 
             <div style="display:flex;align-items:center;">
                 <asp:Label ID="lblUsername" runat="server" CssClass="username-label" Text="User"></asp:Label>                
-                <asp:Button ID="btnLogout" runat="server" CssClass="logout-btn" Text="Logout" OnClick="btnLogout_Click" />
+                <asp:Button ID="btnLogout" runat="server" CssClass="logout-btn" Text="Logout" OnClick="btnLogout_Click" OnClientClick="showLoader();" UseSubmitBehavior="false" />
             </div>
         </header>
 
         <main style="padding-top:5%;">
             <asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
         </main>
+
+                    <script type="text/javascript">
+                        function showLoader() {
+                            debugger
+                            document.getElementById("loader").style.display = "block";
+
+                            setTimeout(function () {
+                                // auto hide after 3 seconds
+                                document.getElementById("loader").style.display = "none";
+                            }, 100000);
+                        }
+                    </script>
+
     </form>
 </body>
 </html>

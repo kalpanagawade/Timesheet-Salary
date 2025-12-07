@@ -24,6 +24,15 @@ namespace EmployeeTimesheet_Salary
         protected global::System.Web.UI.HtmlControls.HtmlForm form2;
 
         /// <summary>
+        /// ScriptManager1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.ScriptManager ScriptManager1;
+
+        /// <summary>
         /// chkRememberMe control.
         /// </summary>
         /// <remarks>
@@ -33,13 +42,13 @@ namespace EmployeeTimesheet_Salary
         protected global::System.Web.UI.WebControls.CheckBox chkRememberMe;
 
         /// <summary>
-        /// lnkForgotPassword control.
+        /// lnkfrgpass control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkForgotPassword;
+        protected global::System.Web.UI.WebControls.LinkButton lnkfrgpass;
 
         /// <summary>
         /// btnLogin control.

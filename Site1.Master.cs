@@ -92,7 +92,10 @@ namespace EmployeeTimesheet_Salary
             {
                 Text = text,
                 ID = id,
-                CssClass = "nav-button"
+                CssClass = "nav-button",
+                OnClientClick= "showLoader();",
+                //UseSubmitBehavior = "false",
+
             };
             btn.Click += clickHandler;
             navContainer.Controls.Add(btn);

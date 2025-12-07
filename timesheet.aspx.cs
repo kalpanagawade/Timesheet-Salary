@@ -962,10 +962,18 @@ namespace EmployeeTimesheet_Salary
                     cmd.ExecuteNonQuery();
 
                     string result = outputMsg.Value.ToString();
+                    //                string script = $@"
+                    //alert('{result}');
+                    //$('#taskModal').modal('hide'); 
+                    //";
                     string script = $@"
-    alert('{result}');
-    $('#taskModal').modal('hide'); 
-    ";
+                alert('{result}');
+                $('#taskModal').modal('hide');
+                setTimeout(function(){{
+                    location.reload();
+                }}, 500);
+            ";
+
 
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "CloseModalWithAlert", script, true);
 

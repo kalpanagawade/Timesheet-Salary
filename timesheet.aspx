@@ -110,11 +110,11 @@
 
 
         .header-section {
-            background-color: antiquewhite;
+            background-color: floralwhite;
             padding: 0px 15px;
             border: 1px solid #ccc;
             margin: 0px 5px 5px 5px;
-            border-radius: 35px;
+            border-radius: 1.25rem;
             line-height: 1.0;
         }
 
@@ -271,6 +271,9 @@
         /*.modal {
             top: -6%
         }*/
+        .form-control{
+            border-radius: 1.25rem;
+        }
       
     </style>
 
@@ -392,6 +395,30 @@
             });
         });
 
+        function validateDates() {
+
+            var fromDate = document.getElementById('<%= txtFromDate.ClientID %>').value;
+            var toDate = document.getElementById('<%= txtToDate.ClientID %>').value;
+
+            if (fromDate !== "" && toDate !== "") {
+                var fDate = new Date(fromDate.split('-').reverse().join('-'));
+                var tDate = new Date(toDate.split('-').reverse().join('-'));
+
+                // Difference in days
+                var diffTime = tDate - fDate;
+                var diffDays = diffTime / (1000 * 3600 * 24);
+
+                if (diffDays > 30) {
+                    alert("❌ To Date cannot be more than 31 days after From Date.");
+                    document.getElementById('<%= txtToDate.ClientID %>').value = "";
+                document.getElementById('<%= btnFetch.ClientID %>').disabled = true;
+                return;
+            }
+
+            // Enable button
+                document.getElementById('<%= btnFetch.ClientID %>').disabled = false;
+            }
+        }
 
     </script>
 
@@ -648,11 +675,21 @@
 
 
         function displayCurrentDayDate() {
+            debugger
             const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             const now = new Date();
             const day = days[now.getDay()];
-            const date = now.getDate();
-            const formatted = `${day}, ${date}`;
+            const date = String(now.getDate()).padStart(2, '0');
+
+            // Month short name (JAN, FEB, MAR...)
+            const month = now.toLocaleString('en-us', { month: 'short' }).toUpperCase();
+
+            // Year
+            const year = now.getFullYear();
+
+            // Final formatted output
+            const formatted = `${day}, ${date}-${month}-${year}`;
+
             document.getElementById('currentDateDisplay').textContent = formatted;
         }
 
@@ -703,20 +740,21 @@
             <div class="header-row">
                 <div class="header-group">
                     <label>Work Place *</label>
-                    <asp:DropDownList ID="ddlWorkPlace" runat="server">
+                    <asp:DropDownList ID="ddlWorkPlace" runat="server" style="border-radius: 1.25rem; padding-right:34px">
+                        <asp:ListItem Text="Select" Value="Sel" />
                         <asp:ListItem Text="Work From Home" Value="WFH" />
                         <asp:ListItem Text="Office" Value="Office" />
                     </asp:DropDownList>
                 </div>
 
-                <div class="header-group">
+                <div class="header-group" style="margin-left:54px;">
                     <label>In Time *</label>
-                    <asp:TextBox ID="txtInTime" runat="server" ReadOnly="true" ClientIDMode="Static" />
+                    <asp:TextBox ID="txtInTime" runat="server" ReadOnly="true" ClientIDMode="Static" style="border-radius: 1.25rem;" />
                 </div>
 
                 <div class="header-group">
                     <label>Out Time *</label>
-                    <asp:TextBox ID="txtOutTime" runat="server" ReadOnly="true" ClientIDMode="Static" />
+                    <asp:TextBox ID="txtOutTime" runat="server" ReadOnly="true" ClientIDMode="Static" Style="border-radius: 1.25rem;"  />
                 </div>
 
                 <div class="header-group">
@@ -733,12 +771,18 @@
             <div class="header-row">
                 <div class="header-group2">
                     <label>From Date *</label>
-                    <asp:TextBox ID="txtFromDate" runat="server" CssClass="date-input" placeholder="dd-mm-yyyy" />
+                    <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
+
+<asp:TextBox  ID="txtFromDate"  runat="server" CssClass="date-input"  placeholder="dd-mm-yyyy" onchange="validateDates()"  Style="border-radius: 1.25rem;" />
+<ajaxToolkit:CalendarExtender ID="CalendarExtender1"  runat="server"  TargetControlID="txtFromDate" Format="dd-MM-yyyy"></ajaxToolkit:CalendarExtender>
                 </div>
 
                 <div class="header-group2">
                     <label>To Date *</label>
-                    <asp:TextBox ID="txtToDate" runat="server" CssClass="date-input" placeholder="dd-mm-yyyy" />
+                     <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
+                    <asp:TextBox ID="txtToDate" runat="server" CssClass="date-input" placeholder="dd-mm-yyyy" onchange="validateDates()" Style="border-radius: 1.25rem;" />
+                    <ajaxToolkit:CalendarExtender ID="CalendarExtender2"  runat="server"  TargetControlID="txtToDate" Format="dd-MM-yyyy"></ajaxToolkit:CalendarExtender>
+
                 </div>
 
                 <div class="header-group2">
@@ -747,7 +791,7 @@
 
                 <div class="header-group2">
                     <span id="currentDateDisplay"></span>
-                    <label>Status</label>
+                   <%-- <label>Status</label>--%>
                     <%--<asp:Image ID="imgStatusHelp" runat="server" ImageUrl="~/images/info.png" ToolTip="Status info" />--%>
                 </div>
             </div>
@@ -756,7 +800,7 @@
         <div style="text-align: center; margin-bottom: 10px;">
             <!-- Navigation Buttons -->
             <asp:Button ID="btnPrev" runat="server" Text="&lt;" OnClick="btnPrev_Click" CssClass="nav-btn" />
-            <asp:Button ID="btnNext" runat="server" Text="&gt;" OnClick="btnNext_Click" CssClass="nav-btn" />
+          
 
             <!-- Hidden Field to keep track of current month -->
             <asp:HiddenField ID="hfMonthYear" runat="server" />
@@ -765,6 +809,8 @@
             <div class="month-label">
                 <asp:Label ID="lblMonthYear" runat="server" />
             </div>
+
+              <asp:Button ID="btnNext" runat="server" Text="&gt;" OnClick="btnNext_Click" CssClass="nav-btn" />
         </div>
 
         <div style="margin: 0px 7px;">
