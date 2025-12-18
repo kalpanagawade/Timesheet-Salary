@@ -356,10 +356,78 @@ namespace EmployeeTimesheet_Salary
 
 
 
+        //protected void btnSearch_Click(object sender, EventArgs e)
+        //{
+        //    Bigbox.Attributes["style"] = "display:none;";
+        //    Bigbox1.Attributes["style"] = "display:block;";
+        //    string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+        //    using (SqlConnection conn = new SqlConnection(connString))
+        //    {
+        //        try
+        //        {
+        //            conn.Open();
+
+        //            // Define stored procedure name, not SQL text
+        //            using (SqlCommand cmd = new SqlCommand("search_userdetail", conn))
+        //            {
+        //                cmd.CommandType = CommandType.StoredProcedure; // Tell it it's a stored procedure
+
+        //                // Check if textUserid is not null or blank
+        //                if (!string.IsNullOrWhiteSpace(txtuidsrh.Text))
+        //                {
+        //                    cmd.Parameters.AddWithValue("@UserId", txtuidsrh.Text.Trim());
+        //                }
+
+        //                // Check if textUserLoginName is not null or blank
+        //                if (!string.IsNullOrWhiteSpace(txtunamsrh.Text))
+        //                {
+        //                    cmd.Parameters.AddWithValue("@UserLoginName", txtunamsrh.Text.Trim());
+        //                }
+
+        //                SqlDataAdapter da = new SqlDataAdapter(cmd);
+        //                DataTable dt = new DataTable();
+        //                da.Fill(dt);
+
+        //                if (dt.Rows.Count > 0)
+        //                {
+        //                    GridView1.DataSource = dt;
+        //                    GridView1.DataBind();
+        //                }
+        //                else
+        //                {
+        //                    GridView1.DataSource = null;
+        //                    GridView1.DataBind();
+
+        //                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('No record found.');", true);
+        //                }
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+
+
+
+        //            using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
+        //            {
+        //                logCmd.CommandType = CommandType.StoredProcedure;
+        //                logCmd.Parameters.AddWithValue("@MethodName", "btnSearch_Click");
+        //                logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
+        //                logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
+
+
+        //                logCmd.ExecuteNonQuery();
+        //            }
+
+        //        }
+        //    }
+        //}
+
         protected void btnSearch_Click(object sender, EventArgs e)
         {
             Bigbox.Attributes["style"] = "display:none;";
             Bigbox1.Attributes["style"] = "display:block;";
+
             string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
 
             using (SqlConnection conn = new SqlConnection(connString))
@@ -368,60 +436,57 @@ namespace EmployeeTimesheet_Salary
                 {
                     conn.Open();
 
-                    // Define stored procedure name, not SQL text
                     using (SqlCommand cmd = new SqlCommand("search_userdetail", conn))
                     {
-                        cmd.CommandType = CommandType.StoredProcedure; // Tell it it's a stored procedure
+                        cmd.CommandType = CommandType.StoredProcedure;
 
-                        // Check if textUserid is not null or blank
-                        if (!string.IsNullOrWhiteSpace(txtuidsrh.Text))
-                        {
-                            cmd.Parameters.AddWithValue("@UserId", txtuidsrh.Text.Trim());
-                        }
+                        // UserId
+                        cmd.Parameters.AddWithValue("@UserId",
+                            string.IsNullOrWhiteSpace(txtuidsrh.Text)
+                                ? (object)DBNull.Value
+                                : txtuidsrh.Text.Trim());
 
-                        // Check if textUserLoginName is not null or blank
-                        if (!string.IsNullOrWhiteSpace(txtunamsrh.Text))
-                        {
-                            cmd.Parameters.AddWithValue("@UserLoginName", txtunamsrh.Text.Trim());
-                        }
+                        // UserLoginName
+                        cmd.Parameters.AddWithValue("@UserLoginName",
+                            string.IsNullOrWhiteSpace(txtunamsrh.Text)
+                                ? (object)DBNull.Value
+                                : txtunamsrh.Text.Trim());
+
+                        // Status (Active / Inactive)
+                        cmd.Parameters.AddWithValue("@Status",
+                            string.IsNullOrWhiteSpace(DropDownList2.SelectedValue)
+                                ? (object)DBNull.Value
+                                : DropDownList2.SelectedValue);
 
                         SqlDataAdapter da = new SqlDataAdapter(cmd);
                         DataTable dt = new DataTable();
                         da.Fill(dt);
 
-                        if (dt.Rows.Count > 0)
-                        {
-                            GridView1.DataSource = dt;
-                            GridView1.DataBind();
-                        }
-                        else
-                        {
-                            GridView1.DataSource = null;
-                            GridView1.DataBind();
+                        GridView1.DataSource = dt;
+                        GridView1.DataBind();
 
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('No record found.');", true);
+                        if (dt.Rows.Count == 0)
+                        {
+                            ScriptManager.RegisterStartupScript(
+                                this, this.GetType(),
+                                "alert", "alert('No record found.');", true);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-
-
-
                     using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
                     {
                         logCmd.CommandType = CommandType.StoredProcedure;
                         logCmd.Parameters.AddWithValue("@MethodName", "btnSearch_Click");
                         logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
                         logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
-
-
                         logCmd.ExecuteNonQuery();
                     }
-                    
                 }
             }
         }
+
 
         protected void CancelED_Click(object sender, EventArgs e)
         {
