@@ -670,7 +670,7 @@
             <div id="Bigbox1" runat="server">
                 <%--style="display: none"--%>
                 <div id="crb1" class="CreateUser">
-                    <div id="cr1b1" class="CreateUser1" style="padding: 11px -1px 0px 12px; color: white;height: 26px;">
+                    <div id="cr1b1" class="CreateUser1" style="padding: 11px -1px 0px 12px; color: white;height: 26px;background-color: brown;">
                         <asp:LinkButton runat="server" ID="Label4" Text="Search Employee" OnClick="CancelED_Click" CssClass="no-Link-style"> </asp:LinkButton>
                         <asp:Label runat="server" ID="lbEd" Text=""></asp:Label>
 
@@ -687,9 +687,8 @@
     <asp:TextBox runat="server" Class="col" ID="txtunamsrh" placeholder="Employee Name"></asp:TextBox>
     <asp:DropDownList ID="DropDownList2" runat="server" CssClass="col">
         <asp:ListItem Value="">-- All (Status) --</asp:ListItem>
-        <asp:ListItem>A</asp:ListItem>
-        <asp:ListItem>B</asp:ListItem>
-        <asp:ListItem>c</asp:ListItem>
+        <asp:ListItem Value="Active">Active</asp:ListItem>
+        <asp:ListItem Value="Inactive">Inactive</asp:ListItem>
     </asp:DropDownList>
     <asp:DropDownList ID="DropDownList1" runat="server" AutoPostBack="true" OnSelectedIndexChanged="DropDownList1_SelectedIndexChanged">
         <asp:ListItem Text="5" Value="5" />
@@ -735,7 +734,7 @@
                         </div>
                     </div>
                     <div id="Smallbox" runat="server">
-                        <div id="ED2" class="CreateUser2">
+                        <div id="ED2" class="CreateUser2" style="background-color:khaki;">
 
                             <asp:Button runat="server" Text="Employee Details" ID="EDuserdetail" CssClass="smallbx"
                                 OnClientClick="toggleDivs('MainContent_ED3B', 'MainContent_ED3A'); return false;"></asp:Button>
