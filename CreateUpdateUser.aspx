@@ -28,6 +28,8 @@
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -718,11 +720,19 @@
                                         <asp:BoundField DataField="UserId" HeaderText="Employee ID" />
                                         <asp:BoundField DataField="UserLoginName" HeaderText="Login Name" />
                                         <asp:BoundField DataField="Status" HeaderText=" Active " />
-                                        <asp:TemplateField HeaderText="Edit Employee Details">
+                                        <asp:TemplateField HeaderText="Edit">
                                             <ItemTemplate>
-                                                <asp:Button ID="btnAction" runat="server" Text="Edit"
+                                                <%--<asp:Button ID="btnAction" runat="server" Text="Edit"
                                                     CommandName="CustomClick"
-                                                    CommandArgument='<%# Eval("UserId") %>' />
+                                                    CommandArgument='<%# Eval("UserId") %>' />--%>
+                                                <asp:LinkButton ID="btnAction" runat="server"
+                                                    CssClass="btn btn-sm btn-outline-primary"
+                                                    CommandName="CustomClick"
+                                                    CommandArgument='<%# Eval("UserId") %>'
+                                                    ToolTip="Edit">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </asp:LinkButton>
+
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                     </Columns>

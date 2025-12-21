@@ -22,6 +22,11 @@ namespace EmployeeTimesheet_Salary
            
             if (!IsPostBack)
             {
+                ddlWorkPlace.SelectedValue = "Sel";   // or "Office"
+
+                // Enable login button
+                btnLoginLogout.Enabled = true;
+                btnLoginLogout.CssClass = "btn btn-primary";
                 txtTimeSpent.Text = "00:00"; // Default value
                 ViewState["IsLoggedIn"] = false; // Default state
                 DateTime today = DateTime.Today;
@@ -1056,36 +1061,38 @@ namespace EmployeeTimesheet_Salary
             return exists;
         }
 
-        protected void btnLoginLogout_Click(object sender, EventArgs e)
-        {
-            string userId = Request.QueryString["UserID"]; // or Session["UserId"].ToString()
-            LogManager logManager = new LogManager();
+        //protected void btnLoginLogout_Click(object sender, EventArgs e)
+        //{
+        //    string userId = Request.QueryString["UserID"]; // or Session["UserId"].ToString()
+        //    LogManager logManager = new LogManager();
 
-            if (btnLoginLogout.Text == "Login")
-            {
-                // --- Insert Login ---
-                logManager.InsertLoginLogout(userId, "LOGIN");
+        //    if (btnLoginLogout.Text == "Login")
+        //    {
+        //        // --- Insert Login ---
+        //        logManager.InsertLoginLogout(userId, "LOGIN");
 
-                // --- Fill In-Time Textbox from DB ---
-                DataRow log = GetTodayLog(userId);
-                if (log != null && log["In_Time"] != DBNull.Value)
-                    txtInTime.Text = Convert.ToDateTime(log["In_Time"]).ToString("HH:mm:ss");
+        //        // --- Fill In-Time Textbox from DB ---
+        //        DataRow log = GetTodayLog(userId);
+        //        if (log != null && log["In_Time"] != DBNull.Value)
+        //            txtInTime.Text = Convert.ToDateTime(log["In_Time"]).ToString("HH:mm:ss");
 
-                btnLoginLogout.Text = "Logout"; // switch button
-            }
-            else if (btnLoginLogout.Text == "Logout")
-            {
-                // --- Update Logout ---
-                logManager.InsertLoginLogout(userId, "LOGOUT");
+        //        btnLoginLogout.Text = "Logout"; // switch button
+        //    }
+        //    else if (btnLoginLogout.Text == "Logout")
+        //    {
+        //        // --- Update Logout ---
+        //        logManager.InsertLoginLogout(userId, "LOGOUT");
 
-                // --- Fill Out-Time Textbox from DB ---
-                DataRow log = GetTodayLog(userId);
-                if (log != null && log["Out_Time"] != DBNull.Value)
-                    txtOutTime.Text = Convert.ToDateTime(log["Out_Time"]).ToString("HH:mm:ss");
+        //        // --- Fill Out-Time Textbox from DB ---
+        //        DataRow log = GetTodayLog(userId);
+        //        if (log != null && log["Out_Time"] != DBNull.Value)
+        //            txtOutTime.Text = Convert.ToDateTime(log["Out_Time"]).ToString("HH:mm:ss");
 
-                btnLoginLogout.Enabled = false; // disable button after logout
-            }
-        }
+        //        btnLoginLogout.Enabled = false; // disable button after logout
+        //    }
+        //}
+
+
 
 
 
@@ -1106,6 +1113,32 @@ namespace EmployeeTimesheet_Salary
         //    }
         //}
 
+        protected void btnLoginLogout_Click(object sender, EventArgs e)
+        {
+            string userId = Request.QueryString["UserID"];
+            LogManager logManager = new LogManager();
+
+            if (btnLoginLogout.Text == "Login")
+            {
+                logManager.InsertLoginLogout(userId, "LOGIN");
+
+                DataRow log = GetTodayLog(userId);
+                if (log != null && log["In_Time"] != DBNull.Value)
+                    txtInTime.Text = Convert.ToDateTime(log["In_Time"]).ToString("HH:mm:ss");
+
+                btnLoginLogout.Text = "Logout";
+            }
+            else
+            {
+                logManager.InsertLoginLogout(userId, "LOGOUT");
+
+                DataRow log = GetTodayLog(userId);
+                if (log != null && log["Out_Time"] != DBNull.Value)
+                    txtOutTime.Text = Convert.ToDateTime(log["Out_Time"]).ToString("HH:mm:ss");
+
+                btnLoginLogout.Enabled = false;
+            }
+        }
 
 
     }
