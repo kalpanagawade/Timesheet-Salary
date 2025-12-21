@@ -129,8 +129,10 @@
          </div>
 
         <header>
-            <asp:Image ID="imgLogo" runat="server" ImageUrl="~/img/logo.png"
-                       Width="50px" Height="50px" Style="margin-left: 8px;" />
+            <%--<asp:Image ID="imgLogo" runat="server" ImageUrl="~/img/logo.png"
+                       Width="50px" Height="50px" Style="margin-left: 8px;" />--%>
+            <asp:Image ID="imgLogo" runat="server" ImageUrl="~/img/glowingLightBulb.png"
+           Width="50px" Height="50px" Style="margin-left: 8px;" />
              <!-- Home Icon Button -->
     <asp:LinkButton ID="btnHome" runat="server" CssClass="home-icon" OnClick="btnHome_Click" ToolTip="Home" OnClientClick="showLoader();" UseSubmitBehavior="false">
         <i class="fa fa-home"></i>

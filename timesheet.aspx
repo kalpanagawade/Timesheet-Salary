@@ -279,6 +279,24 @@
 
     <script type="text/javascript">
 
+        function toggleLoginButton() {
+            var ddl = document.getElementById('<%= ddlWorkPlace.ClientID %>');
+            var btn = document.getElementById('<%= btnLoginLogout.ClientID %>');
+
+            if (ddl.value === "WFH" || ddl.value === "Office") {
+                btn.disabled = false;
+                btn.classList.remove("btn-secondary");
+                btn.classList.add("btn-primary"); // blue
+            } else {
+                btn.disabled = true;
+                btn.classList.remove("btn-primary");
+                btn.classList.add("btn-secondary"); // gray
+            }
+        }
+
+        // Run on page load (important for refresh/postback)
+        window.onload = toggleLoginButton;
+
 
         //function updateClock() {
         //    const now = new Date();
@@ -740,11 +758,23 @@
             <div class="header-row">
                 <div class="header-group">
                     <label>Work Place *</label>
-                    <asp:DropDownList ID="ddlWorkPlace" runat="server" style="border-radius: 1.25rem; padding-right:34px">
+                   <%-- <asp:DropDownList ID="ddlWorkPlace" runat="server" style="border-radius: 1.25rem; padding-right:34px">
                         <asp:ListItem Text="Select" Value="Sel" />
                         <asp:ListItem Text="Work From Home" Value="WFH" />
                         <asp:ListItem Text="Office" Value="Office" />
-                    </asp:DropDownList>
+                    </asp:DropDownList>--%>
+                    <asp:DropDownList ID="ddlWorkPlace" runat="server"
+ 
+    style="border-radius: 1.25rem; padding-right:34px"
+    onchange="toggleLoginButton()">
+    <asp:ListItem Text="Select" Value="Sel" />
+    <asp:ListItem Text="Work From Home" Value="WFH" />
+    <asp:ListItem Text="Office" Value="Office" />
+</asp:DropDownList>
+
+
+
+
                 </div>
 
                 <div class="header-group" style="margin-left:54px;">

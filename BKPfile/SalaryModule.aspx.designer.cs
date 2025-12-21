@@ -105,13 +105,13 @@ namespace EmployeeTimesheet_Salary
         protected global::System.Web.UI.WebControls.Button btnBack;
 
         /// <summary>
-        /// pnlSalary control.
+        /// pnlDetails control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlSalary;
+        protected global::System.Web.UI.WebControls.Panel pnlDetails;
 
         /// <summary>
         /// lblUser control.
@@ -159,6 +159,15 @@ namespace EmployeeTimesheet_Salary
         protected global::System.Web.UI.WebControls.TextBox txtAllowance;
 
         /// <summary>
+        /// txtDeduction control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtDeduction;
+
+        /// <summary>
         /// txtBonus control.
         /// </summary>
         /// <remarks>
@@ -195,15 +204,6 @@ namespace EmployeeTimesheet_Salary
         protected global::System.Web.UI.WebControls.Label lblMonSalary;
 
         /// <summary>
-        /// Label1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
-
-        /// <summary>
         /// btnSaveSalary control.
         /// </summary>
         /// <remarks>
@@ -213,33 +213,6 @@ namespace EmployeeTimesheet_Salary
         protected global::System.Web.UI.WebControls.Button btnSaveSalary;
 
         /// <summary>
-        /// ddlMonth control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlMonth;
-
-        /// <summary>
-        /// txtDeduction control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDeduction;
-
-        /// <summary>
-        /// btnReleaseSalary control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnReleaseSalary;
-
-        /// <summary>
         /// lblMessage control.
         /// </summary>
         /// <remarks>
@@ -247,6 +220,15 @@ namespace EmployeeTimesheet_Salary
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMessage;
+
+        /// <summary>
+        /// ddlMonth control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlMonth;
 
         /// <summary>
         /// gvTasks control.
