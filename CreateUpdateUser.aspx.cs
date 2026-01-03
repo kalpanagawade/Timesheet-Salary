@@ -60,16 +60,21 @@ namespace EmployeeTimesheet_Salary
                 StringBuilder sb = new StringBuilder();
                 sb.Append("<ul style='list-style-type:none;'>");
 
+                //foreach (DataRow row in dtModules.Select("ParentModuleID IS NULL"))
+                //{
+                //    BuildTreeNode(row, dtModules, sb);
+                //}
+
                 foreach (DataRow row in dtModules.Select("ParentModuleID IS NULL"))
                 {
-                    BuildTreeNode(row, dtModules, sb);
+                    BuildTreeNodeInternal(row, dtModules, sb, null);
                 }
 
                 sb.Append("</ul>");
 
                 // Render the HTML into the Literal control
                 litModuleTree.Text = sb.ToString();
-                litModuleTreeE.Text= sb.ToString();
+                //litModuleTreeE.Text= sb.ToString();
             }
             catch (Exception ex)
             {
@@ -91,24 +96,65 @@ namespace EmployeeTimesheet_Salary
 
         }
 
-        private void BuildTreeNode(DataRow row, DataTable allModules, StringBuilder sb)
+        private void BuildModuleTreeInternal(List<int> selectedModuleIds, Literal targetLiteral)
         {
             string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+            try
+            {
+                DataTable dtModules = new DataTable();
+
+                using (SqlConnection con = new SqlConnection(connString))
+                {
+                    SqlCommand cmd = new SqlCommand(
+                        "SELECT * FROM iModule WHERE ModuleStatus = 0", con);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(dtModules);
+                }
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("<ul style='list-style-type:none;'>");
+
+                foreach (DataRow row in dtModules.Select("ParentModuleID IS NULL"))
+                {
+                    BuildTreeNodeInternal(row, dtModules, sb, selectedModuleIds);
+                }
+
+                sb.Append("</ul>");
+
+                targetLiteral.Text = sb.ToString();
+            }
+            catch (Exception ex)
+            {
+                LogError("BuildModuleTree", ex.Message);
+            }
+        }
+
+        private void BuildTreeNodeInternal(DataRow row,DataTable allModules,StringBuilder sb,List<int> selectedModuleIds)
+        {
             try
             {
                 int moduleId = Convert.ToInt32(row["ModuleID"]);
                 string moduleName = row["ModuleCode"].ToString();
 
+                bool isChecked = selectedModuleIds != null &&
+                                 selectedModuleIds.Contains(moduleId);
+
                 sb.Append("<li>");
-                sb.AppendFormat("<input type='checkbox' id='chk_{0}' /> {1}", moduleId, moduleName);
+                sb.AppendFormat(
+                    "<input type='checkbox' id='chk_{0}' value='{0}' {1} /> {2}",
+                    moduleId,
+                    isChecked ? "checked='checked'" : "",
+                    moduleName
+                );
 
                 DataRow[] childRows = allModules.Select("ParentModuleID = " + moduleId);
                 if (childRows.Length > 0)
                 {
-                    sb.Append("<ul style='list-style-type:none; margin-left: 20px;'>");
+                    sb.Append("<ul style='list-style-type:none; margin-left:20px;'>");
                     foreach (DataRow child in childRows)
                     {
-                        BuildTreeNode(child, allModules, sb);
+                        BuildTreeNodeInternal(child, allModules, sb, selectedModuleIds);
                     }
                     sb.Append("</ul>");
                 }
@@ -117,25 +163,179 @@ namespace EmployeeTimesheet_Salary
             }
             catch (Exception ex)
             {
-                // Log the error using a SqlConnection
+                LogError("BuildTreeNode", ex.Message);
+            }
+        }
+
+        private void BindServicesCheckbox(string userId)
+        {
+            List<int> selectedModuleIds = new List<int>();
+            string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+            try
+            {
                 using (SqlConnection conn = new SqlConnection(connString))
                 {
-                    using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
-                    {
-                        logCmd.CommandType = CommandType.StoredProcedure;
-                        logCmd.Parameters.AddWithValue("@MethodName", "BuildTreeNode");
-                        logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
-                        logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(
+                        "SELECT Module_Id FROM iUserGrpAcs WHERE UserId=@UserId", conn);
+                    cmd.Parameters.AddWithValue("@UserId", userId);
 
-                        conn.Open();
-                        logCmd.ExecuteNonQuery();
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            selectedModuleIds.Add(Convert.ToInt32(dr["Module_Id"]));
+                        }
                     }
                 }
-            }
 
+                // SAME TREE DESIGN + CHECKED
+                BuildModuleTreeInternal(selectedModuleIds, litModuleTreeE);
+            }
+            catch (Exception ex)
+            {
+                LogError("BindServicesCheckbox", ex.Message);
+            }
+        }
+
+        private void LogError(string methodName, string errorMessage)
+        {
+            string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            using (SqlCommand cmd = new SqlCommand("PRC_InsertErrorLog", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@MethodName", methodName);
+                cmd.Parameters.AddWithValue("@ErrorMessage", errorMessage);
+                cmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
         }
 
 
+        //private void BuildTreeNode(DataRow row, DataTable allModules, StringBuilder sb)
+        //{
+        //    string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+        //    try
+        //    {
+        //        int moduleId = Convert.ToInt32(row["ModuleID"]);
+        //        string moduleName = row["ModuleCode"].ToString();
+
+        //        sb.Append("<li>");
+        //        sb.AppendFormat("<input type='checkbox' id='chk_{0}' /> {1}", moduleId, moduleName);
+
+        //        DataRow[] childRows = allModules.Select("ParentModuleID = " + moduleId);
+        //        if (childRows.Length > 0)
+        //        {
+        //            sb.Append("<ul style='list-style-type:none; margin-left: 20px;'>");
+        //            foreach (DataRow child in childRows)
+        //            {
+        //                BuildTreeNode(child, allModules, sb);
+        //            }
+        //            sb.Append("</ul>");
+        //        }
+
+        //        sb.Append("</li>");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the error using a SqlConnection
+        //        using (SqlConnection conn = new SqlConnection(connString))
+        //        {
+        //            using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
+        //            {
+        //                logCmd.CommandType = CommandType.StoredProcedure;
+        //                logCmd.Parameters.AddWithValue("@MethodName", "BuildTreeNode");
+        //                logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
+        //                logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
+
+        //                conn.Open();
+        //                logCmd.ExecuteNonQuery();
+        //            }
+        //        }
+        //    }
+
+        //}
+
+        //private void BindServicesCheckbox(string userId)
+        //{
+        //    string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+        //    try
+        //    {
+        //        using (SqlConnection conn = new SqlConnection(connString))
+        //        {
+        //            conn.Open();
+
+        //            // Step 1: Get selected modules for the user
+        //            string userModulesQuery = "SELECT Module_Id FROM iUserGrpAcs WHERE UserId = @UserId";
+        //            List<string> selectedModuleIds = new List<string>();
+
+        //            using (SqlCommand cmd = new SqlCommand(userModulesQuery, conn))
+        //            {
+        //                cmd.Parameters.AddWithValue("@UserId", userId);
+
+        //                using (SqlDataReader reader = cmd.ExecuteReader())
+        //                {
+        //                    while (reader.Read())
+        //                    {
+        //                        selectedModuleIds.Add(reader["Module_Id"].ToString());
+        //                    }
+        //                }
+        //            }
+
+        //            // Step 2: Get all available modules from iModule
+        //            string allModulesQuery = "SELECT ModuleId, ModuleName FROM iModule ORDER BY ModuleId";
+
+        //            using (SqlCommand cmdAll = new SqlCommand(allModulesQuery, conn))
+        //            using (SqlDataReader readerAll = cmdAll.ExecuteReader())
+        //            {
+        //                StringBuilder sb = new StringBuilder();
+
+        //                while (readerAll.Read())
+        //                {
+        //                    string moduleId = readerAll["ModuleId"].ToString();
+        //                    string moduleName = readerAll["ModuleName"].ToString();
+        //                    bool isChecked = selectedModuleIds.Contains(moduleId);
+
+        //                    sb.AppendFormat("<input type='checkbox' id='chkModule{0}' name='chkModules' value='{0}' {1} /> {2}<br/>",
+        //                        moduleId,
+        //                        isChecked ? "checked='checked'" : "",
+        //                        moduleName);
+        //                }
+
+        //                litModuleTreeE.Text = sb.ToString();
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the error into your error log table
+        //        string connStringLog = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+        //        using (SqlConnection logConn = new SqlConnection(connStringLog))
+        //        {
+        //            logConn.Open();
+
+        //            using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", logConn))
+        //            {
+        //                logCmd.CommandType = CommandType.StoredProcedure;
+        //                logCmd.Parameters.AddWithValue("@MethodName", "BindServicesCheckbox");
+        //                logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
+        //                logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
+
+        //                logCmd.ExecuteNonQuery();
+        //            }
+        //        }
+        //    }
+        //}
+
+
+        ///End
         private void GetNextUserId()
         {
             // Retrieve connection string from web.config
@@ -354,75 +554,6 @@ namespace EmployeeTimesheet_Salary
             }
         }
 
-
-
-        //protected void btnSearch_Click(object sender, EventArgs e)
-        //{
-        //    Bigbox.Attributes["style"] = "display:none;";
-        //    Bigbox1.Attributes["style"] = "display:block;";
-        //    string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
-
-        //    using (SqlConnection conn = new SqlConnection(connString))
-        //    {
-        //        try
-        //        {
-        //            conn.Open();
-
-        //            // Define stored procedure name, not SQL text
-        //            using (SqlCommand cmd = new SqlCommand("search_userdetail", conn))
-        //            {
-        //                cmd.CommandType = CommandType.StoredProcedure; // Tell it it's a stored procedure
-
-        //                // Check if textUserid is not null or blank
-        //                if (!string.IsNullOrWhiteSpace(txtuidsrh.Text))
-        //                {
-        //                    cmd.Parameters.AddWithValue("@UserId", txtuidsrh.Text.Trim());
-        //                }
-
-        //                // Check if textUserLoginName is not null or blank
-        //                if (!string.IsNullOrWhiteSpace(txtunamsrh.Text))
-        //                {
-        //                    cmd.Parameters.AddWithValue("@UserLoginName", txtunamsrh.Text.Trim());
-        //                }
-
-        //                SqlDataAdapter da = new SqlDataAdapter(cmd);
-        //                DataTable dt = new DataTable();
-        //                da.Fill(dt);
-
-        //                if (dt.Rows.Count > 0)
-        //                {
-        //                    GridView1.DataSource = dt;
-        //                    GridView1.DataBind();
-        //                }
-        //                else
-        //                {
-        //                    GridView1.DataSource = null;
-        //                    GridView1.DataBind();
-
-        //                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('No record found.');", true);
-        //                }
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-
-
-
-        //            using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
-        //            {
-        //                logCmd.CommandType = CommandType.StoredProcedure;
-        //                logCmd.Parameters.AddWithValue("@MethodName", "btnSearch_Click");
-        //                logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
-        //                logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
-
-
-        //                logCmd.ExecuteNonQuery();
-        //            }
-
-        //        }
-        //    }
-        //}
-
         protected void btnSearch_Click(object sender, EventArgs e)
         {
             Bigbox.Attributes["style"] = "display:none;";
@@ -614,78 +745,6 @@ namespace EmployeeTimesheet_Salary
             }
         }
 
-
-        //protected void GridView1_RowCommand(object sender, GridViewCommandEventArgs e)
-        //{
-        //    Bigbox.Attributes["style"] = "display:none;";
-        //    Bigbox1.Attributes["style"] = "display:block;";
-        //    Smallbox.Attributes["style"] = "display:block;";
-        //    Smallboxcr.Attributes["style"] = "display:none;";
-        //    lbEd.Text=" > Edit";
-        //    if (e.CommandName == "CustomClick")
-        //    {
-        //        string userId = e.CommandArgument.ToString();                
-        //        // Do something with the userId
-        //        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", $"alert('UserID clicked: {userId}');", true);
-        //        string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
-
-        //        using (SqlConnection conn = new SqlConnection(connString))
-        //        {
-        //            try
-        //            {
-        //                conn.Open();
-
-        //                string query = "SELECT UserId,UserLoginName,DOB,UserEmailId,UserMobileNo1 FROM iUser where UserId="+userId;
-
-        //                using (SqlCommand cmd = new SqlCommand(query, conn))
-        //                {
-        //                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-        //                    DataTable dt = new DataTable();
-        //                    da.Fill(dt);
-
-        //                    if (dt.Rows.Count > 0)
-        //                    {
-        //                        txtUseridED.Text = dt.Rows[0]["UserId"].ToString();
-        //                     Label6.Text = dt.Rows[0]["UserId"].ToString();
-        //                        txtUserLoginNameED.Text = dt.Rows[0]["UserLoginName"].ToString();
-        //                        DateTime dob;
-        //                        if (DateTime.TryParse(dt.Rows[0]["DOB"].ToString(), out dob))
-        //                        {
-        //                            txtDOBED.Text = dob.ToString("d MMM yyyy").ToUpper(); // Output: 1 JAN 1900
-        //                        }
-        //                        txtemED.Text=dt.Rows[0]["UserEmailId"].ToString();// display login name
-        //                        txtumnED.Text=dt.Rows[0]["UserMobileNo1"].ToString();// display login name
-        //                        BindDesignationDropdownEdit(userId);
-        //                        BindStatusDropdownEdit(userId);
-        //                        BindUserTypeRadioBtn(userId);
-        //                        BindServicesCheckbox(userId);
-
-        //                    }
-        //                    else
-        //                    {
-        //                        txtUseridED.Text = "User not found";
-        //                        //txtUserLoginNameED.Text = "";
-        //                    }
-        //                }
-        //            }
-        //            catch (Exception ex)
-        //            {
-
-        //                    using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
-        //                {
-        //                    logCmd.CommandType = CommandType.StoredProcedure;
-        //                    logCmd.Parameters.AddWithValue("@MethodName", "GridView1_RowCommand");
-        //                    logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
-        //                    logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
-
-
-        //                    logCmd.ExecuteNonQuery();
-        //                }
-
-        //            }
-        //        }
-        //    }
-        //}
         protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
         {
             Bigbox.Attributes["style"] = "display:none;";
@@ -862,41 +921,7 @@ namespace EmployeeTimesheet_Salary
             Response.Redirect("Notice.aspx?UserID=" + Server.UrlEncode(userId) + "&Username=" + Server.UrlEncode(Request.QueryString["Username"]));
         }
 
-        //added By Hrutik
-        //[System.Web.Services.WebMethod]
-        //public static List<Employee> GetAllEmployees()
-        //{
-        //    List<Employee> employees = new List<Employee>();
-        //    string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
-
-        //    using (SqlConnection conn = new SqlConnection(connString))
-        //    {
-        //        string query = "SELECT UserID, UserLoginName as FullName FROM IUser where UserID='100000'"; // adjust as needed
-        //        SqlCommand cmd = new SqlCommand(query, conn);
-        //        conn.Open();
-        //        SqlDataReader reader = cmd.ExecuteReader();
-
-        //        while (reader.Read())
-        //        {
-        //            employees.Add(new Employee
-        //            {
-        //                ID = reader["UserID"].ToString(),
-        //                Name = reader["FullName"].ToString()
-        //            });
-        //        }
-        //    }
-
-        //    return employees;
-        //}
-
-        //// Employee model
-        //public class Employee
-        //{
-        //    public string ID { get; set; }
-        //    public string Name { get; set; }
-        //}
-
-
+        
         private void BindDesignationDropdown()
         {
             string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
@@ -1132,78 +1157,7 @@ namespace EmployeeTimesheet_Salary
         }
 
 
-        private void BindServicesCheckbox(string userId)
-        {
-            string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
-
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connString))
-                {
-                    conn.Open();
-
-                    // Step 1: Get selected modules for the user
-                    string userModulesQuery = "SELECT Module_Id FROM iUserGrpAcs WHERE UserId = @UserId";
-                    List<string> selectedModuleIds = new List<string>();
-
-                    using (SqlCommand cmd = new SqlCommand(userModulesQuery, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@UserId", userId);
-
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                selectedModuleIds.Add(reader["Module_Id"].ToString());
-                            }
-                        }
-                    }
-
-                    // Step 2: Get all available modules from iModule
-                    string allModulesQuery = "SELECT ModuleId, ModuleName FROM iModule ORDER BY ModuleId";
-
-                    using (SqlCommand cmdAll = new SqlCommand(allModulesQuery, conn))
-                    using (SqlDataReader readerAll = cmdAll.ExecuteReader())
-                    {
-                        StringBuilder sb = new StringBuilder();
-
-                        while (readerAll.Read())
-                        {
-                            string moduleId = readerAll["ModuleId"].ToString();
-                            string moduleName = readerAll["ModuleName"].ToString();
-                            bool isChecked = selectedModuleIds.Contains(moduleId);
-
-                            sb.AppendFormat("<input type='checkbox' id='chkModule{0}' name='chkModules' value='{0}' {1} /> {2}<br/>",
-                                moduleId,
-                                isChecked ? "checked='checked'" : "",
-                                moduleName);
-                        }
-
-                        litModuleTree.Text = sb.ToString();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the error into your error log table
-                string connStringLog = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
-
-                using (SqlConnection logConn = new SqlConnection(connStringLog))
-                {
-                    logConn.Open();
-
-                    using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", logConn))
-                    {
-                        logCmd.CommandType = CommandType.StoredProcedure;
-                        logCmd.Parameters.AddWithValue("@MethodName", "BindServicesCheckbox");
-                        logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
-                        logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
-
-                        logCmd.ExecuteNonQuery();
-                    }
-                }
-            }
-        }
+       
 
 
 

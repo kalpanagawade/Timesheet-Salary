@@ -442,6 +442,8 @@
 
                 // Set hidden field value as comma-separated IDs
                 document.getElementById('<%= hfSelectedModules.ClientID %>').value = selected.join(',');
+                //document.getElementById('<%= HiddenField1.ClientID %>').value = selected.join(',');
+                
                 return true; // allow form submission
             }
             //Added bY hrutik
