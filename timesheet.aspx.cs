@@ -22,7 +22,8 @@ namespace EmployeeTimesheet_Salary
            
             if (!IsPostBack)
             {
-                ddlWorkPlace.SelectedValue = "Sel";   // or "Office"
+                //ddlWorkPlace.SelectedValue = "Sel";   // or "Office"
+                FillWorkPlaceFromDB();
 
                 // Enable login button
                 btnLoginLogout.Enabled = true;
@@ -77,6 +78,41 @@ namespace EmployeeTimesheet_Salary
 
 
         }
+
+        private void FillWorkPlaceFromDB()
+        {
+            string conn = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
+
+            using (SqlConnection con = new SqlConnection(conn))
+            {
+                string UserId = Request.QueryString["UserID"];
+                string query = @"SELECT Work_Place 
+                         FROM UserLogTimes 
+                         WHERE CONVERT(date, LogDate) = CONVERT(date, GETDATE()) and UserId=@UserId";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@UserId", UserId);
+                con.Open();
+
+                object result = cmd.ExecuteScalar(); // returns single value or null
+
+                if (result != null)
+                {
+                    string workplace = result.ToString();
+
+                    // If exists, set dropdown value
+                    if (ddlWorkPlace.Items.FindByValue(workplace) != null)
+                    {
+                        ddlWorkPlace.SelectedValue = workplace;
+                    }
+                }
+                else
+                {
+                    ddlWorkPlace.SelectedValue = "Sel"; // default
+                }
+            }
+        }
+
         protected void btnTriggerBindGrid_Click(object sender, EventArgs e)
         {
             BindGrid(); // your method to bind data to GridView etc.
@@ -84,24 +120,6 @@ namespace EmployeeTimesheet_Salary
             ScriptManager.RegisterStartupScript(this, GetType(), "ReopenModal", "$('#taskModal').modal('show');", true);
 
         }
-        //protected void btnLoginLogout_Click(object sender, EventArgs e)
-        //{
-        //    bool isLoggedIn = ViewState["IsLoggedIn"] != null && (bool)ViewState["IsLoggedIn"];
-
-        //    if (!isLoggedIn)
-        //    {
-        //        // Logging in
-        //        txtInTime.Text = DateTime.Now.ToString("HH:mm:ss");
-        //        btnLoginLogout.Text = "Logout";
-        //        ViewState["IsLoggedIn"] = true;
-        //    }
-        //    else
-        //    {
-        //        // Logging out
-        //        txtOutTime.Text = DateTime.Now.ToString("HH:mm:ss");
-        //        btnLoginLogout.Enabled = false;
-        //    }
-        //}
         protected void btnPrev_Click(object sender, EventArgs e)
         {
             DateTime current = DateTime.Parse(hfMonthYear.Value);
@@ -878,10 +896,13 @@ namespace EmployeeTimesheet_Salary
                             
                             using (SqlCommand cmd1 = new SqlCommand("PRC_InsertLoginLogout", conn1))
                             {
+                                string WRK = ddlWorkPlace.SelectedValue;
                                 cmd1.CommandType = CommandType.StoredProcedure;
                                 cmd1.Parameters.AddWithValue("@UserId", userId);
                                 cmd1.Parameters.AddWithValue("@Action", "Both");
+                                cmd1.Parameters.AddWithValue("@Work_Place", WRK);
 
+                                
                                 // Parse the date from textbox (only the date part)
                                 DateTime logDate = DateTime.ParseExact(
                                     txtModalDate.Text,
@@ -1115,12 +1136,13 @@ namespace EmployeeTimesheet_Salary
 
         protected void btnLoginLogout_Click(object sender, EventArgs e)
         {
+            string WRK = ddlWorkPlace.SelectedValue;
             string userId = Request.QueryString["UserID"];
             LogManager logManager = new LogManager();
 
             if (btnLoginLogout.Text == "Login")
             {
-                logManager.InsertLoginLogout(userId, "LOGIN");
+                logManager.InsertLoginLogout(userId, WRK, "LOGIN");
 
                 DataRow log = GetTodayLog(userId);
                 if (log != null && log["In_Time"] != DBNull.Value)
@@ -1130,7 +1152,7 @@ namespace EmployeeTimesheet_Salary
             }
             else
             {
-                logManager.InsertLoginLogout(userId, "LOGOUT");
+                logManager.InsertLoginLogout(userId, WRK, "LOGOUT");
 
                 DataRow log = GetTodayLog(userId);
                 if (log != null && log["Out_Time"] != DBNull.Value)
@@ -1147,14 +1169,16 @@ namespace EmployeeTimesheet_Salary
     {
         private string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
 
-        public void InsertLoginLogout(string userId, string action, DateTime? logDate = null)
+        public void InsertLoginLogout(string userId, string WRKPLS, string action, DateTime? logDate = null)
         {
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand("PRC_InsertLoginLogout", conn))
             {
+                
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@UserId", userId);
                 cmd.Parameters.AddWithValue("@Action", action);
+                cmd.Parameters.AddWithValue("@Work_Place", WRKPLS);
 
                 if (logDate.HasValue)
                     cmd.Parameters.AddWithValue("@LogDate", logDate.Value);
