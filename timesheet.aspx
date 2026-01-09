@@ -280,6 +280,7 @@
     <script type="text/javascript">
 
         function toggleLoginButton() {
+            debugger;
             var ddl = document.getElementById('<%= ddlWorkPlace.ClientID %>');
             var btn = document.getElementById('<%= btnLoginLogout.ClientID %>');
 
@@ -287,15 +288,22 @@
                 btn.disabled = false;
                 btn.classList.remove("btn-secondary");
                 btn.classList.add("btn-primary"); // blue
-            } else {
+            }
+            else if (ddl.value === "Sel") {
                 btn.disabled = true;
                 btn.classList.remove("btn-primary");
                 btn.classList.add("btn-secondary"); // gray
             }
         }
 
-        // Run on page load (important for refresh/postback)
-        window.onload = toggleLoginButton;
+        document.addEventListener("DOMContentLoaded", toggleLoginButton);
+
+        // Run after AJAX PostBack (Optional)
+        if (typeof Sys !== "undefined") {
+            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+                toggleLoginButton();
+            });
+        }
 
 
         //function updateClock() {
