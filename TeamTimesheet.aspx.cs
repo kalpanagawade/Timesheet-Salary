@@ -264,7 +264,7 @@ namespace EmployeeTimesheet_Salary
 
             string status = isApproved ? "approved" : "rejected";
             ClientScript.RegisterStartupScript(this.GetType(), "alert",
-                $"alert('Selected task(s) {status} successfully.');", true);
+                $"alert('Selected tasks {status} successfully.');", true);
 
             LoadTimesheet(userId);
         }

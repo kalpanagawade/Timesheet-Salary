@@ -400,6 +400,11 @@ namespace EmployeeTimesheet_Salary
                 alert('Successfully Saved!');
                 document.getElementById('{btnsersac.ClientID}').removeAttribute('disabled');
             ", true);
+                    ScriptManager.RegisterStartupScript(this, this.GetType(),
+        "toggleDiv",
+        "document.getElementById('" + Bigbox1.ClientID + "').style.display='none';" +
+        "document.getElementById('" + Bigbox.ClientID + "').style.display='block';",
+        true);
                     //btnSave.Attributes["disabled"] = "true";
                 }
                 catch (Exception ex)
@@ -461,6 +466,12 @@ namespace EmployeeTimesheet_Salary
                 alert('Successfully Saved!');
                 document.getElementById('{btnsersac.ClientID}').removeAttribute('disabled');
             ", true);
+                    ScriptManager.RegisterStartupScript(this, this.GetType(),
+       "toggleDiv",
+       "document.getElementById('" + Bigbox1.ClientID + "').style.display='none';" +
+       "document.getElementById('" + Bigbox.ClientID + "').style.display='block';",
+       true);
+
                     btnSave.Attributes["disabled"] = "true";
                     rowno6.Visible = true;
                 }
@@ -532,6 +543,15 @@ namespace EmployeeTimesheet_Salary
                             cmd.Parameters.AddWithValue("@Module_Id", moduleId); // Single module at a time
 
                             cmd.ExecuteNonQuery();
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "enableBtn", $@"
+                alert('Service are Assign!');
+                document.getElementById('{btnsersac.ClientID}').removeAttribute('disabled');
+            ", true);
+                            ScriptManager.RegisterStartupScript(this, this.GetType(),
+                "toggleDiv",
+                "document.getElementById('" + Bigbox1.ClientID + "').style.display='none';" +
+                "document.getElementById('" + Bigbox.ClientID + "').style.display='block';",
+                true);
                         }
                     }
                 }
@@ -1165,7 +1185,7 @@ namespace EmployeeTimesheet_Salary
 
 
 
-
+         
 
     }
 }

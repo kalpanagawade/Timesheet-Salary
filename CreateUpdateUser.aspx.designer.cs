@@ -114,6 +114,15 @@ namespace EmployeeTimesheet_Salary
         protected global::System.Web.UI.WebControls.TextBox txtUserName;
 
         /// <summary>
+        /// ddlStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlStatus;
+
+        /// <summary>
         /// lblUserid control.
         /// </summary>
         /// <remarks>
@@ -130,15 +139,6 @@ namespace EmployeeTimesheet_Salary
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtUserid;
-
-        /// <summary>
-        /// ddlStatus control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlStatus;
 
         /// <summary>
         /// txtPassword control.
