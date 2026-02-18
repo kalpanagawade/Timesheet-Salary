@@ -41,27 +41,41 @@ namespace EmployeeTimesheet_Salary
 
                         int count = (int)cmd.ExecuteScalar();
 
+                      
+                        if (string.IsNullOrWhiteSpace(txtUsername.Text) ||
+                            string.IsNullOrWhiteSpace(txtPassword.Text))
+                        {
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "empty",
+                                "alert('Username and Password cannot be empty!');", true);
+                            return;
+                        }
+
                         if (count > 0)
                         {
                             string queryA = "SELECT UserLoginName FROM iUser WHERE Userid = @Userid";
                             using (SqlCommand cmdA = new SqlCommand(queryA, conn))
                             {
-                                // Use parameters to prevent SQL Injection
                                 cmdA.Parameters.AddWithValue("@Userid", txtUsername.Text.Trim());
 
+                                string name = Convert.ToString(cmdA.ExecuteScalar());
 
-                                string name = (string)cmdA.ExecuteScalar();
+                                string url = "Notice.aspx?Username=" + Server.UrlEncode(name) +
+                                             "&UserID=" + Server.UrlEncode(txtUsername.Text.Trim());
 
-                                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Successfully Logged In!');", true);
-                                Response.Redirect("Notice.aspx?Username=" + Server.UrlEncode(name) + "&UserID=" + Server.UrlEncode(txtUsername.Text.Trim()));
-
+                                // ✅ T001 – Valid Login
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "success",
+                                    "alert('User logged in successfully!'); window.location='" + url + "';", true);
                             }
                         }
                         else
                         {
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Login ID or Password is incorrect!');", true);
-
+                            // ✅ T002 & T003 – Invalid Username or Password
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "error",
+                                "alert('Login ID or Password is incorrect');", true);
                         }
+
+
+
                     }
                 }
                 catch (Exception ex)

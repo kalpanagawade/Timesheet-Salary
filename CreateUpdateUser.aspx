@@ -164,20 +164,20 @@
                 color: var(--orange-color)
             }
 
-        #Bigbox {
+        .Bigbox {
             background-color: snow;
             width: 100%;
-            height: 840px;
+            /*height: 840px;
             justify-items: anchor-center;
-            align-content: space-around;
+            align-content: space-around;*/
         }
 
-        #Bigbox1 {
+        .Bigbox1 {
             background-color: snow;
             width: 100%;
-            height: 840px;
+            /*height: 840px;
             justify-items: anchor-center;
-            align-content: space-around;
+            align-content: space-around;*/
         }
 
         .CreateUser {
@@ -295,9 +295,19 @@
             text-decoration: none;
             cursor: pointer;
         }
+        @keyframes blinkBorder {
+    0%   { border-color: red; }
+    50%  { border-color: transparent; }
+    100% { border-color: red; }
+}
+
+.blink {
+    animation: blinkBorder 0.8s linear infinite;
+}
     </style>
 
             <script type="text/javascript">
+
                 function validateDesgition() {
                     var ddlRole = document.getElementById('<%= ddlRole.ClientID %>').value;
                     if (ddlRole === "") {
@@ -309,9 +319,24 @@
                 }
                 function validateEmail() {
                     var email = document.getElementById('<%= txtEmail.ClientID %>').value;
-                var userName = document.getElementById('<%= txtUserName.ClientID %>').value;
-                var password = document.getElementById('<%= txtPassword.ClientID %>').value;
-                var confirmPassword = document.getElementById('<%= txtConfirmPassword.ClientID %>').value;
+                    var userNameTxt = document.getElementById('<%= txtUserName.ClientID %>');
+                    var userName = userNameTxt.value;
+                    userNameTxt.addEventListener("input", function () {
+                        this.style.border = "";
+                        this.classList.remove("blink");
+                    });
+                    var passwordTxt = document.getElementById('<%= txtPassword.ClientID %>');
+                    var password = passwordTxt.value;
+                    passwordTxt.addEventListener("input", function () {
+                        this.style.border = "";
+                        this.classList.remove("blink");
+                    });
+                    var confirmPasswordTxt = document.getElementById('<%= txtConfirmPassword.ClientID %>');
+                    var confirmPassword = confirmPasswordTxt.value;
+                    confirmPasswordTxt.addEventListener("input", function () {
+                        this.style.border = "";
+                        this.classList.remove("blink");
+                    });
                 var ddlStatus = document.getElementById('<%= ddlStatus.ClientID %>').value;
                 <%--var ddlRole = document.getElementById('<%= ddlRole.ClientID %>').value;--%>
 
@@ -326,14 +351,25 @@
                 }
                 if (userName.trim() === "") {
                     alert("User Name is required.");
+                    userNameTxt.style.border = "2px solid red";
+                    userNameTxt.classList.add("blink");
+                    /*userNameTxt.focus();*/
                     return false;
                 }
                 if (password.trim() === "" || confirmPassword.trim() === "") {
                     alert("Password and Confirm Password are required.");
+                    confirmPasswordTxt.style.border = "2px solid red";
+                    confirmPasswordTxt.classList.add("blink");
+                    passwordTxt.style.border = "2px solid red";
+                    passwordTxt.classList.add("blink");
                     return false;
                 }
                 if (password !== confirmPassword) {
                     alert("Passwords do not match.");
+                    confirmPasswordTxt.style.backgroundColor = "Pink";
+                    confirmPasswordTxt.classList.add("blink");
+                    passwordTxt.style.backgroundColor = "lightgreen";
+                    passwordTxt.classList.add("blink");
                     return false;
                 }
                 if (email.trim() === "") {
@@ -520,7 +556,7 @@
 
             </header1>
 
-            <div id="Bigbox" runat="server">
+            <div id="Bigbox" class="Bigbox" runat="server">
                 <div id="cr" class="CreateUser">
                     <div id="Cr1" class="CreateUser1" style="padding: 11px -1px 0px 12px; color: white;height: 26px;">
                         Create Employee
@@ -547,14 +583,14 @@
                         </div>
                         <div class="row" id="rowno2">
                             <asp:TextBox ID="txtUserName" runat="server" CssClass="col" placeholder=" Employee Name" ></asp:TextBox>
-
-                            <asp:Label ID="lblUserid" runat="server" CssClass="col" Text=" Employee ID :-"></asp:Label>
-                            <asp:TextBox ID="txtUserid" runat="server" CssClass="col" Text=" Employee Id" Enabled="false"></asp:TextBox>
                             <asp:DropDownList ID="ddlStatus" runat="server" CssClass="col">
                                 <asp:ListItem Value="">-- Select Status --</asp:ListItem>
                                 <asp:ListItem>Active</asp:ListItem>
                                 <asp:ListItem>Inactive</asp:ListItem>
                             </asp:DropDownList>
+
+                            <asp:Label ID="lblUserid" runat="server" CssClass="col" Text=" Employee ID :-"></asp:Label>
+                            <asp:TextBox ID="txtUserid" runat="server" CssClass="col" Text=" Employee Id" Enabled="false"></asp:TextBox>
                         </div>
                         <div class="row" id="rowno3">
                             <asp:TextBox ID="txtPassword" runat="server" CssClass="col" placeholder="Password" TextMode="Password"></asp:TextBox>
@@ -583,8 +619,10 @@
                         </div>
                         <div class="row" id="rowno5">
                             <div class="col" style="width:100%; text-align: center;" >
-                            <asp:Button ID="btnSave" runat="server" CssClass="BtnCls" Text="Save" OnClientClick="return validateEmail();" OnClick="btnSave_Click" />
-                            <asp:Button ID="btnCanl" runat="server" CssClass="BtnCls" Text="Cancel" />
+                            <asp:Button ID="btnSave" runat="server" CssClass="BtnCls" Text="Save" OnClientClick="return validateEmail();document.getElementById('MainContent_Bigbox1').style.display='none';
+  document.getElementById('MainContent_Bigbox').style.display='block'; return false;" OnClick="btnSave_Click" />
+                            <asp:Button ID="btnCanl" runat="server" CssClass="BtnCls" Text="Cancel" OnClientClick="document.getElementById('MainContent_Bigbox1').style.display='none';
+  document.getElementById('MainContent_Bigbox').style.display='block'; return false;" />
                                 </div>
 
                         </div>
@@ -603,7 +641,8 @@
                                 <asp:ListItem>Developer</asp:ListItem>
                                 <asp:ListItem>Support</asp:ListItem>
                                 <asp:ListItem>Tester</asp:ListItem>--%>
-                            <asp:Button ID="BtnDesAssign" runat="server" CssClass="BtnCls" Text="SaveRole" OnClientClick="return validateDesgition();" OnClick="btnSaveRole_Click" />
+                            <asp:Button ID="BtnDesAssign" runat="server" CssClass="BtnCls" Text="SaveRole" OnClientClick="return validateDesgition();document.getElementById('MainContent_Bigbox1').style.display='none';
+  document.getElementById('MainContent_Bigbox').style.display='block'; return false;" OnClick="btnSaveRole_Click" />
                             </div>
                             
                          </div>
@@ -671,7 +710,7 @@
                 </div>
 
             </div>
-            <div id="Bigbox1" runat="server">
+            <div id="Bigbox1" class="Bigbox1" runat="server">
                 <%--style="display: none"--%>
                 <div id="crb1" class="CreateUser">
                     <div id="cr1b1" class="CreateUser1" style="padding: 11px -1px 0px 12px; color: white;height: 26px;background-color: brown;">
@@ -772,7 +811,7 @@
                                     <asp:ListItem>Active</asp:ListItem>
                                     <asp:ListItem>Inactive</asp:ListItem>
                                 </asp:DropDownList>
-                                <asp:Label ID="Label1" runat="server" CssClass="col" Text="User ID :-"></asp:Label>
+                                <asp:Label ID="Label1" runat="server" CssClass="col" Text="Employee Name :-"></asp:Label>
                                 <asp:TextBox ID="txtUseridED" runat="server" CssClass="col" Text="User Id" Enabled="false"></asp:TextBox>
 
                             </div>
