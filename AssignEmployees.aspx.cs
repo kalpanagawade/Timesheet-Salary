@@ -24,11 +24,8 @@ namespace EmployeeTimesheet_Salary
             }
 
         }
-        //Added by Hrutik 10082025
-
         protected void btnassign_Click(object sender, EventArgs e)
         {
-            // Get selected employee IDs from the hidden field
             string selectedEmpIds = hfSelectedEmployees.Value?.Trim();
             string managerUserId = Request.QueryString["UserId"];
 
@@ -41,25 +38,20 @@ namespace EmployeeTimesheet_Salary
                     .ToArray();
 
                 foreach (string empId in empIds)
-                {
-                    // Your method to assign employee to the manager
+                {                   
                     UpdateEmployeeManager(empId, managerUserId);
                 }
             }
-
-            // Close popup after assignment
             ClientScript.RegisterStartupScript(
                 this.GetType(),
                 "CloseWindow",
                 "window.close();",
                 true
             );
-        }
-
-        //Added by Hrutik 10082025
+        }       
         private void UpdateEmployeeManager(string employeeId, string managerUserId)
         {
-            // Basic safety check
+           
             if (string.IsNullOrEmpty(employeeId) || string.IsNullOrEmpty(managerUserId))
                 return;
 
@@ -75,35 +67,7 @@ namespace EmployeeTimesheet_Salary
                 con.Open();
                 cmd.ExecuteNonQuery();
             }
-        }
-
-
-
-        //private void BindEmployees()
-        //{
-        //    List<Employee> employees = new List<Employee>();
-        //    string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
-
-        //    using (SqlConnection conn = new SqlConnection(connString))
-        //    {
-        //        string query = "SELECT UserID, UserLoginName as FullName FROM IUser";  // Adjust query if needed
-        //        SqlCommand cmd = new SqlCommand(query, conn);
-        //        conn.Open();
-        //        SqlDataReader reader = cmd.ExecuteReader();
-
-        //        while (reader.Read())
-        //        {
-        //            employees.Add(new Employee
-        //            {
-        //                ID = reader["UserID"].ToString(),
-        //                Name = reader["FullName"].ToString()
-        //            });
-        //        }
-        //    }
-
-        //    gvEmployees.DataSource = employees;
-        //    gvEmployees.DataBind();
-        //}
+        }               
         private void BindEmployees(string filter = "")
         {
             List<Employee> employees = new List<Employee>();
@@ -173,38 +137,6 @@ namespace EmployeeTimesheet_Salary
         {
             public string ID { get; set; }
             public string Name { get; set; }
-        }
-
-        //[WebMethod]
-        //public static List<Employee> GetAllEmployees()
-        //{
-        //    List<Employee> employees = new List<Employee>();
-        //    string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
-
-        //    using (SqlConnection conn = new SqlConnection(connString))
-        //    {
-        //        string query = "SELECT UserID, UserLoginName as FullName FROM IUser";
-        //        SqlCommand cmd = new SqlCommand(query, conn);
-        //        conn.Open();
-        //        SqlDataReader reader = cmd.ExecuteReader();
-
-        //        while (reader.Read())
-        //        {
-        //            employees.Add(new Employee
-        //            {
-        //                ID = reader["UserID"].ToString(),
-        //                Name = reader["FullName"].ToString()
-        //            });
-        //        }
-        //    }
-
-        //    return employees;
-        //}
-
-        //public class Employee
-        //{
-        //    public string ID { get; set; }
-        //    public string Name { get; set; }
-        //}
+        }        
     }
 }
