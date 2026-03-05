@@ -113,20 +113,7 @@
                 row.style.display = (id.includes(input) || name.includes(input)) ? "" : "none";
             });
         }
-        //Comment by Hrutik 10082025
-        //function assignEmployees() {
-        //    var selected = [];
-        //    document.querySelectorAll(".emp-checkbox:checked").forEach(function (cb) {
-        //        selected.push(cb.value);
-        //    });
 
-        //    if (selected.length > 0) {
-        //        alert("Assigned to: " + selected.join(", "));
-        //        window.close(); // or redirect back if needed
-        //    } else {
-        //        alert("Please select at least one employee.");
-        //    }
-        //}
     </script>
 
     <script>
@@ -170,20 +157,6 @@
                 row.style.display = id.includes(input) || name.includes(input) ? "" : "none";
             });
         }
-        //Comment by Hrutik 10082025
-        //function assignEmployees() {
-        //    var selected = [];
-        //    var checkboxes = document.querySelectorAll(".emp-checkbox:checked");
-
-        //    checkboxes.forEach(cb => selected.push(cb.value));
-
-        //    if (selected.length > 0) {
-        //        alert("Assigned to: " + selected.join(", "));
-        //        window.close();
-        //    } else {
-        //        alert("Please select at least one employee.");
-        //    }
-        //}
 
         function assignEmployees() {
             var selected = [];

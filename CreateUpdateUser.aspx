@@ -40,12 +40,9 @@
             border-collapse: collapse;
             border: 1px solid #ccc;
         }
-
             .styled-grid th {
                 background-color: #007bff;
                 color: white;
-/*                padding: 8px;
-                text-align:center;*/
             }
 
             .styled-grid td, .styled-grid th {
@@ -58,12 +55,10 @@
 
         header1 {
     border-radius: 1rem;
-    /*position: fixed;*/
     width: 95.5%;
     height: 5%;
     margin: 11px 35px;
     top: 78px;
-    /* right: 0; */
     z-index: 1000;
     display: flex;
     align-items: center;
@@ -166,18 +161,12 @@
 
         .Bigbox {
             background-color: snow;
-            width: 100%;
-            /*height: 840px;
-            justify-items: anchor-center;
-            align-content: space-around;*/
+            width: 100%;            
         }
 
         .Bigbox1 {
             background-color: snow;
-            width: 100%;
-            /*height: 840px;
-            justify-items: anchor-center;
-            align-content: space-around;*/
+            width: 100%;            
         }
 
         .CreateUser {
@@ -189,15 +178,12 @@
         }
 
         .CreateUser1 {
-            /*border-style: solid;
-            border-color: blue*/;
             width: 100%;
             height: 8%;
             background-color: darkslateblue;
         }
 
-        .CreateUser2 {
-            /*border-style: solid;*/
+        .CreateUser2 {           
             width: 100%;
             background-color: blanchedalmond;
             height: 10%;
@@ -211,8 +197,7 @@
             border-radius: 21px;
             width: 16%; /* Adjust width to be in a row */
             height: 41px; /* You can adjust this height based on your preference */
-            margin: 9px;
-            /*padding: 19px;*/
+            margin: 9px;            
             box-sizing: border-box; /* Ensures padding doesn't affect the box's size */
             display: flex; /* Use Flexbox to center text inside the box */
             justify-content: center; /* Center text horizontally */
@@ -225,10 +210,8 @@
                 transition: 0.2s all linear;
             }
 
-        .CreateUser3 {
-            /*border-style: solid;*/
-            width: 100%;
-            /*border-color: red;*/
+        .CreateUser3 {           
+            width: 100%;            
             height: 42%;
             justify-content: flex-start;
             text-align: left;
@@ -237,8 +220,7 @@
         }
 
         .row {
-            display: block; /* Align items in a row */
-            /*margin-right: 20px;*/
+            display: block; 
             margin: 20px;
         }
 
@@ -246,8 +228,8 @@
             display: inline-block; /* Align items in a row */
             margin-right: 20px;
             border-radius: 15px;
-            width: 330px;
-            height: 25px;
+            width: 330px;/*23%*/;
+            height: auto; /*25px;*/
         }
 
         .BtnCls {
@@ -259,7 +241,7 @@
         }
 
         #UserEnquiry {
-            pageinde border-style: solid;
+            border-style: solid;
             border-color: blueviolet;
             width: 99%;
             height: 45px;
@@ -280,8 +262,7 @@
         }
 
         .row1 {
-            display: block; /* Align items in a row */
-            /*margin-right: 20px;*/
+            display: block; /* Align items in a row */            
             margin: 20px;
         }
 
@@ -337,8 +318,7 @@
                         this.style.border = "";
                         this.classList.remove("blink");
                     });
-                var ddlStatus = document.getElementById('<%= ddlStatus.ClientID %>').value;
-                <%--var ddlRole = document.getElementById('<%= ddlRole.ClientID %>').value;--%>
+                var ddlStatus = document.getElementById('<%= ddlStatus.ClientID %>').value;           
 
                 var radioInternal = document.getElementById('<%= RDOIUsrTyp.ClientID %>');
                 var radioExternal = document.getElementById('<%= RDOEUsrTyp.ClientID %>');
@@ -384,20 +364,11 @@
                     alert("Please select a status.");
                     return false;
                 }
-                //if (ddlRole === "") {
-                //    alert("Please select a role.");
-                //    return false;
-                //}
 
                 return true; // ✅ Allow server-side method to run
             }
                 function toggleDivs(hideDivId, showDivId) {
-                    debugger
-                // Hide the div with the ID hideDivId
-                //document.getElementById(hideDivId).style.display = 'none';
-
-                //// Show the div with the ID showDivId
-                    //document.getElementById(showDivId).style.display = 'block';
+                    debugger                
                     var hideDiv = document.getElementById(hideDivId);
                     var showDiv = document.getElementById(showDivId);
 
@@ -408,23 +379,13 @@
                         console.error("Could not find divs:", hideDivId, showDivId);
                     }
             }
-            function logoutUser() {
-                // Optional: Clear session or perform logout logic here
-
-                // Redirect to login page
+            function logoutUser() {                
                 window.location.href = 'Login.aspx'; // Use the correct path to your login page
             }
             function toggleLogoutDropdown() {
                 var dropdown = document.getElementById("logoutDropdown");
                 dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
             }
-
-            //function logoutUser() {
-            //    // Optional: Clear session or cookies
-            //    window.location.href = 'Login.aspx'; // Adjust path if needed
-            //}
-
-            // Optional: Close dropdown when clicking outside
             window.addEventListener("click", function (e) {
                 if (!e.target.closest(".profile-container")) {
                     document.getElementById("logoutDropdown").style.display = "none";
@@ -475,23 +436,12 @@
                     var id = cb.id.replace("chk_", ""); // extract ModuleID from checkbox id
                     selected.push(id);
                 });
-
                 // Set hidden field value as comma-separated IDs
                 document.getElementById('<%= hfSelectedModules.ClientID %>').value = selected.join(',');
                 //document.getElementById('<%= HiddenField1.ClientID %>').value = selected.join(',');
                 
                 return true; // allow form submission
             }
-            //Added bY hrutik
-            <%--function onRoleChange() {
-                var ddl = document.getElementById('<%= ddlRole.ClientID %>');
-                var selectedText = ddl.options[ddl.selectedIndex].text;
-
-                if (selectedText.toLowerCase().includes('manager')) {
-                    window.open('AssignEmployees.aspx', '_blank', 'width=900,height=600'); // opens new popup
-                }
-            }--%>
-
             function onRoleChange() {
                 var ddl = document.getElementById('<%= ddlRole.ClientID %>');
         var selectedText = ddl.options[ddl.selectedIndex].text;
@@ -522,18 +472,8 @@
     <form id="form1" runat="server">--%>
         <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
         <div>
-            <header1>
-                <%--<img src="../img/logo.png" alt="Logo" style="width: 50px; height: 50px; margin: 0px 0px 0px 8px;" />
+            <header1>                
                 <div class="navbar">
-                    <asp:Button
-                        runat="server"
-                        ID="btnEmpDts" class="home-active" Text="Employee Details" Style="padding: 18px;"
-                        OnClick="btnEmpDts_Click" />
-                </div>--%>
-                
-                <div class="navbar">
-
-
                     <asp:Button runat="server" ID="btnsrh" class="home-active" Text="Search Employee"
                         OnClientClick="document.getElementById('MainContent_Bigbox').style.display='none';
                      document.getElementById('MainContent_Bigbox1').style.display='block'; return false;" />
@@ -541,19 +481,7 @@
                         OnClientClick="document.getElementById('MainContent_Bigbox1').style.display='none';
                      document.getElementById('MainContent_Bigbox').style.display='block'; return false;" />
 
-                </div>
-                 <%--              <div class="profile-container">
-                    <div class="profile-icon" onclick="toggleLogoutDropdown()">
-                        <asp:Label ID="txtCreatedBy" runat="server"> </asp:Label>
-                        <i class="bx bx-log-out"></i>
-                    </div>
-                    <div class="logout-dropdown" id="logoutDropdown" onclick="logoutUser()">
-                        Logout
-                    </div>
-                </div>--%>
-
-
-
+                </div>                 
             </header1>
 
             <div id="Bigbox" class="Bigbox" runat="server">
@@ -570,10 +498,10 @@
                             OnClientClick="toggleDivs('MainContent_cr3A', 'MainContent_cr3B'); return false;" />
 
 
-
-                        <asp:Label ID="Lbl1" runat="server" CssClass="text-end d-block" Text="Employee Id :-"
-                            Style="padding-left: 814px;"></asp:Label>
+                        <div style="width: 63vw;justify-content: end;display: inline-flex;">
+                        <asp:Label ID="Lbl1" runat="server" CssClass="text-end d-block" Text="Employee Id :-"></asp:Label>
                         <asp:Label ID="Lblid" runat="server" CssClass="text-end d-block"></asp:Label>
+                        </div>
                     </div>
                     <div id="cr3A" class="CreateUser3" runat="server" style="display: block;">
                         <div class="row" id="rowno1">
@@ -596,9 +524,7 @@
                             <asp:TextBox ID="txtPassword" runat="server" CssClass="col" placeholder="Password" TextMode="Password"></asp:TextBox>
                             <asp:TextBox ID="txtConfirmPassword" runat="server" CssClass="col" placeholder="Confirm Password" TextMode="Password"></asp:TextBox>
 
-
-                            <asp:Label ID="lblDOB" runat="server" CssClass="col" Text="DOB :-"></asp:Label>
-                            <%-- <asp:TextBox runat="server" CssClass="col" ID="txtDOB"></asp:TextBox>--%>
+                            <asp:Label ID="lblDOB" runat="server" CssClass="col" Text="DOB :-"></asp:Label>                            
                             <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
 
                             <asp:ScriptManager ID="ScriptManager1" runat="server" />
@@ -611,17 +537,14 @@
                                 Format="d MMM yyyy" />
                         </div>
                         <div class="row" id="rowno4">
-                            <asp:TextBox ID="txtEmail" runat="server" CssClass="col" placeholder="Enter Email Id"></asp:TextBox>
-                            <%--<asp:Label ID="lblmobno" runat="server" CssClass="col" Text="Mobile Number :-"></asp:Label>--%>
-                            <asp:TextBox runat="server" CssClass="col" ID="txtMobile" placeholder="Mobile Number"></asp:TextBox>
-                            <%--comment & added by Hrutik--%>
-                            
+                            <asp:TextBox ID="txtEmail" runat="server" CssClass="col" placeholder="Enter Email Id"></asp:TextBox>                            
+                            <asp:TextBox runat="server" CssClass="col" ID="txtMobile" placeholder="Mobile Number"></asp:TextBox>                            
                         </div>
                         <div class="row" id="rowno5">
                             <div class="col" style="width:100%; text-align: center;" >
-                            <asp:Button ID="btnSave" runat="server" CssClass="BtnCls" Text="Save" OnClientClick="return validateEmail();document.getElementById('MainContent_Bigbox1').style.display='none';
+                            <asp:Button ID="btnSave" runat="server" CssClass="btn btn-primary me-2" Text="Save" OnClientClick="return validateEmail();document.getElementById('MainContent_Bigbox1').style.display='none';
   document.getElementById('MainContent_Bigbox').style.display='block'; return false;" OnClick="btnSave_Click" />
-                            <asp:Button ID="btnCanl" runat="server" CssClass="BtnCls" Text="Cancel" OnClientClick="document.getElementById('MainContent_Bigbox1').style.display='none';
+                            <asp:Button ID="btnCanl" runat="server" CssClass="btn btn-danger" Text="Cancel" OnClientClick="document.getElementById('MainContent_Bigbox1').style.display='none';
   document.getElementById('MainContent_Bigbox').style.display='block'; return false;" />
                                 </div>
 
@@ -631,96 +554,27 @@
                             <div class="col" style="width:100%; text-align: center;" >
                            <asp:Label ID="lblDesi" runat="server" CssClass="col" style="width: 109px;" Text="Designation :-"></asp:Label>
                             <asp:DropDownList ID="ddlRole" runat="server" CssClass="col" style="width: 200px;" AutoPostBack="false" onchange="onRoleChange()" />
-                            
-                            
-                            <%--<asp:Button ID="btnOpenEmployeePopup" runat="server" Style="display: none;" OnClientClick="showEmployeePopup(); return false;" />
-<asp:Label ID="lblDesi" runat="server" CssClass="col" Text="Designation :-"></asp:Label>
-                            <asp:DropDownList ID="ddlRole" runat="server" CssClass="col"  AutoPostBack="false" onchange="onRoleChange()">
-                                </asp:DropDownList>--%>
-                            <%--<asp:ListItem Value="">-- Select Role --</asp:ListItem>
-                                <asp:ListItem>Developer</asp:ListItem>
-                                <asp:ListItem>Support</asp:ListItem>
-                                <asp:ListItem>Tester</asp:ListItem>--%>
-                            <asp:Button ID="BtnDesAssign" runat="server" CssClass="BtnCls" Text="SaveRole" OnClientClick="return validateDesgition();document.getElementById('MainContent_Bigbox1').style.display='none';
+                            <asp:Button ID="BtnDesAssign" runat="server" CssClass="btn btn-primary me-2" Text="SaveRole" OnClientClick="return validateDesgition();document.getElementById('MainContent_Bigbox1').style.display='none';
   document.getElementById('MainContent_Bigbox').style.display='block'; return false;" OnClick="btnSaveRole_Click" />
                             </div>
                             
                          </div>
-
-                        <%--Added by hrutik--%>
-                        <!-- Added by Hrutik -->
-                        <!-- Added by Hrutik -->
-
-<%--<div class="modal fade" id="employeeModal" tabindex="-1" role="dialog" aria-labelledby="employeeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h5 class="modal-title" id="employeeModalLabel">Assign Employees under Manager</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <!-- Modal Body -->
-            <div class="modal-body">
-    <!-- Search box -->
-    <input type="text" id="txtSearchEmp" class="form-control" placeholder="Search by name or ID..." onkeyup="filterEmployees()" />
-
-    <!-- Employee table -->
-    <div style="max-height: 300px; overflow-y: auto; margin-top: 10px;">
-        <table class="table table-bordered table-striped" id="employeeTable">
-            <thead class="table-light">
-                <tr>
-                    <th>Select</th>
-                    <th>Employee ID</th>
-                    <th>Employee Name</th>
-                </tr>
-            </thead>
-            <tbody id="employeeTableBody">
-                <!-- Dynamic rows go here -->
-            </tbody>
-        </table>
-    </div>
-</div>
-
-
-            <!-- Modal Footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="assignEmployees()">Assign</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-
-        </div>
-    </div>
-</div>--%>
-
-
                     </div>
 
                     <div id="cr3B" class="CreateUser3" runat="server" style="display: none">
                         Service Sanctioning
                         <asp:Literal ID="litModuleTree" runat="server"></asp:Literal>
                         <div class="col" style="width: 39%;"></div>
-                        <asp:Button ID="BtnSen" runat="server" CssClass="BtnCls" Text="Save" OnClick="btnSen_Click" OnClientClick="return gatherSelectedModules();" />
+                        <asp:Button ID="BtnSen" runat="server" CssClass="btn btn-primary me-2" Text="Save" OnClick="btnSen_Click" OnClientClick="return gatherSelectedModules();" />
                         <asp:HiddenField ID="hfSelectedModules" runat="server" />
-
                     </div>
-
-
                 </div>
-
             </div>
             <div id="Bigbox1" class="Bigbox1" runat="server">
-                <%--style="display: none"--%>
                 <div id="crb1" class="CreateUser">
                     <div id="cr1b1" class="CreateUser1" style="padding: 11px -1px 0px 12px; color: white;height: 26px;background-color: brown;">
                         <asp:LinkButton runat="server" ID="Label4" Text="Search Employee" OnClick="CancelED_Click" CssClass="no-Link-style"> </asp:LinkButton>
                         <asp:Label runat="server" ID="lbEd" Text=""></asp:Label>
-
-
-
-                        <%-- <asp:Button ID="Button1" runat="server" Text="Edit"
-    OnClientClick="return confirmEdit();" OnClick="btnEdit_Click" />--%>
                     </div>
 
                     <div id="Smallboxcr" runat="server">
@@ -744,14 +598,13 @@
 </div>
 <div class="col" style="width:100%; text-align: center;">
 
-<asp:Button ID="btnSearch" runat="server" Text="Search" OnClick="btnSearch_Click" class="BtnCls" />
+<asp:Button ID="btnSearch" runat="server" Text="Search" OnClick="btnSearch_Click" class="btn btn-primary me-2" />
 </div>
                         </div>
 
                         <div id="cr3b1" class="CreateUser3">
                             
-                            <div class="row" id="Udetail1">
-                                
+                            <div class="row" id="Udetail1">                                
 
                                 <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false" AllowPaging="true"
                                     OnRowCommand="GridView1_RowCommand"
@@ -763,9 +616,6 @@
                                         <asp:BoundField DataField="Status" HeaderText=" Active " />
                                         <asp:TemplateField HeaderText="Edit">
                                             <ItemTemplate>
-                                                <%--<asp:Button ID="btnAction" runat="server" Text="Edit"
-                                                    CommandName="CustomClick"
-                                                    CommandArgument='<%# Eval("UserId") %>' />--%>
                                                 <asp:LinkButton ID="btnAction" runat="server"
                                                     CssClass="btn btn-sm btn-outline-primary"
                                                     CommandName="CustomClick"
@@ -778,9 +628,6 @@
                                         </asp:TemplateField>
                                     </Columns>
                                 </asp:GridView>
-
-
-
                             </div>
                         </div>
                     </div>
@@ -792,10 +639,10 @@
 
                             <asp:Button runat="server" Text="Service Sanctioning" ID="EDsersec" CssClass="smallbx"
                                 OnClientClick="toggleDivs('MainContent_ED3A', 'MainContent_ED3B'); return false;"></asp:Button>
-
-                            <asp:Label ID="Label5" runat="server" CssClass="text-end d-block" Text="Employee Id :-"
-                                Style="padding-left: 814px;"></asp:Label>
+                            <div style="width: 63vw;justify-content: end;display: inline-flex;">
+                            <asp:Label ID="Label5" runat="server" CssClass="text-end d-block" Text="Employee Id :-"></asp:Label>
                             <asp:Label ID="Label6" runat="server" CssClass="text-end d-block"></asp:Label>
+                            </div>
 
                         </div>
                         <div id="ED3A" runat="server" class="CreateUser3" style="display: block;">
@@ -828,24 +675,19 @@
                             </div>
                             <div class="row" id="EDrowno4">
                                 <asp:TextBox ID="txtemED" runat="server" CssClass="col" placeholder="Enter Email Id"></asp:TextBox>
-                                <%--<asp:Label ID="lblmobno" runat="server" CssClass="col" Text="Mobile Number :-"></asp:Label>--%>
                                 <asp:TextBox runat="server" CssClass="col" ID="txtumnED" placeholder="Mobile Number"></asp:TextBox>
                                 <asp:Label ID="Label3" runat="server" CssClass="col" Text="Designation :-"></asp:Label>
-                                <asp:DropDownList ID="DropDownList4" runat="server" CssClass="col" AutoPostBack="false" onchange="onRoleChangeEdit()" >
-                                    <%--<asp:ListItem Value="">-- Select Role --</asp:ListItem>
-                                    <asp:ListItem>Developer</asp:ListItem>
-                                    <asp:ListItem>Support</asp:ListItem>
-                                    <asp:ListItem>Tester</asp:ListItem>--%>
+                                <asp:DropDownList ID="DropDownList4" runat="server" CssClass="col" AutoPostBack="false" onchange="onRoleChangeEdit()" >                                  
 
                                 </asp:DropDownList>
 
                             </div>
                             <div class="row" id="EDrowno5">
                                 <div class="col" style="width: 39%;"></div>
-                                <asp:Button ID="btnEdit" runat="server" CssClass="BtnCls" Text="Edit"
+                                <asp:Button ID="btnEdit" runat="server" CssClass="btn btn-primary me-2" style="width: auto;" Text="Edit"
                                     OnClientClick="return confirmEdit();" OnClick="btnEdit_Click" />
 
-                                <asp:Button ID="btnEditCanl" runat="server" CssClass="BtnCls" Text="Cancel" OnClick="CancelED_Click" />
+                                <asp:Button ID="btnEditCanl" runat="server" CssClass="btn btn-danger" style="width: auto;" Text="Cancel" OnClick="CancelED_Click" />
 
                             </div>
                         </div>
@@ -854,7 +696,7 @@
                             Service Sanctioning
                         <asp:Literal ID="litModuleTreeE" runat="server"></asp:Literal>
                             <div class="col" style="width: 39%;"></div>
-                            <asp:Button ID="BtnSenE" runat="server" CssClass="BtnCls" Text="Save" OnClick="btnSen_Click" OnClientClick="return gatherSelectedModules();" />
+                            <asp:Button ID="BtnSenE" runat="server" CssClass="btn btn-primary me-2" Text="Save" OnClick="btnSen_Click" OnClientClick="return gatherSelectedModules();" />
                             <asp:HiddenField ID="HiddenField1" runat="server" />
 
                         </div>
