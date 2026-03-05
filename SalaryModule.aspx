@@ -50,11 +50,9 @@
 </asp:GridView>
 </div>
           </div>
-
      <div runat="server" id="DtlSalDiv" style="display:none;padding:1%">
 
  <asp:Button ID="btnBack" runat="server" Text="← Back to Employee List" CssClass="btn btn-secondary mb-3" OnClick="btnBack_Click" />
-
 
 <hr />
 
@@ -81,7 +79,6 @@
         <asp:Label ID="lblAnnual" runat="server" CssClass="fw-bold h5" />
         <asp:Label ID="lblNetSalary" runat="server" CssClass="fw-bold h5" />
         <asp:Label ID="lblMonSalary" runat="server" CssClass="fw-bold h5" />
-        <%--<asp:Button ID="btnSaveSalary" runat="server" Text="Save Salary" CssClass="btn btn-success" OnClick="btnSaveSalary_Click" />--%>
 <asp:Label ID="Label1" runat="server" CssClass="text-success" />
         </div>
         </div>
@@ -89,9 +86,7 @@
  Text="Save Yearly Salary"
  CssClass="btn btn-success"
  OnClick="btnSaveSalary_Click" />
-
 <hr />
-
     <h5 class="mt-3">Approved Task Entries</h5>
 
 <asp:DropDownList ID="ddlMonth" runat="server"
@@ -109,8 +104,6 @@
 
 <br />
 <asp:Label ID="lblMessage" runat="server" CssClass="fw-bold text-success" />
-
-
             <div class="table-responsive">
           <asp:GridView ID="gvTasks" runat="server" AutoGenerateColumns="true" 
     OnRowDataBound="gvTasks_RowDataBound" CssClass="table table-sm table-bordered" />

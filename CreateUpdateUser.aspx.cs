@@ -17,6 +17,10 @@ namespace EmployeeTimesheet_Salary
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Session["SUsername"] == null || Session["UserID"]== null)
+            {
+                Response.Redirect("~/login.aspx");
+            }
             if (!IsPostBack) 
             {
                 Bigbox.Attributes["style"] = "display:none;";

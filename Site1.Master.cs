@@ -11,6 +11,10 @@ namespace EmployeeTimesheet_Salary
     {
         protected void Page_Init(object sender, EventArgs e)
         {
+            if (Session["SUsername"] == null || Session["UserID"] == null)
+            {
+                Response.Redirect("~/login.aspx");
+            }
             // Always rebuild buttons before ViewState loads
             DataTable dt;
 
@@ -29,13 +33,15 @@ namespace EmployeeTimesheet_Salary
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Session["SUsername"] == null || Session["UserID"] == null)
+            {
+                Response.Redirect("~/login.aspx");
+            }
             if (!IsPostBack)
             {
                 lblUsername.Text = Request.QueryString["Username"];
             }
         }
-
-        // 🔹 Fetch user modules from DB
         private DataTable GetModuleNames()
         {
             string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
@@ -57,7 +63,6 @@ namespace EmployeeTimesheet_Salary
             return dt;
         }
 
-        // 🔹 Create buttons based on DB result
         private void CreateButtons(DataTable dt)
         {
             navContainer.Controls.Clear();
@@ -84,8 +89,6 @@ namespace EmployeeTimesheet_Salary
                 }
             }
         }
-
-        // 🔹 Add dynamic button to navbar
         private void AddHeaderButton(string text, string id, EventHandler clickHandler)
         {
             Button btn = new Button
@@ -95,13 +98,10 @@ namespace EmployeeTimesheet_Salary
                 CssClass = "nav-button",
                 OnClientClick= "showLoader();",
                 //UseSubmitBehavior = "false",
-
             };
             btn.Click += clickHandler;
             navContainer.Controls.Add(btn);
         }
-
-        // 🔹 Click event handlers
         protected void BtnEmpDts_Click(object sender, EventArgs e)
         {
             string userId = Request.QueryString["UserID"];

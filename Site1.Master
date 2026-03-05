@@ -29,17 +29,14 @@
             box-shadow: 0 8px 11px rgb(14 55 54 / 15%);
             transition: 0.5s;
         }
-
         header img {
             height: 50px;
             width: 50px;
         }
-
         .navbar {
             display: flex;
             gap: 15px;
         }
-
         .nav-button {
             background-color: transparent;
             color: white;
@@ -49,11 +46,9 @@
             cursor: pointer;
             font-size: 14px;
         }
-
         .nav-button:hover {
             background-color: #444;
         }
-
         .logout-btn {
             background-color: #e74c3c;
             color: white;
@@ -62,7 +57,6 @@
             border-radius: 4px;
             cursor: pointer;
         }
-
         .username-label {
             margin-right: 15px;
             font-weight: bold;
@@ -81,7 +75,6 @@
     border-color:#444;
     background-color: #444;
 }
-
 .hourglass {
   width: 70px;
   height: 70px;
@@ -91,7 +84,6 @@
   animation: hourglass 1.2s infinite;
   margin: auto;
 }
-
 @keyframes hourglass {
   0% {
     transform: rotate(0deg);
@@ -103,7 +95,6 @@
     transform: rotate(360deg);
   }
 }
-
         .loader-box {
             display: none;
             text-align: center;
@@ -129,8 +120,6 @@
          </div>
 
         <header>
-            <%--<asp:Image ID="imgLogo" runat="server" ImageUrl="~/img/logo.png"
-                       Width="50px" Height="50px" Style="margin-left: 8px;" />--%>
             <asp:Image ID="imgLogo" runat="server" ImageUrl="~/img/glowingLightBulb.png"
            Width="50px" Height="50px" Style="margin-left: 8px;" />
              <!-- Home Icon Button -->
