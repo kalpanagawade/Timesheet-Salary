@@ -17,7 +17,6 @@ namespace EmployeeTimesheet_Salary
         protected global::System.Web.UI.WebControls.TextBox txtUsername;
         protected global::System.Web.UI.WebControls.TextBox txtPassword;
 
-
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -34,14 +33,11 @@ namespace EmployeeTimesheet_Salary
 
                     string query = "SELECT COUNT(*) FROM iUser WHERE Userid = @Userid AND UserPIN = @UserPIN";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        // Use parameters to prevent SQL Injection
+                    {                        
                         cmd.Parameters.AddWithValue("@Userid", txtUsername.Text.Trim());
                         cmd.Parameters.AddWithValue("@UserPIN", txtPassword.Text.Trim());
 
-                        int count = (int)cmd.ExecuteScalar();
-
-                      
+                        int count = (int)cmd.ExecuteScalar();                      
                         if (string.IsNullOrWhiteSpace(txtUsername.Text) ||
                             string.IsNullOrWhiteSpace(txtPassword.Text))
                         {
@@ -62,20 +58,19 @@ namespace EmployeeTimesheet_Salary
                                 string url = "Notice.aspx?Username=" + Server.UrlEncode(name) +
                                              "&UserID=" + Server.UrlEncode(txtUsername.Text.Trim());
 
-                                // ✅ T001 – Valid Login
+                                // Store login session
+                                Session["SUsername"] = Server.UrlEncode(name);
+                                Session["UserID"] = Server.UrlEncode(txtUsername.Text.Trim());
+                              
                                 ScriptManager.RegisterStartupScript(this, this.GetType(), "success",
                                     "alert('User logged in successfully!'); window.location='" + url + "';", true);
                             }
                         }
                         else
-                        {
-                            // ✅ T002 & T003 – Invalid Username or Password
+                        {                            
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "error",
                                 "alert('Login ID or Password is incorrect');", true);
                         }
-
-
-
                     }
                 }
                 catch (Exception ex)
@@ -104,10 +99,6 @@ namespace EmployeeTimesheet_Salary
         {
             Random rnd = new Random();
             generatedOTP = rnd.Next(100000, 999999).ToString();
-
-
-
-
             // Send Email or SMS here
             // Example email code:
             // EmailService.Send(emailOrPhone, "Your OTP", "Your OTP is " + generatedOTP);

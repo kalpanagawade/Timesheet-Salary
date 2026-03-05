@@ -33,7 +33,6 @@ namespace EmployeeTimesheet_Salary
             }
             else
             {
-                // 👇 Restore div visibility after postback
                 if (ViewState["ShowDetails"] != null && (bool)ViewState["ShowDetails"])
                 {
                     SalMdlDiv.Style["display"] = "none";
@@ -50,12 +49,10 @@ namespace EmployeeTimesheet_Salary
                 }
             }
         }
-
         protected void btnBack_Click(object sender, EventArgs e)
         {
             SalMdlDiv.Style["display"] = "block";
-            DtlSalDiv.Style["display"] = "none";
-            //pnlDetails.Visible = false;   // ✅ hide again
+            DtlSalDiv.Style["display"] = "none";            
             pnlSalary.Visible = false;
             ViewState["ShowDetails"] = false;
         }
@@ -64,13 +61,11 @@ namespace EmployeeTimesheet_Salary
             txtSearchId.Text = "";
             txtSearchName.Text = "";
             BindEmployeeList();
-            //pnlDetails.Visible = false;
             pnlSalary.Visible = false;
         }
         protected void btnSearch_Click(object sender, EventArgs e)
         {
             BindEmployeeList(txtSearchId.Text.Trim(), txtSearchName.Text.Trim());
-            //pnlDetails.Visible = false;
             pnlSalary.Visible = false;
         }
 
@@ -106,7 +101,6 @@ namespace EmployeeTimesheet_Salary
                 gvEmployees.DataBind();
             }
         }
-
         protected void gvTasks_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
@@ -133,18 +127,6 @@ namespace EmployeeTimesheet_Salary
                 }
             }
         }
-
-        //protected void gvEmployees_RowCommand(object sender, System.Web.UI.WebControls.GridViewCommandEventArgs e)
-        //{
-        //    if (e.CommandName == "ShowDetails")
-        //    {
-        //        string[] a = e.CommandArgument.ToString().Split('|');
-        //        ViewState["SelectedUserId"] = a[0];
-        //        lblUser.Text = "Employee: " + a[1] + " (" + a[0] + ")";
-        //        pnlSalary.Visible = true;
-        //    }
-        //}
-
         protected void gvEmployees_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "ShowDetails")
@@ -154,18 +136,14 @@ namespace EmployeeTimesheet_Salary
                 string username = args[1];
                 lblUser.Attributes["data-userid"] = userId;
                 ViewState["SelectedUserId"] = userId;
-                lblUser.Text = $"Employee: {username} (UserID: {userId})";
-                //pnlDetails.Visible = true;
+                lblUser.Text = $"Employee: {username} (UserID: {userId})";               
                 SalMdlDiv.Style["display"] = "none";
 
-                // Show Detail Salary Div
                 DtlSalDiv.Style["display"] = "block";
 
-                //pnlDetails.Visible = true;
                 pnlSalary.Visible = true;
 
                 ViewState["ShowDetails"] = true;
-                // 🔹🔹 RESET PREVIOUS DATA (IMPORTANT FIX)
                 gvTasks.DataSource = null;
                 gvTasks.DataBind();
 
@@ -174,18 +152,14 @@ namespace EmployeeTimesheet_Salary
 
                 ddlMonth.ClearSelection();
                 ddlYear.ClearSelection();
-                // 🔹🔹 End Reset
-                //BindTaskDetails(userId);
                 int Year = 1901;
                 BindSalaryDetails(userId, Year);
             }
         }
-
         private void BindSalaryDetails(string userId, int Year)
         {
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                //string query = @"SELECT TOP 1 * FROM kalpana..Salary WHERE UserId = @UserId and Year=@Year";
                 string query = @"SELECT S.*,M.Deduction,M.NetSalary as MonthlyNetSalary FROM kalpana..Salary as S left join kalpana..SalaryMonthly as M on M.UserID=S.UserID and M.Year=S.Year WHERE S.UserId = @UserId and S.Year=@Year";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@UserId", userId);
@@ -220,24 +194,14 @@ namespace EmployeeTimesheet_Salary
             if (ViewState["SelectedUserId"] == null || ViewState["LeaveDays"] == null)
                 return;
 
-            // Salary from screen
             decimal monthSalary = 0;
             decimal.TryParse(lblMonSalary.Text.Replace("Month Salary: ₹ ", "").Trim(), out monthSalary);
 
-            // Get month and year from dropdowns
             int month = Convert.ToInt32(ddlMonth.SelectedValue);
             int year = Convert.ToInt32(ddlYear.SelectedValue);
-
-            // Count leave days
             int leaveDays = Convert.ToInt32(ViewState["LeaveDays"]);
-
-            // Get days in month
             int totalDays = DateTime.DaysInMonth(year, month);
-
-            // Formula
             decimal deduction = (monthSalary / totalDays) * leaveDays;
-
-            // Show result
             txtDeduction.Text = deduction.ToString("0.00");
         }
         protected void gvEmployees_PageIndexChanging(object sender, System.Web.UI.WebControls.GridViewPageEventArgs e)
@@ -246,21 +210,12 @@ namespace EmployeeTimesheet_Salary
             BindEmployees();
             BindEmployeeList(txtSearchId.Text.Trim(), txtSearchName.Text.Trim());
         }
-
-        //protected void FilterChanged(object sender, EventArgs e)
-        //{
-        //    bool lockYear = ddlMonth.SelectedIndex > 0;
-        //    txtBasic.ReadOnly = txtHRA.ReadOnly =
-        //    txtAllowance.ReadOnly = txtBonus.ReadOnly = lockYear;
-        //}
-
         protected void FilterChanged(object sender, EventArgs e)
         {
             if (ViewState["SelectedUserId"] == null)
                 return;
 
             string userId = ViewState["SelectedUserId"].ToString();
-
 
             if (!string.IsNullOrEmpty(ddlMonth.SelectedValue) && !string.IsNullOrEmpty(ddlYear.SelectedValue))
             {
@@ -269,8 +224,6 @@ namespace EmployeeTimesheet_Salary
                 BindTaskDetails(userId, selectedMonth, selectedYear);
                 BindSalaryDetails(userId, selectedYear);
 
-                // After salary details loaded once, no need to reload every time
-                //Deduction will auto calculate inside BindTaskDetails()
             }
 
             if (!string.IsNullOrEmpty(ddlYear.SelectedValue))
@@ -308,9 +261,6 @@ namespace EmployeeTimesheet_Salary
                 }
 
                 ViewState["LeaveDays"] = leaveCount;
-
-                // Call to calculate deduction
-                //CalculateDeduction();
             }
         }
         protected void btnSaveSalary_Click(object sender, EventArgs e)
@@ -322,12 +272,10 @@ namespace EmployeeTimesheet_Salary
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("@UserId", userId);
-                //cmd.Parameters.AddWithValue("@UserId", ViewState["SelectedUserId"]);
                 cmd.Parameters.AddWithValue("@Year", ddlYear.SelectedValue);
                 cmd.Parameters.AddWithValue("@BasicSalary", txtBasic.Text);
                 cmd.Parameters.AddWithValue("@HRA", txtHRA.Text);
                 cmd.Parameters.AddWithValue("@Allowance", txtAllowance.Text);
-                //cmd.Parameters.AddWithValue("@Bonus", txtBonus.Text);
                 if (!string.IsNullOrEmpty(txtBonus.Text))
                 {
                     cmd.Parameters.AddWithValue("@Bonus", txtBonus.Text);
@@ -342,7 +290,6 @@ namespace EmployeeTimesheet_Salary
             }
             lblMessage.Text = "Yearly salary saved";
         }
-
         protected void btnReleaseSalary_Click(object sender, EventArgs e)
         {
             int leaveDays = 2;

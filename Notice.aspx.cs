@@ -19,8 +19,6 @@ namespace EmployeeTimesheet_Salary
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            //txtCreatedBy.Text = Request.QueryString["Username"];
-            //    Get_moduleName();
             if (!IsPostBack) // Ensure it runs only on the first page load
             {
                 LoadDashboardCounts();
@@ -52,7 +50,6 @@ namespace EmployeeTimesheet_Salary
 
                 // Payroll pending
                 SqlCommand cmd4 = new SqlCommand("SELECT COUNT(*) FROM Salary", con);
-                //("SELECT COUNT(*) FROM Payroll WHERE Status='Pending'", con);
                 lblPayrollItems.Text = cmd4.ExecuteScalar().ToString();
 
                 con.Close();

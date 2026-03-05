@@ -14,15 +14,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            /* background-color: green;*/
-            
+            min-height: 100vh;          
               background-image: url('../img/loginImg.PNG');
-              background-size: cover;           /* Optional: makes image cover the whole screen */
-              /*background-position: center;  */    /* Optional: centers the image */
-              /*background-repeat: no-repeat;*/ 
-         }
-
+              background-size: cover;           /* Optional: makes image cover the whole screen */             
+        }
         main {
             width: 300px;
             padding: 20px;
@@ -32,8 +27,7 @@
             backdrop-filter: blur(25px);
             position: relative;
         }
-
-            main header {
+        main header {
                 position: absolute;
                 top: 0;
                 left: 50%;
@@ -42,36 +36,13 @@
                 background-color: white;
                 border-radius: 0 0 99px 99px;
                 height:15%;
-            }
-
+        }
         .FromShift {
             margin-top: 80px;
             display: flex;
             flex-direction: column;
             gap: 20px;
-        }
-        /*.from_wrapper { 
-     position: relative;
-     display: flex;
-     align-items: center;
- }
-
- input[type="text"], input[type="password"] {
-     padding: 10px;
-     border: 2px solid white;
-     width: 100%;
-     border-radius: 25px;
-     outline: none;
-     background-color: transparent;
-     color: white;
- }
-
- .labelcls {
-     position: absolute;
-     left: 10px;
-     color: white;
-     transition: .2s;
- }*/
+        }        
 .form_wrapper {
     position: relative;
     display: flex;
@@ -79,7 +50,6 @@
     width: 100%;
     margin-bottom: 20px;
 }
-
 .input {
     padding: 12px 12px 12px 40px;
     border: 2px solid white;
@@ -90,11 +60,9 @@
     color: white;
     font-size: 16px;
 }
-
 .input:focus {
     border-color: #00bfff;
 }
-
 .labelcls {
     position: absolute;
     left: 40px;
@@ -104,7 +72,6 @@
     pointer-events: none;
     transition: 0.2s ease all;
 }
-
 .input:focus + .labelcls,
 .input:not(:placeholder-shown) + .labelcls {
     background-color: white;
@@ -117,48 +84,36 @@
     text-align:center;
     border-radius: 25px;
 }
-
 .form_wrapper i {
     position: absolute;
     left: 265px;
     color: black;
     font-size: 20px;
 }
-
-
         .remember_box {
             display: flex;
             align-items: center;
             justify-content: space-between;
             
         }
-
-        /*button {
-            border: none;
-            padding: 10px;
-            border-radius: 25px;
-            cursor: pointer;*/
-        /*}*/
-        .remember {
+.remember {
     display: flex;
     align-items: center;
     gap: 5px; /* space between checkbox and text */
     color: white; /* optional */
 }
-
 input[type="checkbox"] {
     width: 16px;
     height: 16px;
     accent-color: #00bfff; /* Optional: modern browsers */
 }
-
         .new_account {
             text-align: center;
             color: white;
         }
 #togglePassword {
     position: absolute;
-    right: 15px;               /* 👈 Place inside right */
+    right: 15px; 
     top: 50%;
     transform: translateY(-50%);
     font-size: 22px;
@@ -185,7 +140,6 @@ input[type="checkbox"] {
     background: rgba(0,0,0,0.5);
     z-index: 9999;
 }
-
 .popup-content {
     width: 350px;
     margin: 10% auto;
@@ -195,13 +149,10 @@ input[type="checkbox"] {
     box-shadow: 0 0 10px #000;
     text-align: center;
 }
-
-
 .linkCls{
         background-color: honeydew;
     cursor: pointer;
 }
-
 .inputBox {
     width: 95%;
     padding: 8px;
@@ -221,7 +172,6 @@ input[type="checkbox"] {
   animation: hourglass 1.2s infinite;
   margin: auto;
 }
-
 @keyframes hourglass {
   0% {
     transform: rotate(0deg);
@@ -233,7 +183,6 @@ input[type="checkbox"] {
     transform: rotate(360deg);
   }
 }
-
         .loader-box {
             display: none;
             text-align: center;
@@ -248,8 +197,6 @@ input[type="checkbox"] {
             padding-top:20%
         }
     </style>
-  
-
 
 </head>
 <body>
@@ -263,7 +210,6 @@ input[type="checkbox"] {
         <p><strong>Phone:</strong> +91 9307769947</p>
     </div>
 </div>
-
     <div id="frgPopup" class="popup">
     <div class="popup-content">
         <span class="close" onclick="closeFrgPopup()">&times;</span>
@@ -284,110 +230,76 @@ input[type="checkbox"] {
         </div>
     </div>
 </div>
-
-<%--    <div id="loader" style="display:block; text-align:center; margin-top:15px;padding-top: 18%;" class="popup">
-<img src="/img/Time.gif" style="width:80px; height:70px;" />
-<p>Please wait...</p>
-</div>--%>
-
-
     <div id="loader" class="loader-box">
     <div class="hourglass"></div>
     <p>Loading...</p>
 </div>
 
     <main>
-        <header>
-            
+        <header>            
             <h4>Login</h4>
         </header>
         <form id="form2" runat="server">
-
-
         <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePageMethods="true" />
         <div class="FromShift">
-             <!-- Username -->
         <div class="form_wrapper">
             <asp:TextBox ID="txtUsername" runat="server" CssClass="input" placeholder=" " required="required" />
             <label  class="labelcls" for="txtUsername">Username</label>
             <i class='bx bxs-user bx-burst'></i>
         </div>
-
-
         <div class="form_wrapper">
             <asp:TextBox ID="txtPassword" runat="server" CssClass="input" TextMode="Password" placeholder=" " required="required" />
             <label  class="labelcls" for="txtPassword">Password</label>
                <i class='bx bx-show' id="togglePassword"></i>
         </div>
-
-
             <div class="remember_box">
                 <div class="remember">
                     <asp:CheckBox ID="chkRememberMe" runat="server" Text="Remember me" />
                 </div>
-
                  <asp:LinkButton ID="lnkfrgpass" runat="server" class="linkCls" OnClientClick="showFrgPopup(); return false;">
                 Forgot Password?
                  </asp:LinkButton>
             </div>
             <asp:Button ID="btnLogin" runat="server" Class="Login-btn" Text="Login" OnClick="btnlogin_Click" OnClientClick="showLoader();" UseSubmitBehavior="false"/>
-            <%--OnClick="btnlogin_Click" --%>
-
             <div class="new_account">
                Don't have an account?
                 <asp:LinkButton ID="lnkSignUp" runat="server" class="linkCls" OnClientClick="showHRPopup(); return false;">
                 Please contact HR.
                 </asp:LinkButton>
-
             </div>
             </div>
-
             <script type="text/javascript">
                 function showLoader() {
                     debugger
                     document.getElementById("loader").style.display = "block";
-
-                    setTimeout(function () {
-                        // auto hide after 3 seconds
+                    setTimeout(function () {                        
                         document.getElementById("loader").style.display = "none";
                     }, 100000);
                 }
                 document.getElementById("togglePassword").onclick = function () {
-
                     var pwd = document.getElementById("<%= txtPassword.ClientID %>");
-
-                    if (pwd.type === "password") {
-                        // Show password
+                    if (pwd.type === "password") {                        
                         pwd.type = "text";
                         this.classList.remove("bx-show");
                         this.classList.add("bx-hide");
-                    } else {
-                        // Hide password
+                    } else {                        
                         pwd.type = "password";
                         this.classList.remove("bx-hide");
                         this.classList.add("bx-show");
                     }
                 };
-
                 function showHRPopup() {
                     document.getElementById("hrPopup").style.display = "block";
                 }
-
                 function closeHRPopup() {
                     document.getElementById("hrPopup").style.display = "none";
                 }
-
                 function showFrgPopup() {
                     document.getElementById("frgPopup").style.display = "block";
                 }
-
                 function closeFrgPopup() {
                     document.getElementById("frgPopup").style.display = "none";
-                }
-
-
-
-                // STEP 1: SEND OTP
+                }                
                 function sendOTP() {
                     debugger
                     var userInput = document.getElementById("txtUserInput").value;
@@ -410,11 +322,8 @@ input[type="checkbox"] {
                         }
                     });
                 }
-
-                // STEP 2: VERIFY OTP
                 function verifyOTP() {
                     var otp = document.getElementById("txtOTP").value;
-
                     $.ajax({
                         type: "POST",
                         url: "Login.aspx/VerifyOTP",
@@ -435,9 +344,7 @@ input[type="checkbox"] {
                             document.getElementById("newPassSection").style.display = "block"; //This is temprary solustion
                         }
                     });
-                }
-
-                // STEP 3: UPDATE PASSWORD
+                }                
                 function updatePassword() {
                     var newPass = document.getElementById("txtNewPass").value;
 
@@ -457,8 +364,6 @@ input[type="checkbox"] {
             
         </form>
     </main>
-
-
 
 </body>
 </html>
