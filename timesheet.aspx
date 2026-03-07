@@ -1,11 +1,6 @@
 ﻿<%@ Page Title="Employee Timesheet Calendar" Language="C#" MasterPageFile="~/Site1.master" AutoEventWireup="true"
     CodeBehind="timesheet.aspx.cs" Inherits="EmployeeTimesheet_Salary.timesheet" %>
 
-<%--<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <title>Employee Timesheet Calendar</title>--%>
-
     <asp:Content ID="ContentHead" ContentPlaceHolderID="HeadContent" runat="server">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" />
@@ -19,21 +14,7 @@
 
     <style type="text/css">
         header {
-            /*border-radius: 1rem;
-            position fixed;*/
             width: 98.5% !important;
-            /*height: 89px;
-            margin: 11px;
-            top: 0;
-            right: 0;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: black;
-            box-shadow: 0 8px 11px rgb(14 55 54 / 15%);
-            padding: 11px 11px;
-            transition: 0.5s;*/
         }
 
         .navbar .home-active {
@@ -203,7 +184,6 @@
             background-color: lightseagreen;
             color: white;
         }
-        /* Approved = green */
 
         .NotApproved{
     background-color: lightcoral;    
@@ -243,8 +223,6 @@
                 cursor: not-allowed;
                 transform: none;
             }
-
-        /*//Added ruby Hrutik 18072025*/
         .modalPopup {
             display: none;
             position: fixed; /* ensures it floats above the calendar */
@@ -268,9 +246,6 @@
             font-size: smaller;
             line-height: revert;
         }
-        /*.modal {
-            top: -6%
-        }*/
         .form-control{
             border-radius: 1.25rem;
         }
@@ -304,28 +279,6 @@
                 toggleLoginButton();
             });
         }
-
-
-        //function updateClock() {
-        //    const now = new Date();
-        //    const timeStr = now.toTimeString().split(' ')[0];
-
-        //    const inTimeDiv = document.getElementById('lblInTime');
-        //    const outTimeDiv = document.getElementById('lblOutTime');
-
-        //    if (inTimeDiv && inTimeDiv.innerText.trim() === "") {
-        //        inTimeDiv.innerText = timeStr;
-        //    }
-
-        //    if (outTimeDiv && outTimeDiv.innerText.trim() === "") {
-        //        outTimeDiv.innerText = timeStr;
-        //    }
-        //}
-
-        //window.onload = function () {
-        //    setInterval(updateClock, 1000);
-        //};
-
 
         function validateTime(input) {
             var regex = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/;
@@ -365,11 +318,6 @@
                 if (s === "" || s.toLowerCase() === "null" || s === "00:00:00") return false;
                 return true;
             }
-
-            // Apply style class name you must define in CSS
-            // .text-disabled { background-color:#f0f0f0 !important; color:#888 !important; cursor:not-allowed !important; }
-
-            // In Time
             if (hasRealTime(inTime)) {
                 inTimeBox.value = inTime;
                 inTimeBox.setAttribute("disabled", "disabled");   // ensures attribute in DOM
@@ -379,8 +327,6 @@
                 inTimeBox.removeAttribute("disabled");
                 console.log("inTime editable");
             }
-
-            // Out Time
             if (hasRealTime(outTime)) {
                 outTimeBox.value = outTime;
                 outTimeBox.setAttribute("disabled", "disabled");
@@ -393,9 +339,6 @@
 
             // show modal AFTER setting fields
             $('#taskModal').modal('show');
-
-            // IMPORTANT: DO NOT CALL __doPostBack HERE if you expect client changes to persist.
-            // If you must call __doPostBack, move it to server-side and re-open the modal after postback.
             __doPostBack('<%= btnTriggerBindGrid.UniqueID %>', '');
         }
 
@@ -450,18 +393,6 @@
 
 
     <script>
-
-       <%-- function onTypeSelectionChanged(selectedValue) {
-            const sendBtn = document.getElementById("<%= Btn_TAprov.ClientID %>");
-
-            if (["Holiday", "Leave", "Weekly off", "Comp off"].includes(selectedValue)) {
-                sendBtn.disabled = false;
-            } else {
-                sendBtn.disabled = true;
-            }
-        }--%>
-
-
 
         function validateBeforeSave() {
             var dayType = document.getElementById('<%= hfDayType.ClientID %>').value;
@@ -542,34 +473,6 @@
 
         }
 
-
-
-
-       <%-- function handleSelection(selectedType) {
-            // Hide task entry fields
-            document.getElementById('taskEntryFields').style.display = 'none';
-
-            // Button IDs
-            const btns = {
-                'Holiday': '<%= Btn_IsHoli.ClientID %>',
-            'Leave': '<%= Btn_IsLev.ClientID %>',
-            'Weekly': '<%= Btn_IsWek.ClientID %>',
-            'Comp': '<%= Btn_IsComp.ClientID %>'
-            };
-
-            // Loop through and hide all except selected
-            for (let key in btns) {
-                const btn = document.getElementById(btns[key]);
-                if (key === selectedType) {
-                    btn.disabled = false;
-                    btn.style.display = 'inline-block'; // show selected
-                } else {
-                    btn.disabled = true;
-                    btn.style.display = 'none'; // hide others
-                }
-            }
-        }--%>
-
         // Optional reset function
         function resetButtonsAndForm() {
             document.getElementById('taskEntryFields').style.display = 'block';
@@ -584,29 +487,19 @@
             document.getElementById('<%= Btn_IsWek.ClientID %>').style.display = 'inline-block';
             document.getElementById('<%= Btn_IsComp.ClientID %>').style.display = 'inline-block';
         }
-
-
-
         function confirmDelete() {
             return confirm("Are you sure you want to delete this task?");
         }
         function confirmEdit(taskId) {
             return confirm("Do you want to edit task ID " + taskId + "?");
-        }
-        ///Added by hrutik 18072025
+        }        
         function openModal() {
             document.getElementById("modalPopup").style.display = "block";
         }
         function closeModal() {
             document.getElementById("modalPopup").style.display = "none";
-        }
-        //function openModal() {
-        //    $('#yourModalId').modal('show'); // Replace with your modal's actual ID
-        //}
+        }        
         $('#myModal').modal('show');
-
-
-
         function toggleLogoutDropdown() {
             var dropdown = document.getElementById("logoutDropdown");
             dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
@@ -615,27 +508,9 @@
             // Optional: Clear session or cookies
             window.location.href = 'Login.aspx'; // Adjust path if needed
         }
-
-
         let isLoggedIn = false;
         let inTimeTimer;
         let outTimeTimer;
-
-        //Comment by Hrutik
-        //function updateInTime() {
-        //    const now = new Date();
-        //    const timeStr = now.toTimeString().split(' ')[0]; // HH:mm:ss
-        //    const inTimeBox = document.getElementById('txtInTime');
-        //    if (inTimeBox) inTimeBox.value = timeStr;
-        //}
-
-        //Comment by Hrutik
-        //function updateOutTime() {
-        //    const now = new Date();
-        //    const timeStr = now.toTimeString().split(' ')[0];
-        //    const outTimeBox = document.getElementById('txtOutTime');
-        //    if (outTimeBox) outTimeBox.value = timeStr;
-        //}
 
         function updateInTime() {
             const inTimeBox = document.getElementById('txtInTime');
@@ -660,46 +535,6 @@
             }, 1000); // refresh every second
         }
 
-        /*window.onload = startClock;*/
-
-        //function startClocks() {
-        //    updateInTime();
-        //    updateOutTime();
-        //    inTimeTimer = setInterval(updateInTime, 1000);
-        //    outTimeTimer = setInterval(updateOutTime, 1000);
-        //}
-
-        //function stopInTimeClock() {
-        //    clearInterval(inTimeTimer);
-        //}
-
-        //function stopOutTimeClock() {
-        //    clearInterval(outTimeTimer);
-        //}
-
-        //function handleLoginLogout() {
-        //    const btn = document.getElementById('btnLoginLogout');
-        //    const now = new Date().toTimeString().split(' ')[0];
-
-        //    if (!isLoggedIn) {
-        //        // Login
-        //        stopInTimeClock();
-        //        document.getElementById('txtInTime').value = now;
-        //        btn.value = 'Logout';  // 👈 This line sets the text
-        //        console.log("Logged in: Button text set to Logout");
-        //        isLoggedIn = true;
-        //    } else {
-        //        // Logout
-        //        stopOutTimeClock();
-        //        document.getElementById('txtOutTime').value = now;
-        //        btn.disabled = true;
-        //        console.log("Logged out: Button disabled");
-        //    }
-
-        //    return false; // 👈 This prevents postback!
-        //}
-
-
         function displayCurrentDayDate() {
             debugger
             const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -719,8 +554,7 @@
             document.getElementById('currentDateDisplay').textContent = formatted;
         }
 
-        window.onload = function () {
-            /*startClocks();*/
+        window.onload = function () {            
             startClock()
             displayCurrentDayDate();
         }
@@ -728,49 +562,16 @@
     </script>
 
 </asp:Content>
-
-<%--</head>
-<body>
-    <form id="form1" runat="server">--%>
-
      <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
         <asp:ScriptManager ID="ScriptManager1" runat="server" />
-       <%-- <header>
-            <img src="../img/logo.png" alt="Logo" style="width: 50px; height: 50px; margin: 0px 0px 0px 8px;" />
-            <div class="navbar">
-                <asp:Button runat="server" ID="btnEmpTimSht" class="home-active" Text="Employee Timesheet" Style="padding: 18px;" OnClick="btnEmpTimSht_Click" />
-            </div>
-            
-            <div class="navbar">
-               
-            </div>
-
-            <div class="profile-container">
-                <div class="profile-icon" onclick="toggleLogoutDropdown()">
-                    <asp:Label ID="txtCreatedBy" runat="server"> </asp:Label>
-                    <i class="bx bx-log-out"></i>
-                </div>
-                <div class="logout-dropdown" id="logoutDropdown" onclick="logoutUser()">
-                    Logout
-                </div>
-            </div>
-
-
-
-        </header>--%>
-
+       
         <div style="height: 2rem;"></div>
         <!-- for spacing -->
         <div class="header-section">
             <div class="header-row">
                 <div class="header-group">
                     <label>Work Place *</label>
-                   <%-- <asp:DropDownList ID="ddlWorkPlace" runat="server" style="border-radius: 1.25rem; padding-right:34px">
-                        <asp:ListItem Text="Select" Value="Sel" />
-                        <asp:ListItem Text="Work From Home" Value="WFH" />
-                        <asp:ListItem Text="Office" Value="Office" />
-                    </asp:DropDownList>--%>
                     <asp:DropDownList ID="ddlWorkPlace" runat="server"
  
     style="border-radius: 1.25rem; padding-right:34px"
@@ -779,10 +580,6 @@
     <asp:ListItem Text="Work From Home" Value="WFH" />
     <asp:ListItem Text="Office" Value="Office" />
 </asp:DropDownList>
-
-
-
-
                 </div>
 
                 <div class="header-group" style="margin-left:54px;">
@@ -796,8 +593,6 @@
                 </div>
 
                 <div class="header-group">
-                    <%--<asp:Button ID="btnLoginLogout" runat="server" Text="Login" CssClass="logout-btn"
-                        OnClientClick="return handleLoginLogout();" UseSubmitBehavior="false" ClientIDMode="Static" />--%>
                     <asp:Button ID="btnLoginLogout" runat="server" Text="Login" CssClass="logout-btn"
     OnClick="btnLoginLogout_Click"  UseSubmitBehavior="false" ClientIDMode="Static" />
                 </div>
@@ -829,8 +624,6 @@
 
                 <div class="header-group2">
                     <span id="currentDateDisplay"></span>
-                   <%-- <label>Status</label>--%>
-                    <%--<asp:Image ID="imgStatusHelp" runat="server" ImageUrl="~/images/info.png" ToolTip="Status info" />--%>
                 </div>
             </div>
         </div>
@@ -839,7 +632,6 @@
             <!-- Navigation Buttons -->
             <asp:Button ID="btnPrev" runat="server" Text="&lt;" OnClick="btnPrev_Click" CssClass="nav-btn" />
           
-
             <!-- Hidden Field to keep track of current month -->
             <asp:HiddenField ID="hfMonthYear" runat="server" />
 
@@ -867,7 +659,6 @@
             </table>
         </div>
 
-
         <!-- Modal -->
         <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="taskModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl" role="document">
@@ -878,51 +669,23 @@
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" onclick="location.reload();">
                             <span aria-hidden="true">&times;</span>
                         </button>
-
-
-                        <%-- <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>--%>
                     </div>
                     <div class="modal-body">
                         <asp:UpdatePanel ID="UpdatePanelModal" runat="server">
                             <ContentTemplate>
                                 <asp:HiddenField ID="hfSelectedTaskID" runat="server" />
-                                <div class="form-row mb-3">
-
-                                    <%--<asp:Button ID="Btn_IsHoli" runat="server" CssClass="fancy-button" Text="Holiday"
-                                        OnClientClick="onDayTypeSelected('Holiday'); return false;"" />
-
-                                    <asp:Button ID="Btn_IsLev" runat="server" CssClass="fancy-button" Text="Leave"
-                                        OnClientClick="onDayTypeSelected('Leave'); return false;" />
-
-                                    <asp:Button ID="Btn_IsWek" runat="server" CssClass="fancy-button" Text="Weekly Off"
-                                        OnClientClick="onDayTypeSelected('Weekly'); return false;" />
-
-                                    <asp:Button ID="Btn_IsComp" runat="server" CssClass="fancy-button" Text="Comp Off"
-                                        OnClientClick="onDayTypeSelected('Comp'); return false;"/>--%>
+                                <div class="form-row mb-3">                                    
                                     <asp:Button ID="Btn_IsHoli" runat="server" ClientIDMode="Static" CssClass="fancy-button" Text="Holiday" OnClientClick="onDayTypeSelected('Holiday'); return false;" Style="margin: 0px  11px;" />
                                     <asp:Button ID="Btn_IsLev" runat="server" ClientIDMode="Static" CssClass="fancy-button" Text="Leave" OnClientClick="onDayTypeSelected('Leave'); return false;" Style="margin: 0px  11px;" />
                                     <asp:Button ID="Btn_IsWek" runat="server" CssClass="fancy-button" Text="Weekly Off" OnClientClick="onDayTypeSelected('Weekly'); return false;" Style="margin: 0px  11px;" />
                                     <asp:Button ID="Btn_IsComp" runat="server" ClientIDMode="Static" CssClass="fancy-button" Text="Comp Off" OnClientClick="onDayTypeSelected('Comp'); return false;" Style="margin: 0px  11px;" />
 
                                 </div>
-
-
                                 <div runat="server" id="allrows">
 
                                     <asp:HiddenField ID="hfDayType" runat="server" />
                                     <asp:Button ID="btnTriggerBindGrid" runat="server" Text="TriggerBindGrid"
                                         Style="display: none;" OnClick="btnTriggerBindGrid_Click" />
-
-                                    <!-- First Row: In Time / Out Time -->
-<%--                                    <div class="form-row mb-3">
-                                        <div class="col-md-2 font-weight-bold">In Time *</div>
-                                        <div class="col-md-2">11:01:44</div>
-                                        <div class="col-md-2 font-weight-bold">Out Time *</div>
-                                        <div class="col-md-2">20:05:00</div>
-                                    </div>--%>
-
                                     <div class="form-row mb-3">
     <div class="col-md-2 font-weight-bold">In Time *</div>
     <div class="col-md-4">
@@ -933,10 +696,6 @@
         <asp:TextBox ID="outTimeText" runat="server" CssClass="form-control" ClientIDMode="Static"  TextMode="SingleLine"/>
     </div>
 </div>
-
-
-
-
                                     <!-- Second Row -->
                                     <div class="form-row mb-3">
                                         <div class="col-md-2 font-weight-bold">Date *</div>
@@ -954,41 +713,6 @@
                                             </asp:DropDownList>
                                         </div>
                                     </div>
-
-                                    <!-- Third Row -->
-                                    <%--      <div class="form-row mb-3">
-                            <div class="col-md-2 font-weight-bold">Ticket No/Bug Id</div>
-                            <div class="col-md-4">
-                                <asp:TextBox ID="txtTicketNo" runat="server" CssClass="form-control" />
-                            </div>
-
-                            <div class="col-md-2 font-weight-bold">PMO</div>
-                            <div class="col-md-4">
-                                <asp:DropDownList ID="ddlPMO" runat="server" CssClass="form-control">
-                                    <asp:ListItem Text="Select..." Value="" />
-
-                                </asp:DropDownList>
-                            </div>
-                        </div>--%>
-
-
-
-                                    <%-- <!-- Fifth Row -->
-                        <div class="form-row mb-3">
-                            <div class="col-md-2 font-weight-bold">Activity Source *</div>
-                            <div class="col-md-4">
-                                <asp:DropDownList ID="ddlActivitySource" runat="server" CssClass="form-control">
-                                    <asp:ListItem Text="Select Source" Value="" />
-
-                                </asp:DropDownList>
-                            </div>
-
-                            <div class="col-md-2 font-weight-bold">Application</div>
-                            <div class="col-md-4">
-                                <asp:TextBox ID="txtApplication" runat="server" CssClass="form-control" ReadOnly="true" />
-                            </div>
-                        </div>--%>
-
                                     <!-- Sixth Row -->
                                     <div class="form-row mb-3">
                                         <div class="col-md-2 font-weight-bold">Work Completion *</div>
@@ -1017,49 +741,22 @@
 
                                         <asp:TextBox ID="txtDescription" runat="server" TextMode="MultiLine" CssClass="form-control" Rows="4" Style="width: 580%" />
 
-
-
-
-
                                     </div>
-
-                                    <!-- Seventh Row -->
-                                    <%--<div class="form-row mb-3">
-                            <div class="col-md-2 font-weight-bold">Category/Group</div>
-                            <div class="col-md-4">
-                                <asp:DropDownList ID="ddlCategoryGroup" runat="server" CssClass="form-control">
-                                    <asp:ListItem Text="Select Value" Value="" />
-
-                                </asp:DropDownList>
-                            </div>
-                            <div class="col-md-2 font-weight-bold">Description *</div>
-                            <div class="col-md-4">
-                                <asp:TextBox ID="txtDescription" runat="server" CssClass="form-control" TextMode="MultiLine" />
-                            </div>
-                        </div>--%>
                                 </div>
 
                                 <div class="form-row mb-3">
                                     <div class="col-md-4"></div>
                                     <div class="col-md-4"></div>
                                     <div class="col-md-4">
-                                        <%-- <asp:Button ID="Btn_Tsave" runat="server" CssClass="fancy-button" Text="Save"
-                                            OnClick="Btn_Tsave_Click" OnClientClick="return validateBeforeSave();" />--%>
                                         <asp:Button ID="Btn_Tsave" runat="server" CssClass="fancy-button" Text="Save"
                                             OnClick="Btn_Tsave_Click" OnClientClick="return validateBeforeSave();" />
-
-
-
                                         <asp:Button ID="Btn_TBack" runat="server" CssClass="fancy-button" Text="Back" Enabled="false" />
-
                                         <asp:Button ID="Btn_TAprov" runat="server" CssClass="fancy-button" Text="Send for Approval" Enabled="false"
                                             OnClick="Btn_SndFrApprov_Click" />
                                     </div>
                                 </div>
 
-
                                 <asp:Label ID="lblItemStatus" runat="server" CssClass="text-info" Style="padding-right: 260px" />
-                                <%--OnRowEditing="gvTasks_RowEditing"--%>
                                 <asp:GridView ID="gvTasks" runat="server" AutoGenerateColumns="False"
                                     AllowPaging="true" PageSize="5"
                                     OnPageIndexChanging="gvTasks_PageIndexChanging"
@@ -1080,21 +777,6 @@
 
                                     <Columns>
 
-
-                                        <%--gvTasks_RowEditing call method if I unccommet this (Hrutik)--%>
-                                        <%--<asp:TemplateField HeaderText="Edit">
-                                    <ItemTemplate>
-                                        <asp:LinkButton ID="lnkEdit" runat="server"
-                                            CommandName="Edit"
-                                            CommandArgument='<%# Eval("TaskID") %>'
-                                            OnClientClick='<%# "return confirmEdit(" + Eval("TaskID") + ");" %>'
-                                            CssClass="btn btn-sm btn-warning" ToolTip="Edit Task">
-                                            <i class="fas fa-pen"></i>
-                                        </asp:LinkButton>
-                                    </ItemTemplate>
-                                </asp:TemplateField>--%>
-
-                                        <%--gvTasks_RowCommand call method if I use this (Hrutik)--%>
                                         <asp:TemplateField HeaderText="Edit">
                                             <ItemTemplate>
                                                 <asp:LinkButton ID="lnkEdit" runat="server"
@@ -1102,13 +784,10 @@
                                                     CommandArgument='<%# Eval("TaskID") %>'
                                                     OnClientClick='<%# "return confirmEdit(" + Eval("TaskID") + ");" %>'
                                                     CssClass="btn btn-sm btn-warning" ToolTip="Edit Task">
-            <i class="fas fa-pen"></i>
+                                                <i class="fas fa-pen"></i>
                                                 </asp:LinkButton>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-
-
-
 
                                         <asp:TemplateField HeaderText="Date">
                                             <ItemTemplate>
@@ -1121,7 +800,6 @@
                                             </EditItemTemplate>
                                         </asp:TemplateField>
 
-
                                         <asp:TemplateField HeaderText="Description">
                                             <ItemTemplate>
                                                 <%# Eval("Description") %>
@@ -1132,7 +810,6 @@
                                                     CssClass="form-control" />
                                             </EditItemTemplate>
                                         </asp:TemplateField>
-
 
                                         <asp:TemplateField HeaderText="Approx Time Spent">
                                             <ItemTemplate>
@@ -1145,12 +822,11 @@
                                             </EditItemTemplate>
                                         </asp:TemplateField>
 
-
                                         <asp:TemplateField HeaderText="Delete">
                                             <ItemTemplate>
                                                 <asp:LinkButton ID="lnkDelete" runat="server" CommandName="Delete" OnClientClick="return confirmDelete();"
                                                     CssClass="btn btn-sm btn-danger" ToolTip="Delete">
-                    <i class="fas fa-trash-alt"></i> 
+                                                <i class="fas fa-trash-alt"></i> 
                                                 </asp:LinkButton>
                                             </ItemTemplate>
                                         </asp:TemplateField>
@@ -1168,7 +844,3 @@
         </div>
 
      </asp:Content>
-
-    <%--</form>
-</body>
-</html>--%>

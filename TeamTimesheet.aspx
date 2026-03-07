@@ -1,12 +1,6 @@
 ﻿<%@ Page Title="Team Timesheet" Language="C#" MasterPageFile="~/Site1.master" AutoEventWireup="true" 
     CodeBehind="TeamTimesheet.aspx.cs" Inherits="EmployeeTimesheet_Salary.TeamTimesheet" %>
 
-<%--<!DOCTYPE html>
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <title>Team Timesheet</title>--%>
-
 <asp:Content ID="ContentHead" ContentPlaceHolderID="HeadContent" runat="server">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
      <style>
@@ -84,28 +78,28 @@
            });
        }
 
-       function updateHeaderState() {
-           var header = document.getElementById('<%= gvTimesheet.ClientID %>').querySelector('input[id*="chkSelectAll"]');
-    var checkBoxes = document.getElementById('<%= gvTimesheet.ClientID %>').querySelectorAll('input[type=checkbox][id*="chkSelect"]');
+    function updateHeaderState() {
+        var header = document.getElementById('<%= gvTimesheet.ClientID %>').querySelector('input[id*="chkSelectAll"]');
+        var checkBoxes = document.getElementById('<%= gvTimesheet.ClientID %>').querySelectorAll('input[type=checkbox][id*="chkSelect"]');
 
-    var enabledBoxes = Array.from(checkBoxes).filter(cb => !cb.disabled);
-    var checkedCount = enabledBoxes.filter(cb => cb.checked).length;
+        var enabledBoxes = Array.from(checkBoxes).filter(cb => !cb.disabled);
+        var checkedCount = enabledBoxes.filter(cb => cb.checked).length;
 
-    if (checkedCount === 0) {
-        header.checked = false;
-        header.indeterminate = false;
-    } else if (checkedCount === enabledBoxes.length) {
-        header.checked = true;
-        header.indeterminate = false;
-    } else {
-        header.checked = false;
-        header.indeterminate = true;
+        if (checkedCount === 0) {
+            header.checked = false;
+            header.indeterminate = false;
+        } else if (checkedCount === enabledBoxes.length) {
+            header.checked = true;
+            header.indeterminate = false;
+        } else {
+            header.checked = false;
+            header.indeterminate = true;
+        }
     }
-}
 
-function attachHandlers() {
-    var grid = document.getElementById('<%= gvTimesheet.ClientID %>');
-           if (!grid) return;
+        function attachHandlers() {
+            var grid = document.getElementById('<%= gvTimesheet.ClientID %>');
+            if (!grid) return;
 
            var header = grid.querySelector('input[id*="chkSelectAll"]');
            var checkBoxes = grid.querySelectorAll('input[type=checkbox][id*="chkSelect"]');
@@ -132,9 +126,7 @@ function attachHandlers() {
 
 
 </asp:Content>
-<%--</head>
-<body>
-    <form id="form1" runat="server">--%>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
         <div class="grid-container">
@@ -164,29 +156,7 @@ function attachHandlers() {
                     OnClick="btnNextMonth_Click" />
             </div>
 
-          <%-- <asp:GridView ID="gvTimesheet" runat="server" AutoGenerateColumns="False" OnRowDataBound="gvTimesheet_RowDataBound">
-    <Columns>
-        <asp:TemplateField HeaderText="Select">
-            <HeaderTemplate>
-                <asp:CheckBox ID="chkSelectAll" runat="server" />
-            </HeaderTemplate>
-            <ItemTemplate>
-                <asp:CheckBox ID="chkSelect" runat="server" />
-                <asp:HiddenField ID="hfTaskID" runat="server" Value='<%# Eval("TaskID") %>' />
-                <asp:HiddenField ID="hfDescription" runat="server" Value='<%# Eval("Description") %>' />
-            </ItemTemplate>
-            <ItemStyle Width="5%" />
-        </asp:TemplateField>
-
-        <asp:BoundField DataField="TaskDate" HeaderText="Date" DataFormatString="{0:dd-MMM-yyyy}" />
-        <asp:BoundField DataField="Description" HeaderText="Description" />
-        <asp:BoundField DataField="TimeSpent" HeaderText="Hours" />
-        <asp:BoundField DataField="Type" HeaderText="Type" />
-
-    </Columns>
-</asp:GridView>--%>
-
-        <asp:GridView ID="gvTimesheet" runat="server" AutoGenerateColumns="False" OnRowDataBound="gvTimesheet_RowDataBound">
+<asp:GridView ID="gvTimesheet" runat="server" AutoGenerateColumns="False" OnRowDataBound="gvTimesheet_RowDataBound">
 <Columns>
     <asp:TemplateField HeaderText="Select">
         <HeaderTemplate>
@@ -240,11 +210,6 @@ function attachHandlers() {
     <asp:Button ID="btnRejectSelected" runat="server" Text="Reject Selected" CssClass="btn btn-danger"
         OnClick="btnRejectSelected_Click" />
 </div>
-
-
         </div>
         
 </asp:Content>
-   <%-- </form>
-</body>
-</html>--%>

@@ -23,20 +23,6 @@ namespace EmployeeTimesheet_Salary
             }
 
         }
-
-        //private void LoadTeamMembers()
-        //{
-        //    using (SqlConnection con = new SqlConnection(connStr))
-        //    {
-        //        SqlDataAdapter da = new SqlDataAdapter(
-        //            "SELECT UserId, UserLoginName FROM kalpana..iuser WHERE ManagerId='100042'", con);
-        //        DataTable dt = new DataTable();
-        //        da.Fill(dt);
-        //        gvTeamMembers.DataSource = dt;
-        //        gvTeamMembers.DataBind();
-        //    }
-        //}
-
         private void LoadTeamMembers()
         {
             using (SqlConnection con = new SqlConnection(connStr))
@@ -121,22 +107,17 @@ namespace EmployeeTimesheet_Salary
                 if (found.Length > 0)
                 {
                     dtFullMonth.ImportRow(found[0]);
-                    //btnApprove.Enabled = true;
-                    //btnNotApprove.Enabled = true;
                 }
                 else
                 {
                     // For missing days, TaskID can be null or 0
                     dtFullMonth.Rows.Add(DBNull.Value, date, "Not filled timesheet", DBNull.Value, DBNull.Value);
-                    //btnApprove.Enabled = false;
-                    //btnNotApprove.Enabled = false;
                 }
             }
 
             gvTimesheet.DataSource = dtFullMonth;
             gvTimesheet.DataBind();
         }
-
         protected void gvTimesheet_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Approve")
@@ -152,7 +133,6 @@ namespace EmployeeTimesheet_Salary
                 ApproveTask(taskId, false);
             }
         }
-
         private void ApproveTask(string taskId, bool isApproved)
         {
             using (SqlConnection con = new SqlConnection(connStr))
@@ -168,8 +148,6 @@ namespace EmployeeTimesheet_Salary
                 }
             }
         }
-
-
         protected void btnPrevMonth_Click(object sender, EventArgs e)
         {
             int month = Convert.ToInt32(ViewState["Month"]);
@@ -187,7 +165,6 @@ namespace EmployeeTimesheet_Salary
 
             LoadTimesheet(ViewState["SelectedUserId"].ToString());
         }
-
         protected void btnNextMonth_Click(object sender, EventArgs e)
         {
             int month = Convert.ToInt32(ViewState["Month"]);
@@ -205,7 +182,6 @@ namespace EmployeeTimesheet_Salary
 
             LoadTimesheet(ViewState["SelectedUserId"].ToString());
         }
-
         protected void btnBack_Click(object sender, EventArgs e)
         {
             id_name.Text = "<h2>Team Members</h2>";
@@ -218,12 +194,10 @@ namespace EmployeeTimesheet_Salary
         {
             ProcessMultipleApprovals(true);
         }
-
         protected void btnRejectSelected_Click(object sender, EventArgs e)
         {
             ProcessMultipleApprovals(false);
         }
-
         private void ProcessMultipleApprovals(bool isApproved)
         {
             string selectedTaskIds = "";
@@ -268,28 +242,6 @@ namespace EmployeeTimesheet_Salary
 
             LoadTimesheet(userId);
         }
-
-
-        //protected void gvTimesheet_RowDataBound(object sender, GridViewRowEventArgs e)
-        //{
-        //    if (e.Row.RowType == DataControlRowType.DataRow)
-        //    {
-        //        CheckBox chk = (CheckBox)e.Row.FindControl("chkSelect");
-        //        HiddenField hfDescription = (HiddenField)e.Row.FindControl("hfDescription");
-
-        //        if (hfDescription != null && chk != null)
-        //        {
-        //            //string desc = hfDescription.Value.ToLower();
-        //            //if (desc.Contains("not filled timesheet"))
-        //            if (hfDescription.Value.ToLower().Contains("not filled timesheet"))
-        //            {
-        //                chk.Enabled = false; // disable checkbox
-        //                e.Row.ForeColor = System.Drawing.Color.Gray; // optional: gray out text
-        //            }
-        //        }
-        //    }
-        //}
-
         protected void gvTimesheet_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
@@ -324,9 +276,6 @@ namespace EmployeeTimesheet_Salary
                 }
             }
         }
-
-
-
     }
 
 }

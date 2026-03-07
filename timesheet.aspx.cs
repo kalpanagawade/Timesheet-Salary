@@ -18,11 +18,9 @@ namespace EmployeeTimesheet_Salary
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //txtCreatedBy.Text = Request.QueryString["Username"];
            
             if (!IsPostBack)
-            {
-                //ddlWorkPlace.SelectedValue = "Sel";   // or "Office"
+            {                
                 FillWorkPlaceFromDB();
 
                 // Enable login button
@@ -34,10 +32,7 @@ namespace EmployeeTimesheet_Salary
                 hfMonthYear.Value = today.ToString("yyyy-MM-dd");
                 string UserId= Request.QueryString["UserID"];
                 GenerateCalendar(today, UserId);
-                //txtInTime.Text = DateTime.Now.ToString("HH:mm:ss");
-                //txtOutTime.Text = DateTime.Now.ToString("HH:mm:ss");
                 BindGrid();
-                //Btn_Tsave.Enabled = false;
 
                 if (HasOpenLogin(UserId))
                 {
@@ -64,21 +59,11 @@ namespace EmployeeTimesheet_Salary
 
                     if (log["Out_Time"] != DBNull.Value)
                         txtOutTime.Text = Convert.ToDateTime(log["Out_Time"]).ToString("HH:mm:ss");
-
-                    //if (log["Out_Time"] == DBNull.Value)
-                    //    btnLoginLogout.Text = "Logout"; // still logged in
-                    //else
-                    //    btnLoginLogout.Enabled = false; // already logged out
-                }
-                //else
-                //{
-                //    btnLoginLogout.Text = "Login"; // no record for today
-                //}
+                }                
             }
 
 
         }
-
         private void FillWorkPlaceFromDB()
         {
             string conn = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
@@ -186,7 +171,6 @@ namespace EmployeeTimesheet_Salary
                 return statusData;
             }
         }
-
         private Dictionary<DateTime, (string InTime, string OutTime)> GetAttendanceData(int year, int month, string userId)
         {
             var result = new Dictionary<DateTime, (string, string)>();
@@ -224,8 +208,6 @@ namespace EmployeeTimesheet_Salary
 
             return result;
         }
-
-
         private void GenerateCalendar(DateTime startDate, string userId)
         {
             string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
@@ -327,123 +309,6 @@ namespace EmployeeTimesheet_Salary
                 }
             }
         }
-
-
-
-
-        //private void GenerateCalendar(DateTime startDate, string userId)
-        //{
-        //    string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
-        //    try
-        //    {
-
-        //        lblMonthYear.Text = startDate.ToString("MMMM yyyy");
-
-        //        int daysInMonth = DateTime.DaysInMonth(startDate.Year, startDate.Month);
-        //        DateTime firstDay = new DateTime(startDate.Year, startDate.Month, 1);
-        //        int startDayOfWeek = (int)firstDay.DayOfWeek;
-
-        //        Dictionary<DateTime, (string InTime, string OutTime)> attendanceData = GetAttendanceData(startDate.Year, startDate.Month, userId);
-
-        //        Dictionary<int, string> statusData = GetStatusData(startDate.Year, startDate.Month, userId);
-
-        //        int day = 1;
-        //        string html = "";
-
-        //        for (int week = 0; week < 6; week++)
-        //        {
-        //            html += "<tr>";
-        //            for (int weekday = 0; weekday < 7; weekday++)
-        //            {
-        //                if ((week == 0 && weekday < startDayOfWeek) || day > daysInMonth)
-        //                {
-        //                    html += "<td></td>";
-        //                }
-        //                else
-        //                {
-        //                    string cssClass = "";
-        //                    string content = "";
-
-        //                    if (statusData.ContainsKey(day))
-        //                    {
-        //                        content = statusData[day];
-        //                        if (content == "Pending") cssClass = "pending";
-        //                        else if (content == "Weekly Off") cssClass = "weeklyoff";
-        //                        else if (content == "In your bucket") cssClass = "bucket";
-        //                        else if (content == "Holiday") cssClass = "holiday";
-        //                        else if (content == "Approved") cssClass = "approved";
-        //                        else if (content == "Leave") cssClass = "leave";
-        //                        else if (content == "CompOff") cssClass = "compoff";
-        //                    }
-
-        //                    //html += $"<td class='{cssClass}' onclick=\"openTaskModal('{startDate.Year}-{startDate.Month:00}-{day:00}')\">" +
-        //                    //        $"<strong>{day}</strong><br />{content}</td>";
-        //                    DateTime cellDate = new DateTime(startDate.Year, startDate.Month, day);
-
-        //                    if (cellDate <= DateTime.Today)
-        //                    {
-        //                        string inTime = attendanceData.ContainsKey(cellDate) ? attendanceData[cellDate].InTime : "--:--:--";
-        //                        string outTime = attendanceData.ContainsKey(cellDate) ? attendanceData[cellDate].OutTime : "--:--:--";
-
-        //                        html += $"<td class='{cssClass}' onclick=\"openTaskModal('{cellDate:yyyy-MM-dd}', '{inTime}', '{outTime}')\">" +
-        //                                $"<strong>{day}</strong><br />{content}</td>";
-        //                    }
-        //                    else
-        //                    {
-        //                        html += $"<td class='{cssClass}'>" +
-        //                                $"<strong>{day}</strong><br />{content}</td>";
-        //                    }
-
-
-        //                    day++;
-        //                }
-        //            }
-        //            html += "</tr>";
-
-        //            if (day > daysInMonth)
-        //                break;
-        //        }
-
-        //        litCalendar.Text = html;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        using (SqlConnection conn = new SqlConnection(connString))
-        //        {
-        //            conn.Open();
-        //            using (SqlCommand logCmd = new SqlCommand("PRC_InsertErrorLog", conn))
-        //            {
-
-        //                logCmd.CommandType = CommandType.StoredProcedure;
-        //                logCmd.Parameters.AddWithValue("@MethodName", "GenerateCalendar");
-        //                logCmd.Parameters.AddWithValue("@ErrorMessage", ex.Message);
-        //                logCmd.Parameters.AddWithValue("@ErrorDateTime", DateTime.Now);
-
-        //                logCmd.ExecuteNonQuery();
-        //            }
-        //        }
-
-        //    }
-
-        //}
-
-
-        //protected void btnEmpTimSht_Click(object sender, EventArgs e)
-        //{
-        //    // Redirect to timesheet.aspx
-        //    string userId = Request.QueryString["UserID"];
-        //    Response.Redirect("Notice.aspx?UserID=" + Server.UrlEncode(userId) + "&Username=" + Server.UrlEncode(txtCreatedBy.Text.Trim()));
-        //}
-
-       //Start Grid button
-
-        //This Metod is unnessary calling in Grid
-        //protected void gvTasks_RowEditing(object sender, GridViewEditEventArgs e)
-        //{
-        //    gvTasks.EditIndex = e.NewEditIndex;
-        //    BindGrid();
-        //}
-
         protected void gvTasks_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
           
@@ -497,13 +362,11 @@ namespace EmployeeTimesheet_Salary
             }
 
         }
-
         protected void gvTasks_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
         {
             gvTasks.EditIndex = -1;
             BindGrid();
         }
-
         private void BindGrid()
         {
             string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
@@ -580,101 +443,11 @@ namespace EmployeeTimesheet_Salary
                 }
             }
         }
-
-
-
-        //private void BindGrid()
-        //{
-        //    string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
-
-        //    using (SqlConnection conn = new SqlConnection(connString))
-        //    {
-        //        string input = txtModalDate.Text.Trim();  // Make sure no leading/trailing spaces
-        //        DateTime taskDateG = DateTime.ParseExact(input, "dd-MM-yyyy", CultureInfo.InvariantCulture).Date;
-
-        //        string userId = Request.QueryString["UserID"];
-
-        //        // Debug check: Print values
-        //        System.Diagnostics.Debug.WriteLine("UserId: " + userId);
-        //        System.Diagnostics.Debug.WriteLine("TaskDate: " + taskDateG.ToString("yyyy-MM-dd"));
-
-        //        using (SqlCommand cmd = new SqlCommand("Get_BindGrid_TaskEntries", conn))
-        //        {
-        //            cmd.CommandType = CommandType.StoredProcedure;
-
-        //            cmd.Parameters.AddWithValue("@UserId", userId); // Must be '100000'
-        //            cmd.Parameters.AddWithValue("@TaskDate", taskDateG.ToString("yyyy-MM-dd")); //"2025-06-02" / taskDateG.ToString("yyyy-MM-dd") format yyyy-MM-dd// Hrutik
-
-        //            using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-        //            {
-        //                DataTable dt = new DataTable();
-        //                da.Fill(dt);
-
-
-
-        //                ViewState["GridData"] = dt;
-        //                lblItemStatus.Text = "Rows loaded: " + dt.Rows.Count;
-
-        //                //DataTable dta = ViewState["GridData"] as DataTable;
-
-        //                if (dt != null)
-        //                {
-        //                    bool matchFound = false;
-
-        //                    foreach (DataRow row in dt.Rows)
-        //                    {
-        //                        string description = row["Description"].ToString().Trim().ToLower();
-
-        //                        if (description == "holiday" || description == "leave" ||
-        //                            description == "weekly" || description == "comp")
-        //                        {
-        //                            matchFound = true;
-        //                            break; // Exit loop early when a match is found
-        //                        }
-        //                    }
-
-        //                    if (matchFound)
-        //                    {
-        //                        allrows.Style["display"] = "none";
-        //                        Btn_Tsave.Enabled = false;
-        //                    }
-        //                    else
-        //                    {
-        //                        allrows.Style["display"] = "block";
-        //                        Btn_Tsave.Enabled = true;
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    allrows.Style["display"] = "block";
-        //                    Btn_Tsave.Enabled = true;
-        //                }
-
-        //                if (dt.Rows.Count >= 1)
-        //                {
-        //                    Btn_TAprov.Enabled = true;
-        //                }
-        //                else
-        //                {
-        //                    Btn_TAprov.Enabled = false;
-        //                }
-
-        //                gvTasks.DataSource = dt;
-        //                gvTasks.DataBind();
-
-        //            }
-        //        }
-        //    }
-        //}
-
-
-
         protected void gvTasks_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvTasks.PageIndex = e.NewPageIndex;
             BindGrid(); // rebind the data
         }
-
         protected void gvTasks_DataBound(object sender, EventArgs e)
         {
             int rowCount = gvTasks.Rows.Count;
@@ -705,7 +478,6 @@ namespace EmployeeTimesheet_Salary
                 lblItemStatus.Text = "No productivity item to show.";
             }
         }
-
         protected void gvTasks_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
             int taskId = Convert.ToInt32(gvTasks.DataKeys[e.RowIndex].Value);
@@ -723,7 +495,6 @@ namespace EmployeeTimesheet_Salary
 
             BindGrid(); // your method to reload data
         }
-
         protected void gvTasks_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "EditRow")
@@ -739,7 +510,6 @@ namespace EmployeeTimesheet_Salary
                         DataRow row = selectedRow[0];
 
                         // Set values in modal controls
-                        //txtModalDate.Text = Convert.ToDateTime(row["TaskDate"]).ToString("yyyy-MM-dd");
                         ddlModalType.SelectedValue = row["Type"].ToString();
                         ddlWorkCompletion.SelectedValue = row["WorkCompletion"].ToString();
                         txtTimeSpent.Text = TimeSpan.Parse(row["TimeSpent"].ToString()).ToString(@"hh\:mm");
@@ -760,31 +530,6 @@ namespace EmployeeTimesheet_Salary
         }
 
         private HashSet<DateTime> disabledDates;
-
-        //private void LoadDisabledDates()
-        //{
-        //    disabledDates = new HashSet<DateTime>();
-
-        //    string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
-        //    using (SqlConnection conn = new SqlConnection(connString))
-        //    {
-        //        conn.Open();
-        //        using (SqlCommand cmd = new SqlCommand(
-        //            "SELECT StatusDate FROM CalendarStatus WHERE StatusType != 'In your bucket'", conn))
-        //        {
-        //            using (SqlDataReader reader = cmd.ExecuteReader())
-        //            {
-        //                while (reader.Read())
-        //                {
-        //                    if (reader["StatusDate"] != DBNull.Value)
-        //                    {
-        //                        disabledDates.Add(Convert.ToDateTime(reader["StatusDate"]));
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
 
         protected void gvTasks_RowDataBound(object sender, GridViewRowEventArgs e)
         {
@@ -811,8 +556,6 @@ namespace EmployeeTimesheet_Salary
                 }
             }
         }
-
-
         protected void Btn_Tsave_Click(object sender, EventArgs e)
         {
            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString))
@@ -874,9 +617,7 @@ namespace EmployeeTimesheet_Salary
                             conn.Open();
                         cmd.ExecuteNonQuery();
                             BindGrid();
-                            
-
-                        }
+                      }
                         else
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
@@ -891,7 +632,6 @@ namespace EmployeeTimesheet_Salary
                             cmd.ExecuteNonQuery();
                             BindGrid();
 
-                            //Hrutik 28092025
                             using (SqlConnection conn1 = new SqlConnection(ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString))
                             
                             using (SqlCommand cmd1 = new SqlCommand("PRC_InsertLoginLogout", conn1))
@@ -950,16 +690,9 @@ namespace EmployeeTimesheet_Salary
                                 conn1.Open();
                                 cmd1.ExecuteNonQuery();
                             }
-
-
                         }
-
                 }
-
-            //Btn_TAprov.Enabled = true;
-
         }
-
         protected void Btn_SndFrApprov_Click(object sender, EventArgs e)
         {
             string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
@@ -999,20 +732,10 @@ namespace EmployeeTimesheet_Salary
                     location.reload();
                 }}, 500);
             ";
-
-
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "CloseModalWithAlert", script, true);
-
-                    //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", $"alert('{result}');", true);
                 }
             }
-            //Response.Redirect(Request.RawUrl);
         }
-
-
-
-
-
         private void ClearModal()
         {
             txtModalDate.Text = "";
@@ -1024,7 +747,6 @@ namespace EmployeeTimesheet_Salary
             Btn_Tsave.Text = "Save";
             Btn_Tsave.Enabled = false;
         }
-
         private DataRow GetTodayLog(string userId)
         {
             using (SqlConnection conn = new SqlConnection(
@@ -1043,9 +765,6 @@ namespace EmployeeTimesheet_Salary
                 return dt.Rows.Count > 0 ? dt.Rows[0] : null;
             }
         }
-
-
-
         private bool HasLoggedOutToday(string userId)
         {
             bool exists = false;
@@ -1063,7 +782,6 @@ namespace EmployeeTimesheet_Salary
             }
             return exists;
         }
-
         private bool HasOpenLogin(string userId)
         {
             bool exists = false;
@@ -1080,60 +798,7 @@ namespace EmployeeTimesheet_Salary
                 exists = count > 0;
             }
             return exists;
-        }
-
-        //protected void btnLoginLogout_Click(object sender, EventArgs e)
-        //{
-        //    string userId = Request.QueryString["UserID"]; // or Session["UserId"].ToString()
-        //    LogManager logManager = new LogManager();
-
-        //    if (btnLoginLogout.Text == "Login")
-        //    {
-        //        // --- Insert Login ---
-        //        logManager.InsertLoginLogout(userId, "LOGIN");
-
-        //        // --- Fill In-Time Textbox from DB ---
-        //        DataRow log = GetTodayLog(userId);
-        //        if (log != null && log["In_Time"] != DBNull.Value)
-        //            txtInTime.Text = Convert.ToDateTime(log["In_Time"]).ToString("HH:mm:ss");
-
-        //        btnLoginLogout.Text = "Logout"; // switch button
-        //    }
-        //    else if (btnLoginLogout.Text == "Logout")
-        //    {
-        //        // --- Update Logout ---
-        //        logManager.InsertLoginLogout(userId, "LOGOUT");
-
-        //        // --- Fill Out-Time Textbox from DB ---
-        //        DataRow log = GetTodayLog(userId);
-        //        if (log != null && log["Out_Time"] != DBNull.Value)
-        //            txtOutTime.Text = Convert.ToDateTime(log["Out_Time"]).ToString("HH:mm:ss");
-
-        //        btnLoginLogout.Enabled = false; // disable button after logout
-        //    }
-        //}
-
-
-
-
-
-        //protected void btnLoginLogout_Click(object sender, EventArgs e)
-        //{
-        //    string userId = Request.QueryString["UserID"];  // use consistent variable name
-        //    LogManager logManager = new LogManager();
-
-        //    if (btnLoginLogout.Text == "Login")
-        //    {
-        //        logManager.InsertLoginLogout(userId, "LOGIN");
-        //        btnLoginLogout.Text = "Logout";
-        //    }
-        //    else if (btnLoginLogout.Text == "Logout")
-        //    {
-        //        logManager.InsertLoginLogout(userId, "LOGOUT");
-        //        btnLoginLogout.Enabled = false;
-        //    }
-        //}
-
+        }        
         protected void btnLoginLogout_Click(object sender, EventArgs e)
         {
             string WRK = ddlWorkPlace.SelectedValue;
@@ -1161,10 +826,7 @@ namespace EmployeeTimesheet_Salary
                 btnLoginLogout.Enabled = false;
             }
         }
-
-
     }
-
     public class LogManager
     {
         private string connString = ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
